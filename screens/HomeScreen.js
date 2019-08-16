@@ -63,8 +63,8 @@ export default class HomeScreen extends Component{
     homeTeam=()=>{
         var db = firebase.firestore();
         var liga = "JxcDmZqYMj60CawzNF5l";
-        var equipo = "NzCas6gR80ruuT4e4d5h";
-        db.collection("equipos").doc(equipo).get().then((doc)=> {
+        var equipo = "WsC2LmWUDTXZwomGtjBt";
+        db.collection("ligas").doc(liga).collection("equipos").doc(equipo).get().then((doc)=> {
         var dataEquipo = doc.data();
         var nombreEquipo = dataEquipo.Nombre;
         this.setState({teamName:nombreEquipo })
@@ -142,6 +142,7 @@ export default class HomeScreen extends Component{
         var db = firebase.firestore();
         let user = firebase.auth().currentUser;
         var codigo = "Jx8490";
+        var sliga = "JxcDmZqYMj60CawzNF5l";
         db.collection("codigosLigas").where("Codigo", "==", codigo).get()
         .then(function(querySnapshot) {
             querySnapshot.forEach(function(doc) {
@@ -154,11 +155,11 @@ export default class HomeScreen extends Component{
                     db.collection("codigosLigas").doc(doc.id).update({
                         Valido : false
                     })
-                    db.collection("equipos").where("Capitan", "==", user.uid)
+                    db.collection("ligas").doc(sliga).collection("equipos").where("Capitan", "==", user.uid)
                     .get()
                     .then(function(querySnapshot) {
                         querySnapshot.forEach(function(docE) {
-                            db.collection("equipos").doc(docE.id).update({
+                            db.collection("ligas").doc(sligas).collection("equipos").doc(docE.id).update({
                                 Ligas: firebase.firestore.FieldValue.arrayUnion(liga)
                             })
                             db.collection("ligas").doc(liga).update({
@@ -248,14 +249,14 @@ export default class HomeScreen extends Component{
         var db = firebase.firestore();
         let user = firebase.auth().currentUser;
         //aqui voy a guardar la selección que hayan elegido en el dialog box de equipo 1
-        var equipoV = "NzCas6gR80ruuT4e4d5h";
+        var equipoV = "WsC2LmWUDTXZwomGtjBt";
         //aqui voy a guardar la selección que hayan elegido en el dialog box de equipo 2
-        var equipoF = "h7pjHSRMOqKteeUrfmrm";
+        var equipoF = "h8zh3uZ9WtzFTTtcPscV";
         //aqui voy a guardar la selección de la liga que hayan elegido en el dialoglistview
         var liga = "JxcDmZqYMj60CawzNF5l";
         //aqui voy a guardar le selección de la fecha y hora que hayan elegido
         var date = new Date("August 22, 2019 21:30:00");
-        var refNuevoPartido = db.collection("partidos").doc();
+        var refNuevoPartido = db.collection("ligas").doc(liga).collection("partidos").doc();
         refNuevoPartido.set({
             liga: liga,
             fechaPartido: firebase.firestore.Timestamp.fromDate(date),
@@ -266,10 +267,10 @@ export default class HomeScreen extends Component{
             completado : false
         }).then(function() {
             var partidoId= (refNuevoPartido.id);
-            db.collection("equipos").doc(liga).collection(equipoF).update({
+            db.collection("ligas").doc(liga).collection("equipos").doc(equipoF).update({
                 Partidos: firebase.firestore.FieldValue.arrayUnion(partidoId)
                 })
-            db.collection("equipos").doc(liga).collection(equipoV).update({
+            db.collection("ligas").doc(liga).collection("equipos").doc(equipoV).update({
                 Partidos: firebase.firestore.FieldValue.arrayUnion(partidoId)
                 })
         })
@@ -279,30 +280,32 @@ export default class HomeScreen extends Component{
        registraPartido(){
         var db = firebase.firestore();
         //aqui voy a guardar la selección del partido que hayan elegido en el dialog box (del input que ellos pongan)
-        var selecciónPartido = "ET79NnAuFxVV9XtMMZlm";
+        var selecciónPartido = "Nb1GmTK4zMCHKT6aLkLM";
         //aqui voy a guardar los goles a favor del equipoF (del input que ellos pongan)
         var golesequipoF = 3;
         //aqui voy a guardar los goles a favor del equipoV (del input que ellos pongan)
         var golesequipoV = 2;
-        db.collection("partidos").doc(selecciónPartido).update({
+        //aqui voy a guardar la selección de la liga que hayan elegido en el dialoglistview
+        var liga = "JxcDmZqYMj60CawzNF5l";
+        db.collection("ligas").doc(liga).collection("partidos").doc(selecciónPartido).update({
             completado: true,
             golesequipoF: golesequipoF,
             golesequipoV: golesequipoV
         })
-        db.collection("partidos").doc(selecciónPartido).get().then(function(doc) {
+        db.collection("ligas").doc(liga).collection("partidos").doc(selecciónPartido).get().then(function(doc) {
             var data = doc.data();
             var equipoF = data.equipoF;
             var equipoV = data.equipoV;
     
             if(golesequipoF>golesequipoV){
-                db.collection("equipos").doc(liga).collection(equipoF).update({
+                db.collection("ligas").doc(liga).collection("equipos").doc(equipoF).update({
                     PartidosJugados: firebase.firestore.FieldValue.increment(1),
                     PartidosGanados: firebase.firestore.FieldValue.increment(1),
                     Puntos: firebase.firestore.FieldValue.increment(3),
                     GolesContra: golesequipoV,
                     GolesFavor: golesequipoF
                 })
-                db.collection("equipos").doc(liga).collection(equipoV).update({
+                db.collection("ligas").doc(liga).collection("equipos").doc(equipoV).update({
                     PartidosJugados: firebase.firestore.FieldValue.increment(1),
                     PartidosPerdidos: firebase.firestore.FieldValue.increment(1),
                     GolesContra: golesequipoF,
@@ -310,14 +313,14 @@ export default class HomeScreen extends Component{
                 })
             }
             else if(golesequipoV>golesequipoF){
-                db.collection("equipos").doc(liga).collection(equipoV).update({
+                db.collection("ligas").doc(liga).collection("equipos").doc(equipoV).update({
                     PartidosJugados: firebase.firestore.FieldValue.increment(1),
                     PartidosGanados: firebase.firestore.FieldValue.increment(1),
                     Puntos: firebase.firestore.FieldValue.increment(3),
                     GolesContra: golesequipoF,
                     GolesFavor: golesequipoV
                 })
-                db.collection("equipos").doc(liga).collection(equipoF).update({
+                db.collection("ligas").doc(liga).collection("equipos").doc(equipoF).update({
                     PartidosJugados: firebase.firestore.FieldValue.increment(1),
                     PartidosPerdidos: firebase.firestore.FieldValue.increment(1),
                     GolesContra: golesequipoV,
@@ -325,14 +328,14 @@ export default class HomeScreen extends Component{
                 })
             }
             else{
-                db.collection("equipos").doc(liga).collection(equipoV).update({
+                db.collection("ligas").doc(liga).collection("equipos").doc(equipoV).update({
                     PartidosJugados: firebase.firestore.FieldValue.increment(1),
                     PartidosEmpatados: firebase.firestore.FieldValue.increment(1),
                     Puntos: firebase.firestore.FieldValue.increment(1),
                     GolesContra: golesequipoF,
                     GolesFavor: golesequipoV
                 })
-                db.collection("equipos").doc(liga).collection(equipoF).update({
+                db.collection("ligas").doc(liga).collection("equipos").doc(equipoF).update({
                     PartidosJugados: firebase.firestore.FieldValue.increment(1),
                     PartidosEmpatados: firebase.firestore.FieldValue.increment(1),
                     Puntos: firebase.firestore.FieldValue.increment(1),
@@ -349,7 +352,7 @@ export default class HomeScreen extends Component{
         //aqui voy a guardar la selección de la liga que hayan elegido en el dialoglistview
         var liga = "JxcDmZqYMj60CawzNF5l";
         //aqui va a estar la selección de su equipo
-        var equipo = "NzCas6gR80ruuT4e4d5h";
+        var equipo = "h8zh3uZ9WtzFTTtcPscV";
         //aqui va a estar el nombre del jugador que hayan introducido
         var nombre = "Elena Vela OJOOO ALVV QUE GUTI ME VA A VERGUEAR"
         db.collection("ligas").doc(liga).collection("equipos").doc(equipo).collection("Jugadores").add({
