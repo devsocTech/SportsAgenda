@@ -258,7 +258,6 @@ export default class HomeScreen extends Component{
         var date = new Date("August 22, 2019 21:30:00");
         var refNuevoPartido = db.collection("ligas").doc(liga).collection("partidos").doc();
         refNuevoPartido.set({
-            liga: liga,
             fechaPartido: firebase.firestore.Timestamp.fromDate(date),
             equipoV : equipoV,
             golesequipoV : 0,
@@ -372,6 +371,19 @@ export default class HomeScreen extends Component{
             for(let i = 0; i<partidosEquipo.length;i++){
                 db.collection("ligas").doc(liga).collection("partidos").doc(partidosEquipo[i]).get().then((doc)=>{
                     var datapartido = doc.data();
+                    var equipoF = datapartido.equipoF;
+                    db.collection("ligas").doc(liga).collection("equipos").doc(equipoF).get().then((doc)=>{
+                        var dataEquipo = doc.data();
+                        var nombreEquipoF = dataEquipo.Nombre;
+                    })
+                    var equipoV = datapartido.equipoV;
+                    db.collection("ligas").doc(liga).collection("equipos").doc(equipoV).get().then((doc)=>{
+                        var dataEquipo = doc.data();
+                        var nombreEquipoV = dataEquipo.Nombre;
+                    })
+                    var golesequipoF = datapartido.golesequipoF;
+                    var golesequipoV = datapartido.golesequipoV;
+                    var fechaPartido = datapartido.fechaPartido;
                 })
             }
         })
@@ -381,9 +393,22 @@ export default class HomeScreen extends Component{
         var db = firebase.firestore()
         //aqui guardare la seleccion de la liga
         var liga = "JxcDmZqYMj60CawzNF5l"
-        db.collection("ligas").doc(liga).collection("partidos").where("completado", "==", false).orderBy("fechaPartido").get().then(querySnapshot=>{
+        db.collection("ligas").doc(liga).collection("partidos").where("completado", "==", true).orderBy("fechaPartido").get().then(querySnapshot=>{
             querySnapshot.forEach((doc)=>{
                 var datapartido = doc.data();
+                var equipoF = datapartido.equipoF;
+                    db.collection("ligas").doc(liga).collection("equipos").doc(equipoF).get().then((doc)=>{
+                        var dataEquipo = doc.data();
+                        var nombreEquipoF = dataEquipo.Nombre;
+                    })
+                    var equipoV = datapartido.equipoV;
+                    db.collection("ligas").doc(liga).collection("equipos").doc(equipoV).get().then((doc)=>{
+                        var dataEquipo = doc.data();
+                        var nombreEquipoV = dataEquipo.Nombre;
+                    })
+                var golesequipoF = datapartido.golesequipoF;
+                var golesequipoV = datapartido.golesequipoV;
+                var fechaPartido = datapartido.fechaPartido;
             })  
         })
     }
@@ -395,7 +420,19 @@ export default class HomeScreen extends Component{
         db.collection("ligas").doc(liga).collection("partidos").where("completado", "==", false).orderBy("fechaPartido").get().then(querySnapshot=>{
             querySnapshot.forEach((doc)=>{
                 var datapartido = doc.data();
-                console.log(datapartido);
+                var equipoF = datapartido.equipoF;
+                    db.collection("ligas").doc(liga).collection("equipos").doc(equipoF).get().then((doc)=>{
+                        var dataEquipo = doc.data();
+                        var nombreEquipoF = dataEquipo.Nombre;
+                    })
+                    var equipoV = datapartido.equipoV;
+                    db.collection("ligas").doc(liga).collection("equipos").doc(equipoV).get().then((doc)=>{
+                        var dataEquipo = doc.data();
+                        var nombreEquipoV = dataEquipo.Nombre;
+                    })
+                var golesequipoF = datapartido.golesequipoF;
+                var golesequipoV = datapartido.golesequipoV;
+                var fechaPartido = datapartido.fechaPartido;
             })  
         })
     }
