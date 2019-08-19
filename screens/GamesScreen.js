@@ -3,6 +3,7 @@ import {Text,View} from 'react-native';
 
 import Games from '../components/Games'
 import Tabs from '../components/Tabs'
+import { tsConstructSignatureDeclaration } from '@babel/types';
 
 export default class GamesScreen extends Component{
     constructor(props){
@@ -26,6 +27,7 @@ export default class GamesScreen extends Component{
     selectLeague=(leagueSelect)=>{
         this.setState({leagueSelect:leagueSelect})
     }
+
 
     render(){
         return(

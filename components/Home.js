@@ -63,6 +63,7 @@ export default (props)=>{
             <Button onPress={() => props.unirteEquipo()}> Unete a un equipo </Button>
             <Button onPress={() => props.programaPartido()}> Programa un partido </Button>
             <Button onPress={() => props.registraPartido()}> Registra el marcador de un partido </Button>
+            <Button onPress={() => props.llenarpartidosEquipo()}> Partidos de mi equipo  </Button>
         </View>
     );
 }

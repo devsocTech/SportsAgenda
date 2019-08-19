@@ -359,6 +359,46 @@ export default class HomeScreen extends Component{
             Nombre : nombre
         })
        }
+
+    llenarpartidosEquipo(){
+        var db = firebase.firestore()
+        //aqui guardare la seleccion de la liga
+        var liga = "JxcDmZqYMj60CawzNF5l"
+        //aqui guardare el equipo del usuario
+        var equipo = "h8zh3uZ9WtzFTTtcPscV"
+        db.collection("ligas").doc(liga).collection("equipos").doc(equipo).get().then((doc)=>{
+            var infoEquipo = doc.data();
+            var partidosEquipo = infoEquipo.Partidos;
+            for(let i = 0; i<partidosEquipo.length;i++){
+                db.collection("ligas").doc(liga).collection("partidos").doc(partidosEquipo[i]).get().then((doc)=>{
+                    var datapartido = doc.data();
+                })
+            }
+        })
+    }
+
+    llenarpartidosFinalizados(){
+        var db = firebase.firestore()
+        //aqui guardare la seleccion de la liga
+        var liga = "JxcDmZqYMj60CawzNF5l"
+        db.collection("ligas").doc(liga).collection("partidos").where("completado", "==", false).orderBy("fechaPartido").get().then(querySnapshot=>{
+            querySnapshot.forEach((doc)=>{
+                var datapartido = doc.data();
+            })  
+        })
+    }
+
+    llenarpartidosProximos(){
+        var db = firebase.firestore()
+        //aqui guardare la seleccion de la liga
+        var liga = "JxcDmZqYMj60CawzNF5l"
+        db.collection("ligas").doc(liga).collection("partidos").where("completado", "==", false).orderBy("fechaPartido").get().then(querySnapshot=>{
+            querySnapshot.forEach((doc)=>{
+                var datapartido = doc.data();
+                console.log(datapartido);
+            })  
+        })
+    }
     
 
     render(){
@@ -388,6 +428,7 @@ export default class HomeScreen extends Component{
             unirteEquipo={this.unirteEquipo}
             programaPartido={this.programaPartido}
             registraPartido={this.registraPartido}
+            llenarpartidosEquipo={this.llenarpartidosEquipo}
             ></Home>
         );
     }
