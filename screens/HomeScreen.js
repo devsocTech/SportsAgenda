@@ -1,118 +1,150 @@
 import React,{Component} from 'react';
 import {Text,View} from 'react-native';
-import {Button} from 'react-native-paper'
 import Home from '../components/Home';
 import firebase from 'firebase';
+import Header from '../components/Header'
 
 
 
-export default class HomeScreen extends Component{
+export default class HomeScreen extends Header{
+
 
     constructor(props){
         super(props);
 
         this.state={
-            visible: false,
-            title:'Inicio',
-
-            leagueSelect:'',
-            nleagueSelect:'',
-
+            visibleAgregarLiga: false,
+            visibleUnirteLiga: false,
+            visibleCrearEquipo: false,
+            visibleUnirteEquipo: false,
+            visibleProgramarPartido: false,
             teamName:'',
             teamPos:0,
             golesF:0,
             golesC:0,
 
+            title:'Inicio',
+
             ligas:[],
             nLigas:[],
+            nEquipos:[],
+            nombreLiga: '',
+            codigoLiga: '',
+
+            nombreEquipo: "",
+            codigoEquipo: "",
+            nombreEquipos:[]
         }
     }
 
-    componentDidMount() {
+    componentDidMount=()=> {
         this.homeTeam();
-        this.obtenerLigas();
+        this.obtenerEquipos();
       }
 
-
-
-
-    obtenerLigas=()=>{
-        let user = firebase.auth().currentUser;
-        var db=firebase.firestore();
-        var use="kpniB4g7EPMDpRHAXpYVQZtPtzg2"
-        var ligas=[];
-        let contador=0;
-        nombreLiga=[];
-        db.collection("usuarios").doc(use).get().then((doc)=>{
-            var data = doc.data();
-            ligas = data.ligas;
-            this.setState({ligas:ligas})
-            console.log(ligas)
-
-            for(let i=0;i<ligas.length;i++){
-            db.collection("ligas").doc(ligas[i]).get().then((doc)=>{
-                var data=doc.data();
-                nombreLiga=data.Nombre;
-                console.log(nombreLiga)
-                this.setState({nLigas:nombreLiga})
-            })}
+    setNombreLiga=(nombreLiga)=>{
+        this.setState({
+            nombreLiga:nombreLiga
         })
     }
-    
 
-    homeTeam=()=>{
-        var db = firebase.firestore();
+    setCodigoLiga=(codigoLiga)=>{
+        this.setState({
+            codigoLiga:codigoLiga
+        })
+    }
+
+    setNombreEquipo=(nombreEquipo)=>{
+        this.setState({
+            nombreEquipo:nombreEquipo
+        })
+    }
+
+    setCodigoEquipo=(codigoEquipo)=>{
+        this.setState({
+            codigoEquipo:codigoEquipo
+        })
+    }
+
+    setCodigoEquipo=(codigoEquipo)=>{
+        this.setState({
+            codigoEquipo:codigoEquipo
+        })
+    }
+
+    showDialogAgregarLiga = () => {
+        this.setState({ visibleAgregarLiga: true })
+    }
+
+    hideDialogAgregarLiga = () => {
+        this.setState({ visibleAgregarLiga: false })
+    }
+
+    showDialogUnirteLiga = () => {
+        this.setState({ visibleUnirteLiga: true })
+    }
+
+    hideDialogUnirteLiga = () => {
+        this.setState({ visibleUnirteLiga: false })
+    }
+
+    showDialogCrearEquipo = () => {
+        this.setState({ visibleCrearEquipo: true })
+    }
+
+    hideDialogCrearEquipo = () => {
+        this.setState({ visibleCrearEquipo: false })
+    }
+
+    showDialogUnirteEquipo = () => {
+        this.setState({ visibleUnirteEquipo: true })
+    }
+
+    hideDialogUnirteEquipo = () => {
+        this.setState({ visibleUnirteEquipo: false })
+    }
+
+    showDialogProgramarPartido = () => {
+        console.log(this.state.nombreEquipos)
+        this.setState({ visibleProgramarPartido: true })
+    }
+
+    hideDialogProgramarPartido = () => {
+        this.setState({ visibleProgramarPartido: false })
+    }
+
+    obtenerEquipos=()=>{
+        var db=firebase.firestore();
+        //aqui voy a guardar la selección de la liga que hayan elegido en el dialoglistview
         var liga = "JxcDmZqYMj60CawzNF5l";
-        var equipo = "WsC2LmWUDTXZwomGtjBt";
-        db.collection("ligas").doc(liga).collection("equipos").doc(equipo).get().then((doc)=> {
-        var dataEquipo = doc.data();
-        var nombreEquipo = dataEquipo.Nombre;
-        this.setState({teamName:nombreEquipo })
-        var posicionEquipo = dataEquipo.Posición;
-        this.setState({teamPos:posicionEquipo})
-
-        db.collection("ligas").doc(liga).get().then((doc)=> {
-          var dataLiga = doc.data();
-          var nombreLiga = dataLiga.Nombre;
-          this.setState({leagueSelect:nombreLiga})
-          })
-        var GF = dataEquipo.GolesFavor
-        var GC = dataEquipo.GolesContra
-        this.setState({golesF:GF})
-        this.setState({golesC:GC})
+        arreglo=[];
+        db.collection("ligas").doc(liga).collection("equipos").get().then(querySnapshot=>{
+            querySnapshot.forEach((doc)=>{
+                var data = doc.data();
+                var nombreEquipo= data.Nombre;
+                arreglo.push({nombreEquipo});
+                this.setState({nombreEquipos:arreglo});
+            })
         })
-        }
+      }
 
-    showDialog = () => {
-        this.setState({ visible: true })
-    }
-
-    hideDialog = () => {
-        this.setState({ visible: false })
-    }
-
-    selectLeague=(leagueSelect)=>{
-        this.setState({leagueSelect:leagueSelect})
-        var db=firebase.firestore();
-        db.collection("ligas").doc(this.leagueSelect).get().then((doc)=>{
-            var data=doc.data();
-            var nombreLiga=data.Nombre;
-            this.setState({nleagueSelect:nombreLiga})
+      esAdmin=()=>{
+        var db = firebase.firestore();
+        let user = firebase.auth().currentUser;
+        var userId = user.uid;
+        db.collection("usuarios").doc(userId).get().then((doc)=>{
+            var dataUser = doc.data();
+            var admin = dataUser.adminLigas;
         })
-
-
     }
 
-    
-    agregarLiga(){
+
+    aceptarDialogAgregarLiga = () => {
         var db = firebase.firestore();
         let user = firebase.auth().currentUser;
         var refNuevaLiga = db.collection("ligas").doc();
         refNuevaLiga.set({
-            DiasDeJuego: ["Lunes", "Martes"],
-            HorasDeJuego: ["8:30","10:30"],
-            Equipos: ["Probando", "Probando2"],
-            Nombre: "Ultima Liga de Prueba"
+            Nombre: this.state.nombreLiga
         })
         .then(function() {
             var ligaID= (refNuevaLiga.id);
@@ -135,14 +167,16 @@ export default class HomeScreen extends Component{
         .catch(function(error) {
             console.error("Error creating the codes: ", error);
         });  
-       }
-    
-    
-       unirteLiga(){
+        
+        this.hideDialogAgregarLiga();
+    }
+
+
+    //"Jx8490"
+    aceptarDialogUnirteLiga = () => {
         var db = firebase.firestore();
         let user = firebase.auth().currentUser;
-        var codigo = "Jx8490";
-        var sliga = "JxcDmZqYMj60CawzNF5l";
+        var codigo = this.state.codigoLiga;
         db.collection("codigosLigas").where("Codigo", "==", codigo).get()
         .then(function(querySnapshot) {
             querySnapshot.forEach(function(doc) {
@@ -155,11 +189,11 @@ export default class HomeScreen extends Component{
                     db.collection("codigosLigas").doc(doc.id).update({
                         Valido : false
                     })
-                    db.collection("ligas").doc(sliga).collection("equipos").where("Capitan", "==", user.uid)
+                    db.collection("ligas").doc(liga).collection("equipos").where("Capitan", "==", user.uid)
                     .get()
                     .then(function(querySnapshot) {
                         querySnapshot.forEach(function(docE) {
-                            db.collection("ligas").doc(sligas).collection("equipos").doc(docE.id).update({
+                            db.collection("ligas").doc(ligas).collection("equipos").doc(docE.id).update({
                                 Ligas: firebase.firestore.FieldValue.arrayUnion(liga)
                             })
                             db.collection("ligas").doc(liga).update({
@@ -176,9 +210,10 @@ export default class HomeScreen extends Component{
         .catch(function(error) {
             console.log("Error getting documents: ", error);
         });
-       }
+        this.hideDialogUnirteLiga();
+    }
     
-       crearEquipo(){
+    aceptarDialogCrearEquipo = () => {
         var db = firebase.firestore();
         let user = firebase.auth().currentUser;
         var userId = user.uid;
@@ -187,8 +222,8 @@ export default class HomeScreen extends Component{
         var refNuevoEquipo = db.collection("ligas").doc(liga).collection("equipos").doc();
         refNuevoEquipo.set({
             Capitan: userId,
-            Jugadores: ["ELENA OJO ALVVV","Es madreada no te cagues", "ok perdon por forzarla"],
-            Nombre: "Equipo Guti",
+            Jugadores: [],
+            Nombre: this.state.nombreEquipo,
             GolesFavor: 0,
             GolesContra: 0,
             PartidosJugados: 0,
@@ -214,12 +249,32 @@ export default class HomeScreen extends Component{
             Valido: true
             })
         }); 
-       }
+        this.hideDialogCrearEquipo();
+    }
+
+    homeTeam=()=>{
+        var db = firebase.firestore();
+        var liga = "JxcDmZqYMj60CawzNF5l";
+        var equipo = "h8zh3uZ9WtzFTTtcPscV";
+        db.collection("ligas").doc(liga).collection("equipos").doc(equipo).get().then((doc)=> {
+        var dataEquipo = doc.data();
+        var nombreEquipo = dataEquipo.Nombre;
+        this.setState({teamName:nombreEquipo })
+        var posicionEquipo = dataEquipo.Posición;
+        this.setState({teamPos:posicionEquipo})
+        var GF = dataEquipo.GolesFavor
+        var GC = dataEquipo.GolesContra
+        this.setState({golesF:GF})
+        this.setState({golesC:GC})
+        })
+        console.log
+        }
+
     
-       unirteEquipo(){
+       aceptarDialogUnirteEquipo = () => {
         var db = firebase.firestore();
         let user = firebase.auth().currentUser;
-        var codigo = "h72767";
+        var codigo = this.state.codigoEquipo;
         //aqui guardare la seleccion de la liga
         var liga = "JxcDmZqYMj60CawzNF5l"
         db.collection("codigosEquipos").where("Codigo", "==", codigo).get()
@@ -241,21 +296,22 @@ export default class HomeScreen extends Component{
                 })
             })
         })
+        this.hideDialogUnirteEquipo();
        }
     
       
     
-       programaPartido(){
+       aceptarDialogProgramaPartido=()=>{
         var db = firebase.firestore();
         let user = firebase.auth().currentUser;
         //aqui voy a guardar la selección que hayan elegido en el dialog box de equipo 1
-        var equipoV = "WsC2LmWUDTXZwomGtjBt";
+        var equipoV = "8dH1kNRdRMucwiNpUlH6";
         //aqui voy a guardar la selección que hayan elegido en el dialog box de equipo 2
         var equipoF = "h8zh3uZ9WtzFTTtcPscV";
         //aqui voy a guardar la selección de la liga que hayan elegido en el dialoglistview
         var liga = "JxcDmZqYMj60CawzNF5l";
         //aqui voy a guardar le selección de la fecha y hora que hayan elegido
-        var date = new Date("August 22, 2019 21:30:00");
+        var date = new Date("August 24, 2019 21:30:00");
         var refNuevoPartido = db.collection("ligas").doc(liga).collection("partidos").doc();
         refNuevoPartido.set({
             fechaPartido: firebase.firestore.Timestamp.fromDate(date),
@@ -273,175 +329,237 @@ export default class HomeScreen extends Component{
                 Partidos: firebase.firestore.FieldValue.arrayUnion(partidoId)
                 })
         })
-        
+        this.setState({visibleProgramarPartido: false});
        }
+
+     
     
        registraPartido(){
         var db = firebase.firestore();
         //aqui voy a guardar la selección del partido que hayan elegido en el dialog box (del input que ellos pongan)
-        var selecciónPartido = "Nb1GmTK4zMCHKT6aLkLM";
+        var selecciónPartido = "vHwKGgLt3vcMMhvqar0O";
         //aqui voy a guardar los goles a favor del equipoF (del input que ellos pongan)
-        var golesequipoF = 3;
+        var golesequipoFN = 3;
         //aqui voy a guardar los goles a favor del equipoV (del input que ellos pongan)
-        var golesequipoV = 2;
+        var golesequipoVN = 1;
         //aqui voy a guardar la selección de la liga que hayan elegido en el dialoglistview
         var liga = "JxcDmZqYMj60CawzNF5l";
-        db.collection("ligas").doc(liga).collection("partidos").doc(selecciónPartido).update({
-            completado: true,
-            golesequipoF: golesequipoF,
-            golesequipoV: golesequipoV
-        })
-        db.collection("ligas").doc(liga).collection("partidos").doc(selecciónPartido).get().then(function(doc) {
-            var data = doc.data();
-            var equipoF = data.equipoF;
-            var equipoV = data.equipoV;
-    
-            if(golesequipoF>golesequipoV){
-                db.collection("ligas").doc(liga).collection("equipos").doc(equipoF).update({
-                    PartidosJugados: firebase.firestore.FieldValue.increment(1),
-                    PartidosGanados: firebase.firestore.FieldValue.increment(1),
-                    Puntos: firebase.firestore.FieldValue.increment(3),
-                    GolesContra: golesequipoV,
-                    GolesFavor: golesequipoF
-                })
-                db.collection("ligas").doc(liga).collection("equipos").doc(equipoV).update({
-                    PartidosJugados: firebase.firestore.FieldValue.increment(1),
-                    PartidosPerdidos: firebase.firestore.FieldValue.increment(1),
-                    GolesContra: golesequipoF,
-                    GolesFavor: golesequipoV
-                })
+        var ganadorO = "";
+        var ganadorN = "";
+        
+        db.collection("ligas").doc(liga).collection("partidos").doc(selecciónPartido).get().then((doc)=>{
+            var dataParti = doc.data();
+            var compl = dataParti.completado
+            
+            if(compl == true){
+                var golesequipoFO = dataParti.golesequipoF
+                var golesequipoVO = dataParti.golesequipoV
+                if(golesequipoFO>golesequipoVO){
+                    ganadorO = "F"
+                }
+                else if(golesequipoFO<golesequipoVO){
+                    ganadorO = "V"
+                }
+                else{
+                    ganadorO = "E"
+                }
+                
+                var golesequipoFN = this.state.golesequipoFN;
+                var golesequipoVN = this.state.golesequipoVN;
+                if(golesequipoFN>golesequipoVN){
+                    ganadorN = "F"
+                }
+                else if(golesequipoFN<golesequipoVN){
+                    ganadorN = "V"
+                }
+                else{
+                    ganadorN = "E"
+                }
+
+                if(ganadorO == ganadorN){
+                    db.collection("ligas").doc(liga).collection("partidos").doc(selecciónPartido).update({
+                        golesequipoF: golesequipoFN,
+                        golesequipoV: golesequipoVN,  
+                    })
+                    db.collection("ligas").doc(liga).collection("equipos").doc(equipoF).update({
+                        GolesContra: firebase.firestore.FieldValue.decrement(golesequipoVO),
+                        GolesFavor: firebase.firestore.FieldValue.decrement(golesequipoFO),
+                        GolesContra: firebase.firestore.FieldValue.increment(golesequipoVN),
+                        GolesFavor: firebase.firestore.FieldValue.increment(golesequipoFN)
+                    })
+                    db.collection("ligas").doc(liga).collection("equipos").doc(equipoV).update({
+                        GolesContra: firebase.firestore.FieldValue.decrement(golesequipoFO),
+                        GolesFavor: firebase.firestore.FieldValue.decrement(golesequipoVO),
+                        GolesContra: firebase.firestore.FieldValue.increment(golesequipoFN),
+                        GolesFavor: firebase.firestore.FieldValue.increment(golesequipoVN)
+                    })
+                }
+                else{
+                    db.collection("ligas").doc(liga).collection("partidos").doc(selecciónPartido).update({
+                        golesequipoF: golesequipoFN,
+                        golesequipoV: golesequipoVN,  
+                    })
+                    if(ganadorN == "F" && ganadorO == "V"){
+                        db.collection("ligas").doc(liga).collection("equipos").doc(equipoV).update({
+                            PartidosGanados: firebase.firestore.FieldValue.decrement(1),
+                            PartidosPerdidos: firebase.firestore.FieldValue.increment(1),
+                            Puntos: firebase.firestore.FieldValue.decrement(3),
+                            GolesContra: firebase.firestore.FieldValue.decrement(golesequipoFO),
+                            GolesFavor: firebase.firestore.FieldValue.decrement(golesequipoVO),
+                            GolesContra: firebase.firestore.FieldValue.increment(golesequipoFN),
+                            GolesFavor: firebase.firestore.FieldValue.increment(golesequipoVN)
+                        })
+                        db.collection("ligas").doc(liga).collection("equipos").doc(equipoF).update({
+                            PartidosGanados: firebase.firestore.FieldValue.increment(1),
+                            PartidosPerdidos: firebase.firestore.FieldValue.decrement(1),
+                            Puntos: firebase.firestore.FieldValue.increment(3),
+                            GolesContra: firebase.firestore.FieldValue.decrement(golesequipoVO),
+                            GolesFavor: firebase.firestore.FieldValue.decrement(golesequipoFO),
+                            GolesContra: firebase.firestore.FieldValue.increment(golesequipoVN),
+                            GolesFavor: firebase.firestore.FieldValue.increment(golesequipoFN)
+                        })
+                    }
+                    else if(ganadorN == "V" && ganadorO == "F"){
+                        db.collection("ligas").doc(liga).collection("equipos").doc(equipoF).update({
+                            PartidosGanados: firebase.firestore.FieldValue.decrement(1),
+                            PartidosPerdidos: firebase.firestore.FieldValue.increment(1),
+                            Puntos: firebase.firestore.FieldValue.decrement(3),
+                            GolesContra: firebase.firestore.FieldValue.decrement(golesequipoVO),
+                            GolesFavor: firebase.firestore.FieldValue.decrement(golesequipoFO),
+                            GolesContra: firebase.firestore.FieldValue.increment(golesequipoVN),
+                            GolesFavor: firebase.firestore.FieldValue.increment(golesequipoFN)
+                        })
+                        db.collection("ligas").doc(liga).collection("equipos").doc(equipoV).update({
+                            PartidosGanados: firebase.firestore.FieldValue.increment(1),
+                            PartidosPerdidos: firebase.firestore.FieldValue.decrement(1),
+                            Puntos: firebase.firestore.FieldValue.increment(3),
+                            GolesContra: firebase.firestore.FieldValue.decrement(golesequipoFO),
+                            GolesFavor: firebase.firestore.FieldValue.decrement(golesequipoVO),
+                            GolesContra: firebase.firestore.FieldValue.increment(golesequipoFN),
+                            GolesFavor: firebase.firestore.FieldValue.increment(golesequipoVN)
+                        })
+                    }
+                    else if(ganadorN == "E" && ganadorO == "F"){
+                        db.collection("ligas").doc(liga).collection("equipos").doc(equipoF).update({
+                            PartidosGanados: firebase.firestore.FieldValue.decrement(1),
+                            PartidosEmpatados: firebase.firestore.FieldValue.increment(1),
+                            Puntos: firebase.firestore.FieldValue.decrement(2),
+                            GolesContra: firebase.firestore.FieldValue.decrement(golesequipoVO),
+                            GolesFavor: firebase.firestore.FieldValue.decrement(golesequipoFO),
+                            GolesContra: firebase.firestore.FieldValue.increment(golesequipoVN),
+                            GolesFavor: firebase.firestore.FieldValue.increment(golesequipoFN)
+                        })
+                        db.collection("ligas").doc(liga).collection("equipos").doc(equipoV).update({
+                            PartidosPerdidos: firebase.firestore.FieldValue.decrement(1),
+                            PartidosEmpatados: firebase.firestore.FieldValue.increment(1),
+                            Puntos: firebase.firestore.FieldValue.increment(1),
+                            GolesContra: firebase.firestore.FieldValue.decrement(golesequipoFO),
+                            GolesFavor: firebase.firestore.FieldValue.decrement(golesequipoVO),
+                            GolesContra: firebase.firestore.FieldValue.increment(golesequipoFN),
+                            GolesFavor: firebase.firestore.FieldValue.increment(golesequipoVN)
+                        })
+                    }
+                    else if(ganadorN == "E" && ganadorO == "V"){
+                        db.collection("ligas").doc(liga).collection("equipos").doc(equipoV).update({
+                            PartidosGanados: firebase.firestore.FieldValue.decrement(1),
+                            PartidosEmpatados: firebase.firestore.FieldValue.increment(1),
+                            Puntos: firebase.firestore.FieldValue.decrement(2),
+                            GolesContra: firebase.firestore.FieldValue.decrement(golesequipoFO),
+                            GolesFavor: firebase.firestore.FieldValue.decrement(golesequipoVO),
+                            GolesContra: firebase.firestore.FieldValue.increment(golesequipoFN),
+                            GolesFavor: firebase.firestore.FieldValue.increment(golesequipoVN)
+                        })
+                        db.collection("ligas").doc(liga).collection("equipos").doc(equipoF).update({
+                            PartidosPerdidos: firebase.firestore.FieldValue.decrement(1),
+                            PartidosEmpatados: firebase.firestore.FieldValue.increment(1),
+                            Puntos: firebase.firestore.FieldValue.increment(1),
+                            GolesContra: firebase.firestore.FieldValue.decrement(golesequipoVO),
+                            GolesFavor: firebase.firestore.FieldValue.decrement(golesequipoFO),
+                            GolesContra: firebase.firestore.FieldValue.increment(golesequipoVN),
+                            GolesFavor: firebase.firestore.FieldValue.increment(golesequipoFN)
+                        })
+                    }
+                }
+
             }
-            else if(golesequipoV>golesequipoF){
-                db.collection("ligas").doc(liga).collection("equipos").doc(equipoV).update({
-                    PartidosJugados: firebase.firestore.FieldValue.increment(1),
-                    PartidosGanados: firebase.firestore.FieldValue.increment(1),
-                    Puntos: firebase.firestore.FieldValue.increment(3),
-                    GolesContra: golesequipoF,
-                    GolesFavor: golesequipoV
+            else if(compl == false){
+                db.collection("ligas").doc(liga).collection("partidos").doc(selecciónPartido).update({
+                    completado: true,
+                    golesequipoF: golesequipoFN,
+                    golesequipoV: golesequipoVN
                 })
-                db.collection("ligas").doc(liga).collection("equipos").doc(equipoF).update({
-                    PartidosJugados: firebase.firestore.FieldValue.increment(1),
-                    PartidosPerdidos: firebase.firestore.FieldValue.increment(1),
-                    GolesContra: golesequipoV,
-                    GolesFavor: golesequipoF
-                })
+                db.collection("ligas").doc(liga).collection("partidos").doc(selecciónPartido).get().then(function(doc) {
+                    var data = doc.data();
+                    var equipoF = data.equipoF;
+                    var equipoV = data.equipoV;
+            
+                    if(golesequipoFN>golesequipoVN){
+                        db.collection("ligas").doc(liga).collection("equipos").doc(equipoF).update({
+                            PartidosJugados: firebase.firestore.FieldValue.increment(1),
+                            PartidosGanados: firebase.firestore.FieldValue.increment(1),
+                            Puntos: firebase.firestore.FieldValue.increment(3),
+                            GolesContra: firebase.firestore.FieldValue.increment(golesequipoVN),
+                            GolesFavor: firebase.firestore.FieldValue.increment(golesequipoFN)
+                        })
+                        db.collection("ligas").doc(liga).collection("equipos").doc(equipoV).update({
+                            PartidosJugados: firebase.firestore.FieldValue.increment(1),
+                            PartidosPerdidos: firebase.firestore.FieldValue.increment(1),
+                            GolesContra: firebase.firestore.FieldValue.increment(golesequipoFN),
+                            GolesFavor: firebase.firestore.FieldValue.increment(golesequipoVN)
+                        })
+                    }
+                    else if(golesequipoVN>golesequipoFN){
+                        db.collection("ligas").doc(liga).collection("equipos").doc(equipoV).update({
+                            PartidosJugados: firebase.firestore.FieldValue.increment(1),
+                            PartidosGanados: firebase.firestore.FieldValue.increment(1),
+                            Puntos: firebase.firestore.FieldValue.increment(3),
+                            GolesContra: firebase.firestore.FieldValue.increment(golesequipoFN),
+                            GolesFavor: firebase.firestore.FieldValue.increment(golesequipoVN)
+                        })
+                        db.collection("ligas").doc(liga).collection("equipos").doc(equipoF).update({
+                            PartidosJugados: firebase.firestore.FieldValue.increment(1),
+                            PartidosPerdidos: firebase.firestore.FieldValue.increment(1),
+                            GolesContra: firebase.firestore.FieldValue.increment(golesequipoVN),
+                            GolesFavor: firebase.firestore.FieldValue.increment(golesequipoFN)
+                        })
+                    }
+                    else{
+                        db.collection("ligas").doc(liga).collection("equipos").doc(equipoV).update({
+                            PartidosJugados: firebase.firestore.FieldValue.increment(1),
+                            PartidosEmpatados: firebase.firestore.FieldValue.increment(1),
+                            Puntos: firebase.firestore.FieldValue.increment(1),
+                            GolesContra: firebase.firestore.FieldValue.increment(golesequipoFN),
+                            GolesFavor: firebase.firestore.FieldValue.increment(golesequipoVN)
+                        })
+                        db.collection("ligas").doc(liga).collection("equipos").doc(equipoF).update({
+                            PartidosJugados: firebase.firestore.FieldValue.increment(1),
+                            PartidosEmpatados: firebase.firestore.FieldValue.increment(1),
+                            Puntos: firebase.firestore.FieldValue.increment(1),
+                            GolesContra: firebase.firestore.FieldValue.increment(golesequipoVN),
+                            GolesFavor: firebase.firestore.FieldValue.increment(golesequipoFN)
+                        })
+                    }
+                }) 
             }
             else{
-                db.collection("ligas").doc(liga).collection("equipos").doc(equipoV).update({
-                    PartidosJugados: firebase.firestore.FieldValue.increment(1),
-                    PartidosEmpatados: firebase.firestore.FieldValue.increment(1),
-                    Puntos: firebase.firestore.FieldValue.increment(1),
-                    GolesContra: golesequipoF,
-                    GolesFavor: golesequipoV
-                })
-                db.collection("ligas").doc(liga).collection("equipos").doc(equipoF).update({
-                    PartidosJugados: firebase.firestore.FieldValue.increment(1),
-                    PartidosEmpatados: firebase.firestore.FieldValue.increment(1),
-                    Puntos: firebase.firestore.FieldValue.increment(1),
-                    GolesContra: golesequipoV,
-                    GolesFavor: golesequipoF
-                })
+                console.log("Hubo un error");
             }
-        })
+        })  
        }
-    
-       agregarJugador(){
-        var db = firebase.firestore();
-        let user = firebase.auth().currentUser;
-        //aqui voy a guardar la selección de la liga que hayan elegido en el dialoglistview
-        var liga = "JxcDmZqYMj60CawzNF5l";
-        //aqui va a estar la selección de su equipo
-        var equipo = "h8zh3uZ9WtzFTTtcPscV";
-        //aqui va a estar el nombre del jugador que hayan introducido
-        var nombre = "Elena Vela OJOOO ALVV QUE GUTI ME VA A VERGUEAR"
-        db.collection("ligas").doc(liga).collection("equipos").doc(equipo).collection("Jugadores").add({
-            Nombre : nombre
-        })
-       }
-
-    llenarpartidosEquipo(){
-        var db = firebase.firestore()
-        //aqui guardare la seleccion de la liga
-        var liga = "JxcDmZqYMj60CawzNF5l"
-        //aqui guardare el equipo del usuario
-        var equipo = "h8zh3uZ9WtzFTTtcPscV"
-        db.collection("ligas").doc(liga).collection("equipos").doc(equipo).get().then((doc)=>{
-            var infoEquipo = doc.data();
-            var partidosEquipo = infoEquipo.Partidos;
-            for(let i = 0; i<partidosEquipo.length;i++){
-                db.collection("ligas").doc(liga).collection("partidos").doc(partidosEquipo[i]).get().then((doc)=>{
-                    var datapartido = doc.data();
-                    var equipoF = datapartido.equipoF;
-                    db.collection("ligas").doc(liga).collection("equipos").doc(equipoF).get().then((doc)=>{
-                        var dataEquipo = doc.data();
-                        var nombreEquipoF = dataEquipo.Nombre;
-                    })
-                    var equipoV = datapartido.equipoV;
-                    db.collection("ligas").doc(liga).collection("equipos").doc(equipoV).get().then((doc)=>{
-                        var dataEquipo = doc.data();
-                        var nombreEquipoV = dataEquipo.Nombre;
-                    })
-                    var golesequipoF = datapartido.golesequipoF;
-                    var golesequipoV = datapartido.golesequipoV;
-                    var fechaPartido = datapartido.fechaPartido;
-                })
-            }
-        })
-    }
-
-    llenarpartidosFinalizados(){
-        var db = firebase.firestore()
-        //aqui guardare la seleccion de la liga
-        var liga = "JxcDmZqYMj60CawzNF5l"
-        db.collection("ligas").doc(liga).collection("partidos").where("completado", "==", true).orderBy("fechaPartido").get().then(querySnapshot=>{
-            querySnapshot.forEach((doc)=>{
-                var datapartido = doc.data();
-                var equipoF = datapartido.equipoF;
-                    db.collection("ligas").doc(liga).collection("equipos").doc(equipoF).get().then((doc)=>{
-                        var dataEquipo = doc.data();
-                        var nombreEquipoF = dataEquipo.Nombre;
-                    })
-                    var equipoV = datapartido.equipoV;
-                    db.collection("ligas").doc(liga).collection("equipos").doc(equipoV).get().then((doc)=>{
-                        var dataEquipo = doc.data();
-                        var nombreEquipoV = dataEquipo.Nombre;
-                    })
-                var golesequipoF = datapartido.golesequipoF;
-                var golesequipoV = datapartido.golesequipoV;
-                var fechaPartido = datapartido.fechaPartido;
-            })  
-        })
-    }
-
-    llenarpartidosProximos(){
-        var db = firebase.firestore()
-        //aqui guardare la seleccion de la liga
-        var liga = "JxcDmZqYMj60CawzNF5l"
-        db.collection("ligas").doc(liga).collection("partidos").where("completado", "==", false).orderBy("fechaPartido").get().then(querySnapshot=>{
-            querySnapshot.forEach((doc)=>{
-                var datapartido = doc.data();
-                var equipoF = datapartido.equipoF;
-                    db.collection("ligas").doc(liga).collection("equipos").doc(equipoF).get().then((doc)=>{
-                        var dataEquipo = doc.data();
-                        var nombreEquipoF = dataEquipo.Nombre;
-                    })
-                    var equipoV = datapartido.equipoV;
-                    db.collection("ligas").doc(liga).collection("equipos").doc(equipoV).get().then((doc)=>{
-                        var dataEquipo = doc.data();
-                        var nombreEquipoV = dataEquipo.Nombre;
-                    })
-                var golesequipoF = datapartido.golesequipoF;
-                var golesequipoV = datapartido.golesequipoV;
-                var fechaPartido = datapartido.fechaPartido;
-            })  
-        })
-    }
     
 
     render(){
+
         return(
+            <View style={{flex:1}}>
+                <Header tit={this.state.title}></Header>
             <Home
-            visible={this.state.visible}
+            visibleAgregarLiga={this.state.visibleAgregarLiga}
+            visibleUnirteLiga={this.state.visibleUnirteLiga}
+            visibleCrearEquipo={this.state.visibleCrearEquipo}
+            visibleUnirteEquipo={this.state.visibleUnirteEquipo}
+            visibleProgramarPartido={this.state.visibleProgramarPartido}
+
             title={this.state.title}
             leagueSelect={this.state.leagueSelect}
             nleagueSelect={this.state.nleagueSelect}
@@ -458,15 +576,42 @@ export default class HomeScreen extends Component{
             ligas={this.state.ligas}
             nLigas={this.state.nLigas}
 
-            agregarLiga={this.agregarLiga}
+            showDialogAgregarLiga={this.showDialogAgregarLiga}
+            aceptarDialogAgregarLiga={this.aceptarDialogAgregarLiga}
+            hideDialogAgregarLiga = {this.hideDialogAgregarLiga}
+
+            showDialogUnirteLiga={this.showDialogUnirteLiga}
+            aceptarDialogUnirteLiga={this.aceptarDialogAgregarLiga}
+            hideDialogUnirteLiga = {this.hideDialogUnirteLiga}
+
+            showDialogCrearEquipo={this.showDialogCrearEquipo}
+            aceptarDialogCrearEquipo={this.aceptarDialogCrearEquipo}
+            hideDialogCrearEquipo={this.hideDialogCrearEquipo}
+
+            showDialogUnirteEquipo={this.showDialogUnirteEquipo}
+            aceptarDialogUnirteEquipo={this.aceptarDialogUnirteEquipo}
+            hideDialogUnirteEquipo={this.hideDialogUnirteEquipo}
+
+            showDialogProgramarPartido={this.showDialogProgramarPartido}
+            aceptarDialogProgramarPartido={this.aceptarDialogProgramarPartido}
+            hideDialogProgramarPartido = {this.hideDialogProgramarPartido}
+
+
             unirteLiga={this.unirteLiga}
             crearEquipo={this.crearEquipo}
             agregarJugador={this.agregarJugador}
             unirteEquipo={this.unirteEquipo}
             programaPartido={this.programaPartido}
             registraPartido={this.registraPartido}
-            llenarpartidosEquipo={this.llenarpartidosEquipo}
+
+            setNombreLiga = {this.setNombreLiga}
+            setCodigoLiga = {this.setCodigoLiga}
+            setNombreEquipo = {this.setNombreEquipo}
+            setCodigoEquipo = {this.setCodigoEquipo}
+
+            nombreEquipos = {this.state.nombreEquipos}
             ></Home>
+            </View>
         );
     }
 }

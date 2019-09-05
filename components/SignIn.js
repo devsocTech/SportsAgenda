@@ -9,7 +9,7 @@ export default (props)=>{
         <View style={{justifyContent:'center', flex:1}}>
             <TextInput style={{alignSelf:'center', width:'75%', margin:10}} label="Correo electrónico" mode="flat" onChangeText={(text)=>props.setEmail(text)}>{props.Mail}</TextInput>
  
-            <TextInput style={{alignSelf:'center', width:'75%', margin:10}} label="Contraseña" mode="flat" onChangeText={(text)=>props.setPassword(text)}>{props.Pass}</TextInput>
+            <TextInput secureTextEntry={true} style={{alignSelf:'center', width:'75%', margin:10}} label="Contraseña" mode="flat" onChangeText={(text)=>props.setPassword(text)}>{props.Pass}</TextInput>
             
             <Button style={{alignSelf:'center', width:'75%',margin:30}} mode="contained" onPress={()=>props.signIn()}>Iniciar Sesión</Button>
         </View>

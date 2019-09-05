@@ -1,26 +1,39 @@
 import React,{Component} from 'react';
 import {View} from 'react-native';
-import {DefaultTheme, Button,Appbar, Card, Text,Avatar} from 'react-native-paper';
+import {DefaultTheme, Button,Portal,TextInput, Card, Text,Dialog} from 'react-native-paper';
 import firebase from 'firebase';
-import Header from './Header'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {Dropdown} from 'react-native-material-dropdown';
 
 export default (props)=>{
+
+    const visibleAgregarLiga=props.visibleAgregarLiga
+    const visibleUnirteLiga=props.visibleUnirteLiga
+    const visibleCrearEquipo=props.visibleCrearEquipo
+    const visibleUnirteEquipo = props.visibleUnirteEquipo
+    const visibleProgramarPartido = props.visibleProgramarPartido
+
+    let data=[];
+    var array = props.nombreEquipos;
+     for (let i=0;i<array.length;i++){
+         data.push({value: array[i].nombreEquipo})
+     }
+    console.log(data);
+
     return(
         <View style={{flex:1}}>
-            <Header nleagueSelect={props.nleagueSelect} ligas={props.ligas} nLigas={props.nLigas} Title={props.title} visible={props.visible} showDialog={props.showDialog} hideDialog={props.hideDialog} leagueSelect={props.leagueSelect} selectLeague={props.selectLeague}></Header>
             
             <View style={{paddingTop:25}}>
 
-                <View style={{justifyContent:"space-around",flexDirection:'row',paddingVertical:5,zIndex:1}}>
-                    <Card theme={theme} style={{alignItems:'flex-start',height:100,width:160,marginLeft:10,marginRight:10}}>
+                <View style={{justifyContent:'space-around',flexDirection:'row',paddingVertical:5,zIndex:1}}>
+                    <Card theme={theme} style={{alignItems:'flex-start',height:100,width:"45%",marginLeft:10,marginRight:10}}>
                         <Card.Content>
                             <Text style={{fontSize:15}}>EQUIPO:</Text>
                             <Text style={{fontSize:20,fontWeight:'bold'}}>{props.teamName}</Text>
                         </Card.Content>
                     </Card>
 
-                    <Card theme={theme} style={{alignItems:'flex-end',height:100,width:160,marginLeft:20,marginRight:10}}>
+                    <Card theme={theme} style={{alignItems:'flex-end',height:100,width:"45%",marginLeft:10,marginRight:10}}>
                         <Card.Content>
                             <Text style={{fontSize:15}}>POSICIÓN:</Text>
                             <Text style={{fontSize:35,fontWeight:'bold',alignSelf:'flex-end'}}>{props.teamPos}</Text>
@@ -30,9 +43,9 @@ export default (props)=>{
 
                 </View>
 
-                <View style={{justifyContent:"space-around",zIndex:2,flexDirection:'row',paddingVertical:5}}>
+                <View style={{zIndex:2,flexDirection:'row',paddingVertical:5,justifyContent:'space-around'}}>
 
-                    <Card theme={theme} style={{alignItems:'flex-start',height:100,width:160,marginLeft:10,marginRight:10}}>
+                    <Card theme={theme} style={{alignItems:'flex-start',height:100,width:"45%",marginLeft:10,marginRight:10}}>
                         <Card.Content>
                             <Text style={{fontSize:35,fontWeight:'bold'}}>{props.golesF}</Text>
                             <Text style={{fontSize:17}}>GOLES(+)</Text>
@@ -40,7 +53,7 @@ export default (props)=>{
                     </Card>
                     
 
-                    <Card theme={theme} style={{alignItems:'flex-end',height:100,width:160,marginLeft:10,marginRight:10}}>
+                    <Card theme={theme} style={{alignItems:'flex-end',height:100,width:"45%",marginLeft:10,marginRight:10}}>
                         <Card.Content>
                             <Text style={{fontSize:35,fontWeight:'bold',alignSelf:'flex-end'}}>{props.golesC}</Text>
                             <Text style={{fontSize:17}}>GOLES(-)</Text>
@@ -50,21 +63,124 @@ export default (props)=>{
                 </View>
 
                 <View style={{zIndex:3,marginTop:30,position:'absolute',height:210,width:370,alignSelf:'center',alignItems:'center',justifyContent:'center'}}>
-                    <Icon style={{position:'absolute'}} name="shield" color='white' size={160}/>
+                    <Icon style={{position:'absolute'}} name="shield" color='#FAFAFA' size={160}/>
                     <Icon name="security" color='#47C9C6' size={130}/>
                 </View>
 
+            <Portal>
+            <Dialog
+             visible={visibleAgregarLiga}
+             onDismiss={props.hideDialogAgregarLiga}
+             theme={theme}>
+            <Dialog.Title>Agregar Liga</Dialog.Title>
+            <Dialog.Content>
+              <TextInput style={{alignSelf:'center', width:'100%'}} label="Nombre de la liga" onChangeText={(text)=>props.setNombreLiga(text)}></TextInput>
+            </Dialog.Content>
+    
+            <Dialog.Actions>
+              <Button onPress={props.aceptarDialogAgregarLiga}>Aceptar</Button>
+            </Dialog.Actions>
+            <Dialog.Actions>
+              <Button onPress={props.hideDialogAgregarLiga}>Cancelar</Button>
+            </Dialog.Actions>
+            </Dialog>
+            </Portal>
+
+            
+            <Portal>
+            <Dialog
+             visible={visibleUnirteLiga}
+             onDismiss={props.hideDialogUnirteLiga}
+             theme={theme}>
+            <Dialog.Title>Insertar código de liga</Dialog.Title>
+            <Dialog.Content>
+              <TextInput style={{alignSelf:'center', width:'100%'}} label="Código de liga" onChangeText={(text)=>props.setCodigoLiga(text)}></TextInput>
+              
+            </Dialog.Content>
+            
+            <Dialog.Actions>
+              <Button onPress={props.aceptarDialogUnirteLiga}>Aceptar</Button>
+            </Dialog.Actions>
+            <Dialog.Actions>
+              <Button onPress={props.hideDialogUnirteLiga}>Cancelar</Button>
+            </Dialog.Actions>
+            </Dialog>
+            </Portal>
+
+            <Portal>
+            <Dialog
+             visible={visibleCrearEquipo}
+             onDismiss={props.hideDialogCrearEquipo}
+             theme={theme}>
+            <Dialog.Title>Crear Equipo</Dialog.Title>
+            <Dialog.Content>
+              <TextInput style={{alignSelf:'center', width:'100%'}} label="Nombre del Equipo" onChangeText={(text)=>props.setNombreEquipo(text)}></TextInput>
+              
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button onPress={props.aceptarDialogCrearEquipo}>Aceptar</Button>
+            </Dialog.Actions>
+            <Dialog.Actions>
+              <Button onPress={props.hideDialogCrearEquipo}>Cancelar</Button>
+            </Dialog.Actions>
+            </Dialog>
+            </Portal>
+
+            <Portal>
+            <Dialog
+             visible={visibleUnirteEquipo}
+             onDismiss={props.hideDialogUnirteEquipo}
+             theme={theme}>
+            <Dialog.Title>Unirte Equipo</Dialog.Title>
+            <Dialog.Content>
+              <TextInput style={{alignSelf:'center', width:'100%'}} label="Nombre del Equipo" onChangeText={(text)=>props.setCodigoEquipo(text)}></TextInput>
+              
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button onPress={props.aceptarDialogUnirteEquipo}>Aceptar</Button>
+            </Dialog.Actions>
+            <Dialog.Actions>
+              <Button onPress={props.hideDialogUnirteEquipo}>Cancelar</Button>
+            </Dialog.Actions>
+            </Dialog>
+        </Portal>
+            
+        <Portal>
+            <Dialog
+             visible={visibleProgramarPartido}
+             onDismiss={props.hideDialogProgramarPartido}
+             theme={theme}>
+            <Dialog.Title>Programar Partido</Dialog.Title>
+            <Dialog.Content>
+              <Dropdown
+              labelFontSize= {3}
+              baseColor="white"
+              label="Seleccionar Equipo 1"
+              data={data}
+              //onChangeText={(text)=>props.selectTeam(text)}
+              />
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button onPress={props.aceptarDialogProgramarPartido}>Aceptar</Button>
+            </Dialog.Actions>
+            <Dialog.Actions>
+              <Button onPress={props.hideDialogProgramarPartido}>Cancelar</Button>
+            </Dialog.Actions>
+            </Dialog>
+        </Portal>
+
+
         </View>
             <Button onPress={() => firebase.auth().signOut()}> Cerrar Sesión </Button>
-            <Button onPress={() => props.agregarLiga()}> Agregar liga (y generar sus codigos) </Button>
-            <Button onPress={() => props.unirteLiga()}> Unirte a liga con codigo </Button>
-            <Button onPress={() => props.crearEquipo()}> Crea tu equipo </Button>
-            <Button onPress={() => props.agregarJugador()}> Agrega un Jugador a un equipo </Button>
-            <Button onPress={() => props.unirteEquipo()}> Unete a un equipo </Button>
-            <Button onPress={() => props.programaPartido()}> Programa un partido </Button>
+            <Button onPress={() => props.showDialogAgregarLiga()}> Agregar liga (y generar sus codigos) </Button>
+            <Button onPress={() => props.showDialogUnirteLiga()}> Unirte a liga con codigo </Button>
+            <Button onPress={() => props.showDialogCrearEquipo()}> Crea tu equipo </Button>
+            <Button onPress={() => props.showDialogUnirteEquipo()}> Unete a un equipo </Button>
+            <Button onPress={() => props.showDialogProgramarPartido()}> Programa un partido </Button>
             <Button onPress={() => props.registraPartido()}> Registra el marcador de un partido </Button>
-            <Button onPress={() => props.llenarpartidosEquipo()}> Partidos de mi equipo  </Button>
         </View>
+
+        
     );
 }
 

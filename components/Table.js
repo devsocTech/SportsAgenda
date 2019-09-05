@@ -3,11 +3,11 @@ import {View} from 'react-native'
 import {DataTable,Avatar,DefaultTheme} from 'react-native-paper'
 import { ScrollView } from 'react-native-gesture-handler';
 import Header from './Header';
-import Tabs from './Tabs';
 
  export default (props)=>{
      let rows=[];
-     let array = props.team;
+     var array = props.team;
+     console.log(array,"HOLA")
      for (let i=0;i<array.length;i++){
          rows.push(
          <DataTable.Row theme={theme}>
@@ -23,10 +23,7 @@ import Tabs from './Tabs';
 
 
      return(
-      <View style={{flex:1}}>
-
-      <Header Title={props.Title} visible={props.visible} showDialog={props.showDialog} hideDialog={props.hideDialog} leagueSelect={props.leagueSelect} selectLeague={props.selectLeague}></Header>
-        
+      <View style={{flex:1}}>      
 
       <DataTable style={{paddingTop:20,flex:1}}>
         <DataTable.Header theme={theme}>

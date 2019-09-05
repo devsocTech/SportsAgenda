@@ -42,7 +42,7 @@ export default (props)=>{
 
             <Button contentStyle={{width:370,height:50,alignSelf:'center'}} style={{width:370,height:50,marginHorizontal:20,marginVertical:10}} theme={theme} mode='contained'
                     onPress={()=>props.showDialog()}>
-            unirte a equipo
+            Unirte a equipo
             </Button>
 
             <Button  contentStyle={{width:370,height:50,alignSelf:'center'}} style={{width:370,height:50,marginHorizontal:20,marginVertical:10}} theme={theme} mode='contained'
@@ -92,9 +92,6 @@ export default (props)=>{
 
         </View>
         </View>
-
-        
-
         </View>
     );
 }

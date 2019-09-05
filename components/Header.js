@@ -1,48 +1,108 @@
-import * as React from 'react';
+import React,{Component} from 'react';
 import {View} from 'react-native';
 import { Appbar,DefaultTheme,Text,Portal,Dialog,Button,RadioButton} from 'react-native-paper';
+import firebase from 'firebase';
 
-export default (props)=>{
+export default class Header extends Component{
 
-  const select=props.nleagueSelect
+  constructor(props){
+    super(props);
 
+    this.state={
+        visible: false,
+
+        leagueSelect:'',
+        nleagueSelect:'',
+
+        ligas:[],
+        nLigas:[],
+    }
+}
+
+componentDidMount=()=>{
+  this.obtenerLigas();
+}
+
+obtenerLigas=()=>{
+  let user = firebase.auth().currentUser;
+  //console.log(user)
+  var db=firebase.firestore();
+  var ligas=[];
+  nombreLiga=[];
+  db.collection("usuarios").doc(user.uid).get().then((doc)=>{
+      var data = doc.data();
+      ligas = data.ligas;
+      this.setState({ligas:ligas})
+      //console.log(ligas)
+
+      for(let i=0;i<ligas.length;i++){
+      db.collection("ligas").doc(ligas[i]).get().then((doc)=>{
+          var data=doc.data();
+          nombreLiga.push(data.Nombre)
+          this.setState({nLigas:nombreLiga})
+          this.setState({leagueSelect:ligas[0]})
+          this.setState({nleagueSelect:nombreLiga[0]})
+      })}
+  })
+}
+
+showDialog = () => {
+  this.setState({ visible: true })
+}
+
+hideDialog = () => {
+  this.setState({ visible: false })
+}
+
+selectLeague=(value)=>{
+  this.setState({leagueSelect:value})
+  var db=firebase.firestore();
+  db.collection("ligas").doc(value).get().then((doc)=>{
+      var data=doc.data();
+      var nombreLiga=data.Nombre;
+      this.setState({nleagueSelect:nombreLiga})
+  })
+}
+
+
+ render(){
   let rows=[];
-  let array=props.ligas;
-  let ligas=props.nLigas;
-    /*for (let i=0;i<array.length;i++){
+  let array=this.state.ligas;
+  let ligas=this.state.nLigas;
+    for (let i=0;i<array.length;i++){
         rows.push(<View style={{flexDirection:'row'}}>
         <RadioButton value={array[i]}/>
-        <Text style={{alignSelf:'center'}}>{ligas[10]}</Text>
+        <Text style={{alignSelf:'center'}}>{ligas[i]}</Text>
       </View>)
-    }*/
-  
+    }
+
     return (
       <View>
       <Appbar.Header style={{paddingTop:20}} theme={theme}>
         <Appbar.Content
-        title={props.Title}
+        title={this.props.tit}
         titleStyle={{fontSize:29, fontWeight:'bold',alignSelf:'flex-start'}}/>
 
         <Appbar.Content
-        subtitle={select}
+        subtitle={this.state.nleagueSelect}
         subtitleStyle={{alignSelf:'flex-end',paddingBottom:25,fontWeight:'bold'}}
-        onPress={()=>props.showDialog()}>
+        onPress={()=>this.showDialog()}>
         </Appbar.Content>
 
-        <Appbar.Action icon="arrow-drop-down" onPress={()=>props.showDialog()}/>
+        <Appbar.Action icon="arrow-drop-down" onPress={()=>this.showDialog()}/>
       </Appbar.Header>
 
       <Portal>
             <Dialog
-             visible={props.visible}
-             onDismiss={props.hideDialog}
+             visible={this.state.visible}
+             onDismiss={()=>this.hideDialog()}
              theme={theme2}>
             <Dialog.Title>Seleccionar Liga</Dialog.Title>
             <Dialog.Content>
 
             <RadioButton.Group
-              onValueChange={(value)=>props.selectLeague(value)}
-              value={select}
+              onValueChange={(value)=>this.selectLeague(value)}
+              value={this.state.leagueSelect}
             >
         {rows}
       </RadioButton.Group>
@@ -50,7 +110,7 @@ export default (props)=>{
             </Dialog.Content>
             
             <Dialog.Actions>
-              <Button onPress={props.hideDialog}>Aceptar</Button>
+              <Button onPress={this.hideDialog}>Aceptar</Button>
             </Dialog.Actions>
             </Dialog>
         </Portal>
@@ -58,6 +118,7 @@ export default (props)=>{
       </View>
     );
   }
+}
 
 const theme = {
     ...DefaultTheme,

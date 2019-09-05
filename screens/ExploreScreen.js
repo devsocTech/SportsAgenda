@@ -63,15 +63,11 @@ export default class ExploreScreen extends Component{
 
     render(){
 
-        let data=[];
-          for(let i=0;i<5;i++){
-            data.push({
-                value: 'GutiTeam',
-              },)
-          }
+       
 
         return(
-            <Explore showDialog={this.showDialog}
+            <Explore 
+                showDialog={this.showDialog}
                   hideDialog={this.hideDialog}
                   visible={this.state.visible}
 
@@ -85,7 +81,6 @@ export default class ExploreScreen extends Component{
 
                   selectedTeam={this.state.selectedTeam}
                   selectTeam={this.selectTeam}
-                  Teams={data}
                   Title={this.state.title}
                   
                   selectLeague={this.selectLeague}

@@ -3,6 +3,7 @@ import {Text,View} from 'react-native';
 import firebase from 'firebase';
 
 import Table from '../components/Table'
+import Header from '../components/Header'
 
 export default class Tablecreen extends Component{
     constructor(props){
@@ -17,58 +18,41 @@ export default class Tablecreen extends Component{
     }
     
 
-    componentDidMount() {
+    componentDidMount=()=>{
         this.llenarTabla();
-        console.log( this.state.team);
       }
-    
-    
-    llenarTabla=()=>{
-      var db = firebase.firestore();
-      //aqui voy a guardar la selección de la liga
-      var liga = "JxcDmZqYMj60CawzNF5l";
-      var contador = 1;
-      var arreglo = [];
-      db.collection("ligas").doc(liga).collection("equipos").orderBy("Puntos", "desc").get().then(querySnapshot => {
-        querySnapshot.forEach((doc)=> {
-          var dataEquipo = doc.data();
-          var nombreEquipo = dataEquipo.Nombre;
-          //this.setState({Nombre:nombreEquipo})
-          //console.log(nombreEquipo);
-          var PTS =dataEquipo.Puntos;
-          //this.setState({Puntos:PTS})
-          //console.log("Puntos: " + PTS);
-          var J = dataEquipo.PartidosJugados;
-          //this.setState({PJ:J})
-          //console.log("Jugados: "  + J);
-          var G = dataEquipo.PartidosGanados;
-          //this.setState({PG:G})
-          //console.log("Ganados: " + G);
-          var P = dataEquipo.PartidosPerdidos;
-          //this.setState({PP:P})
-          //console.log("Perdidos: " + P);
-          var E = dataEquipo.PartidosEmpatados;
-          //this.setState({PE:E})
-          //console.log("Empatados: " + E);
-          var DG = (dataEquipo.GolesFavor) - (dataEquipo.GolesContra);
-          //this.setState({DGol:DG})
-          //console.log("Diferencia: " + DG);
-          db.collection("ligas").doc(liga).collection("equipos").doc(doc.id).update({
-            Posición: contador
+
+      llenarTabla=()=>{
+        var db = firebase.firestore();
+        //aqui voy a guardar la selección de la liga
+        var liga = "JxcDmZqYMj60CawzNF5l";
+        var contador = 1;
+        var arreglo = [];
+        db.collection("ligas").doc(liga).collection("equipos").orderBy("Puntos", "desc").get().then(querySnapshot => {
+          querySnapshot.forEach((doc)=> {
+            var dataEquipo = doc.data();
+            var nombreEquipo = dataEquipo.Nombre;
+            var PTS =dataEquipo.Puntos;
+            var J = dataEquipo.PartidosJugados;
+            var G = dataEquipo.PartidosGanados;
+            var P = dataEquipo.PartidosPerdidos;
+            var E = dataEquipo.PartidosEmpatados;
+            var DG = (dataEquipo.GolesFavor) - (dataEquipo.GolesContra);
+            db.collection("ligas").doc(liga).collection("equipos").doc(doc.id).update({
+              Posición: contador
+            })
+            arreglo.push({nombreEquipo, PTS, J, G, P, E, DG});
+            contador++; 
+            this.setState({team:arreglo}, () => {
+            });
           })
-          arreglo.push({nombreEquipo, PTS, J, G, P, E, DG});
-          contador++; 
-          //console.log(arreglo);
-          this.setState({team:arreglo }, () => {
-            console.log(this.state.team, 'alv?');
-          });
+          console.log(this.state.team, 'teamState');
         })
-      })
-      .catch(function(error) {
-          console.log("Error getting documents: ", error);
-      });  
-    }
-    
+        .catch(function(error) {
+            console.log("Error getting documents: ", error);
+        });  
+      }
+
     showDialog = () => {
         this.setState({ visible: true })
     }
@@ -83,6 +67,8 @@ export default class Tablecreen extends Component{
 
     render(){
         return(
+          <View style={{flex:1}}>
+            <Header tit={this.state.title}></Header>
             <Table 
             team={this.state.team}
 
@@ -93,6 +79,9 @@ export default class Tablecreen extends Component{
 
             selectLeague={this.selectLeague}
             leagueSelect={this.state.leagueSelect}/>
+
+          </View>
+            
         );
     }
 }
