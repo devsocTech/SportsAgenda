@@ -177,7 +177,6 @@ export default (props)=>{
             <Button onPress={() => props.showDialogCrearEquipo()}> Crea tu equipo </Button>
             <Button onPress={() => props.showDialogUnirteEquipo()}> Unete a un equipo </Button>
             <Button onPress={() => props.showDialogProgramarPartido()}> Programa un partido </Button>
-            <Button onPress={() => props.registraPartido()}> Registra el marcador de un partido </Button>
         </View>
 
         
