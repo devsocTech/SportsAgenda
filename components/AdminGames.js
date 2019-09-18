@@ -46,7 +46,6 @@ export default (props)=>{
             </TouchableOpacity>
             
             </View>
-
             )}
             keyExtractor={item=>item.keyId}
             onRefresh={props.handleRefresh}
@@ -100,7 +99,6 @@ export default (props)=>{
             </Dialog.Actions>
             </Dialog>
             </Portal>
-
         </View>
     )
 }

@@ -3,7 +3,7 @@ import {View} from 'react-native';
 import {DefaultTheme, Button,Portal,TextInput, Card, Text,Dialog} from 'react-native-paper';
 import firebase from 'firebase';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Dropdown} from 'react-native-material-dropdown';
+import RNPickerSelect from 'react-native-picker-select';
 
 export default (props)=>{
 
@@ -15,10 +15,11 @@ export default (props)=>{
 
     let data=[];
     var array = props.nombreEquipos;
-     for (let i=0;i<array.length;i++){
-         data.push({value: array[i].nombreEquipo})
+    /*for (let i=0;i<array.length;i++){
+         data.push(array[i].nombreEquipo)
      }
-    console.log(data);
+    //console.log(data+"Ya esta en home");*/
+  
 
     return(
         <View style={{flex:1}}>
@@ -152,13 +153,9 @@ export default (props)=>{
              theme={theme}>
             <Dialog.Title>Programar Partido</Dialog.Title>
             <Dialog.Content>
-              <Dropdown
-              labelFontSize= {3}
-              baseColor="white"
-              label="Seleccionar Equipo 1"
-              data={data}
-              //onChangeText={(text)=>props.selectTeam(text)}
-              />
+            <RNPickerSelect
+            onValueChange={(value) => props.setselecEquipo1(value)}
+            items={array}/>
             </Dialog.Content>
             <Dialog.Actions>
               <Button onPress={props.aceptarDialogProgramarPartido}>Aceptar</Button>

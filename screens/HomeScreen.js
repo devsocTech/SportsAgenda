@@ -33,7 +33,10 @@ export default class HomeScreen extends Header{
 
             nombreEquipo: "",
             codigoEquipo: "",
-            nombreEquipos:[]
+            nombreEquipos:[],
+
+            codigoEquipo1:"",
+            codigoEquipo2:""
         }
     }
 
@@ -60,15 +63,22 @@ export default class HomeScreen extends Header{
         })
     }
 
+
     setCodigoEquipo=(codigoEquipo)=>{
         this.setState({
             codigoEquipo:codigoEquipo
         })
     }
 
-    setCodigoEquipo=(codigoEquipo)=>{
+    setselecEquipo1=(codigoEquipo1)=>{
         this.setState({
-            codigoEquipo:codigoEquipo
+            codigoEquipo1:codigoEquipo1
+        })
+    }
+
+    setselecEquipo2=(codigoEquipo2)=>{
+        this.setState({
+            codigoEquipo2:codigoEquipo2
         })
     }
 
@@ -117,13 +127,14 @@ export default class HomeScreen extends Header{
         var db=firebase.firestore();
         //aqui voy a guardar la selección de la liga que hayan elegido en el dialoglistview
         var liga = "JxcDmZqYMj60CawzNF5l";
-        arreglo=[];
+        var masterArreglo=[];
         db.collection("ligas").doc(liga).collection("equipos").get().then(querySnapshot=>{
             querySnapshot.forEach((doc)=>{
                 var data = doc.data();
                 var nombreEquipo= data.Nombre;
-                arreglo.push({nombreEquipo});
-                this.setState({nombreEquipos:arreglo});
+                var codigoEquipo= doc.id;
+                masterArreglo.push({label:nombreEquipo, value:codigoEquipo});
+                this.setState({nombreEquipos:masterArreglo});
             })
         })
       }
@@ -307,7 +318,7 @@ export default class HomeScreen extends Header{
         //aqui voy a guardar la selección que hayan elegido en el dialog box de equipo 1
         var equipoV = "8dH1kNRdRMucwiNpUlH6";
         //aqui voy a guardar la selección que hayan elegido en el dialog box de equipo 2
-        var equipoF = "h8zh3uZ9WtzFTTtcPscV";
+        var equipoF = this.state.codigoEquipo1;
         //aqui voy a guardar la selección de la liga que hayan elegido en el dialoglistview
         var liga = "JxcDmZqYMj60CawzNF5l";
         //aqui voy a guardar le selección de la fecha y hora que hayan elegido
@@ -395,6 +406,9 @@ export default class HomeScreen extends Header{
             setCodigoLiga = {this.setCodigoLiga}
             setNombreEquipo = {this.setNombreEquipo}
             setCodigoEquipo = {this.setCodigoEquipo}
+
+            setselecEquipo1 = {this.setselecEquipo1}
+            setselecEquipo2 = {this.setselecEquipo2}
 
             nombreEquipos = {this.state.nombreEquipos}
             ></Home>
