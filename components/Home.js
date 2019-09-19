@@ -1,9 +1,10 @@
 import React,{Component} from 'react';
-import {View} from 'react-native';
+import {View,  StyleSheet} from 'react-native';
 import {DefaultTheme, Button,Portal,TextInput, Card, Text,Dialog} from 'react-native-paper';
 import firebase from 'firebase';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import RNPickerSelect from 'react-native-picker-select';
+import DatePicker from 'react-native-datepicker';
 
 export default (props)=>{
 
@@ -20,6 +21,8 @@ export default (props)=>{
      }
     //console.log(data+"Ya esta en home");*/
   
+    var label1 = {label: 'Equipo a favor'};
+    var label2 = {label: 'Equipo en contra'};
 
     return(
         <View style={{flex:1}}>
@@ -154,9 +157,46 @@ export default (props)=>{
             <Dialog.Title>Programar Partido</Dialog.Title>
             <Dialog.Content>
             <RNPickerSelect
+            placeholder = {label1}
+            placeholderTextColor='white'
             onValueChange={(value) => props.setselecEquipo1(value)}
-            items={array}/>
+            items={array}
+            style={pickerSelectStyles}/>
+
+            <RNPickerSelect
+            placeholder = {label2}
+            placeholderTextColor = 'white'
+            onValueChange={(value) => props.setselecEquipo2(value)}
+            items={array}
+            style={pickerSelectStyles}/>
             </Dialog.Content>
+
+            <DatePicker
+              style={{width: 270}}
+              date="2016-05-15"
+              mode='datetime'
+              placeholder="select date"
+              format='MMMM Do YYYY, h:mm:ss a'
+              minDate="2016-05-01"
+              maxDate="2016-06-01"
+              confirmBtnText="Confirm"
+              cancelBtnText="Cancel"
+              customStyles={{
+                dateIcon: {
+                  position: 'relative',
+                  left: 10,
+                  top: 1,
+                  marginLeft: 0
+
+                },
+                dateInput: {
+                  marginLeft: 36,
+                }
+                
+              }}
+              onDateChange={(date) =>console.log((date))}
+            />
+            
             <Dialog.Actions>
               <Button onPress={props.aceptarDialogProgramarPartido}>Aceptar</Button>
             </Dialog.Actions>
@@ -194,3 +234,27 @@ const theme = {
       disabled: 'white'
     }
   };
+
+
+  const pickerSelectStyles = StyleSheet.create({
+    inputIOS: {
+      fontSize: 16,
+      paddingVertical: 12,
+      paddingHorizontal: 10,
+      borderWidth: 1,
+      borderColor: 'gray',
+      borderRadius: 4,
+      color: 'white',
+      paddingRight: 30, 
+    },
+    inputAndroid: {
+      fontSize: 16,
+      paddingHorizontal: 10,
+      paddingVertical: 8,
+      borderWidth: 0.5,
+      borderColor: 'purple',
+      borderRadius: 8,
+      color: 'white',
+      paddingRight: 30, 
+    },
+  });

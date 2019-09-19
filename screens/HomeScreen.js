@@ -312,11 +312,11 @@ export default class HomeScreen extends Header{
     
       
     
-       aceptarDialogProgramaPartido=()=>{
+       aceptarDialogProgramarPartido=()=>{
         var db = firebase.firestore();
         let user = firebase.auth().currentUser;
         //aqui voy a guardar la selección que hayan elegido en el dialog box de equipo 1
-        var equipoV = "8dH1kNRdRMucwiNpUlH6";
+        var equipoV = this.state.codigoEquipo2;
         //aqui voy a guardar la selección que hayan elegido en el dialog box de equipo 2
         var equipoF = this.state.codigoEquipo1;
         //aqui voy a guardar la selección de la liga que hayan elegido en el dialoglistview
