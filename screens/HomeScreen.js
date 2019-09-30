@@ -36,13 +36,18 @@ export default class HomeScreen extends Header{
             nombreEquipos:[],
 
             codigoEquipo1:"",
-            codigoEquipo2:""
+            codigoEquipo2:"",
+
+            dateParti:""
         }
     }
 
     componentDidMount=()=> {
         this.homeTeam();
         this.obtenerEquipos();
+        var today = new Date();
+        var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+        this.setState({dateParti:date})
       }
 
     setNombreLiga=(nombreLiga)=>{
@@ -82,6 +87,12 @@ export default class HomeScreen extends Header{
         })
     }
 
+    setdateParti=(dateParti)=>{
+        this.setState({
+            dateParti:dateParti
+        })
+    }
+
     showDialogAgregarLiga = () => {
         this.setState({ visibleAgregarLiga: true })
     }
@@ -115,7 +126,6 @@ export default class HomeScreen extends Header{
     }
 
     showDialogProgramarPartido = () => {
-        console.log(this.state.nombreEquipos)
         this.setState({ visibleProgramarPartido: true })
     }
 
@@ -314,18 +324,15 @@ export default class HomeScreen extends Header{
     
        aceptarDialogProgramarPartido=()=>{
         var db = firebase.firestore();
-        let user = firebase.auth().currentUser;
         //aqui voy a guardar la selección que hayan elegido en el dialog box de equipo 1
         var equipoV = this.state.codigoEquipo2;
         //aqui voy a guardar la selección que hayan elegido en el dialog box de equipo 2
         var equipoF = this.state.codigoEquipo1;
         //aqui voy a guardar la selección de la liga que hayan elegido en el dialoglistview
         var liga = "JxcDmZqYMj60CawzNF5l";
-        //aqui voy a guardar le selección de la fecha y hora que hayan elegido
-        var date = new Date("August 24, 2019 21:30:00");
         var refNuevoPartido = db.collection("ligas").doc(liga).collection("partidos").doc();
         refNuevoPartido.set({
-            fechaPartido: firebase.firestore.Timestamp.fromDate(date),
+            fechaPartido: firebase.firestore.Timestamp.fromDate(new Date(this.state.dateParti)),
             equipoV : equipoV,
             golesequipoV : 0,
             equipoF : equipoF,
@@ -340,8 +347,10 @@ export default class HomeScreen extends Header{
                 Partidos: firebase.firestore.FieldValue.arrayUnion(partidoId)
                 })
         })
+
         this.setState({visibleProgramarPartido: false});
        }
+
 
      
     
@@ -406,6 +415,9 @@ export default class HomeScreen extends Header{
             setCodigoLiga = {this.setCodigoLiga}
             setNombreEquipo = {this.setNombreEquipo}
             setCodigoEquipo = {this.setCodigoEquipo}
+            setdateParti = {this.setdateParti}
+
+            dateParti = {this.state.dateParti}
 
             setselecEquipo1 = {this.setselecEquipo1}
             setselecEquipo2 = {this.setselecEquipo2}

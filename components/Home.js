@@ -14,6 +14,8 @@ export default (props)=>{
     const visibleUnirteEquipo = props.visibleUnirteEquipo
     const visibleProgramarPartido = props.visibleProgramarPartido
 
+    const datetime = props.dateParti;
+
     let data=[];
     var array = props.nombreEquipos;
     /*for (let i=0;i<array.length;i++){
@@ -155,7 +157,7 @@ export default (props)=>{
              onDismiss={props.hideDialogProgramarPartido}
              theme={theme}>
             <Dialog.Title>Programar Partido</Dialog.Title>
-            <Dialog.Content>
+            <Dialog.Content >
             <RNPickerSelect
             placeholder = {label1}
             placeholderTextColor='white'
@@ -169,33 +171,31 @@ export default (props)=>{
             onValueChange={(value) => props.setselecEquipo2(value)}
             items={array}
             style={pickerSelectStyles}/>
-            </Dialog.Content>
+
 
             <DatePicker
-              style={{width: 270}}
-              date="2016-05-15"
-              mode='datetime'
-              placeholder="select date"
-              format='MMMM Do YYYY, h:mm:ss a'
-              minDate="2016-05-01"
-              maxDate="2016-06-01"
-              confirmBtnText="Confirm"
-              cancelBtnText="Cancel"
-              customStyles={{
-                dateIcon: {
-                  position: 'relative',
-                  left: 10,
-                  top: 1,
-                  marginLeft: 0
-
-                },
-                dateInput: {
-                  marginLeft: 36,
-                }
-                
-              }}
-              onDateChange={(date) =>console.log((date))}
+            style={{width: 275, alignSelf:'center'}}
+            date = {datetime}
+            placeholder = "Pon tu puta liga"
+            mode="datetime"
+            format="YYYY-MM-DD HH:mm"
+            confirmBtnText="Confirm"
+            cancelBtnText="Cancel"
+            showIcon={false}
+            onDateChange={(date) => props.setdateParti(date)}
+            customStyles={{dateInput: {},
+            placeholderText: {
+              color: '#234456'
+            },
+            dateText:{
+              color: '#ffff',
+              justifyContent: 'flex-start'
+            }
+        }}
             />
+
+            
+            </Dialog.Content>
             
             <Dialog.Actions>
               <Button onPress={props.aceptarDialogProgramarPartido}>Aceptar</Button>
