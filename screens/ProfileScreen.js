@@ -7,5 +7,4 @@ export default class ProfileScreen extends Component{
         return(
             <Profile/>
         );
-    }
-}
+    }}

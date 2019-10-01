@@ -14,7 +14,7 @@ export default class SignInScreen extends Component{
             password:'',
         }
     }
-
+    
     setEmail=(email)=>{
         this.setState({
             email:email
@@ -29,7 +29,6 @@ export default class SignInScreen extends Component{
 
     signIn=()=>{
         firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
-        .catch(console.log("Hubo un error al entrar tu cuenta")); //aqui remplazaremos el console.log por un error en pantalla
     }
 
     static navigationOptions = {

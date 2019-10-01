@@ -4,19 +4,36 @@ import firebase from 'firebase';
 
 export default class AuthLoadingScreen extends Component{
 
-    componentDidMount(){
-        this.getUser();
+    constructor(props){
+        super(props)
+
+        this.state={
+        }
     }
 
-    getUser(){
+    componentDidMount=()=>{
+        this.getUser()
+    }
+
+    getUser=()=>{
         firebase.auth().onAuthStateChanged((user)=>{
             if(user){
-                this.props.navigation.navigate('App');
-            }else{
+                var db = firebase.firestore();
+                var user = firebase.auth().currentUser;
+                var userId = user.uid;
+                db.collection("usuarios").doc(userId).get().then((doc)=>{
+                    var dataUser = doc.data();
+                    var admin = dataUser.adminLigas;
+
+                if(admin)
+                    this.props.navigation.navigate('Admin');
+                else if((!admin))
+                    this.props.navigation.navigate('App');   
+                })
+            }else
                 this.props.navigation.navigate('Auth');
-            }
         }
-    )};
+        )};
     
     render(){
         return(

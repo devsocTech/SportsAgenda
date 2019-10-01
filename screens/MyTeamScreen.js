@@ -3,27 +3,68 @@ import {Text,View} from 'react-native';
 import MyTeam from '../components/MyTeam';
 import Header from '../components/Header'
 
-export default class MyTeamScreen extends Component{
+export default class Tablecreen extends Component{
     constructor(props){
         super(props);
 
         this.state={
-
-            visibleAgregarJugador:false,
-
-            title:'Equipo',
-            Nombre: '',
-            Puntos:0,
-            PJ:0,
-            PG:0,
-            PE:0,
-            PP:0,
-            GC:0,
-            GF:0,
-            DG:0,
+            title:'Mi Equipo',
             nombreJugador: "",
-            leagueSelect:'Guti Team',
+            visibleAgregarJugador:false,
         }
+    }
+
+    componentDidMount=()=>{
+        this.obtenerLigas();
+    }
+
+    handleRefresh=()=>{
+    }
+
+    selectLeagues=(value,key)=>{
+        this.setState({leagueSelect:value},()=>{})
+        var equipo=this.state.equipos[key]
+        this.setState({equipo:equipo},()=>{this.handleRefresh();})
+        
+    }
+
+    obtenerLigas=()=>{
+        var user = firebase.auth().currentUser;
+        var db=firebase.firestore();
+        var ligas=[];
+        var ligasMaster=[];
+        var nombreLiga=[];
+        var equipos=[];
+        db.collection("usuarios").doc(user.uid).get().then((doc)=>{
+            var data = doc.data();
+            ligas = data.ligas;
+            equipos=data.Equipos;
+            for(let i=0;i<ligas.length;i++){
+            db.collection("ligas").doc(ligas[i]).get().then((doc)=>{
+                var data=doc.data();
+                nombreLiga.push(data.Nombre)
+                //console.log(nombreLiga)
+                //console.log(this.state.nleagueSelect)
+                ligasMaster.push({value:ligas[i],label:nombreLiga[i],color:'black',key:i})
+                this.setState({ligasMaster:ligasMaster},()=>{})
+                this.setState({equipos:equipos},()=>{})
+                this.setState({leagueSelect:ligas[0]},()=>{})
+                this.setState({nleagueSelect:nombreLiga[0]},()=>{})
+                this.setState({equipo:equipos[0]},()=>{})
+            })
+        }})
+    }
+
+    
+    aceptarDialogAgregarJugador = () => {
+        var db = firebase.firestore();
+        var liga = this.state.leagueSelect;
+        var equipo = this.state.equipo;
+        var nombre = this.state.nombreJugador;
+        db.collection("ligas").doc(liga).collection("equipos").doc(equipo).collection("Jugadores").add({
+            Nombre : nombre
+        })
+        this.setState({visibleAgregarJugador: false});
     }
 
     setNombreJugador=(nombreJugador)=>{
@@ -40,57 +81,19 @@ export default class MyTeamScreen extends Component{
         this.setState({ visibleAgregarJugador: false })
     }
 
-    selectLeague=(leagueSelect)=>{
-        this.setState({leagueSelect:leagueSelect})
-    }
-
-
-
-    aceptarDialogAgregarJugador = () => {
-        var db = firebase.firestore();
-        let user = firebase.auth().currentUser;
-        //aqui voy a guardar la selección de la liga que hayan elegido en el dialoglistview
-        var liga = "JxcDmZqYMj60CawzNF5l";
-        //aqui va a estar la selección de su equipo
-        var equipo = "h8zh3uZ9WtzFTTtcPscV";
-        //aqui va a estar el nombre del jugador que hayan introducido
-        var nombre = this.state.nombreJugador;
-        db.collection("ligas").doc(liga).collection("equipos").doc(equipo).collection("Jugadores").add({
-            Nombre : nombre
-        })
-        this.setState({visibleAgregarJugador: false});
-    }
-    
-   
-
-
 
     render(){
         return(
             <View style={{flex:1}}>
 
-            <Header tit={this.state.title}></Header>
-                <MyTeam 
-
-                Nombre={this.state.Nombre}
-                Puntos={this.state.Puntos}
-                PJ={this.state.PJ}
-                PG={this.state.PG}
-                PE={this.state.PE}
-                PP={this.state.PP}
-                DG={this.state.DG}
-                Title={this.state.title}
-
-                showDialogAgregarJugador={this.showDialogAgregarJugador}
-                hideDialogAgregarJugador={this.hideDialogAgregarJugador}
-                visibleAgregarJugador={this.state.visibleAgregarJugador}
-                aceptarDialogAgregarJugador = {this.aceptarDialogAgregarJugador}
-
-                nombreJugador = {this.state.nombreJugador}
-                setNombreJugador = {this.setNombreJugador}
-
-                selectLeague={this.selectLeague}
-                leagueSelect={this.state.leagueSelect}/>
+                <Header ligasMaster={this.state.ligasMaster} leagueSelect={this.state.leagueSelect} nleagueSelect={this.state.nleagueSelect} selectLeagues={this.selectLeagues} tit={this.state.title}></Header>              
+                <MyTeam Nombre={this.state.Nombre}
+           
+            Title={this.state.title}
+            showDialogAgregarJugador={this.showDialogAgregarJugador}
+            hideDialogAgregarJugador={this.hideDialogAgregarJugador}
+            visibleAgregarJugador={this.state.visibleAgregarJugador}
+            setNombreJugador={this.setNombreJugador}/>
 
             </View>
         );

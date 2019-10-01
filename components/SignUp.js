@@ -5,7 +5,6 @@ import {Switch,TextInput,Button,Subheading} from 'react-native-paper';
 export default (props)=>{
 
     const isSwitchOn=props.Admin
-
     return(
 
         <ImageBackground source={require('./Assets/Pictures/Background.png')} style={{width: '100%', height: '100%'}}>

@@ -3,7 +3,7 @@ import {View,Dimensions} from 'react-native';
 import AdminGames from '../components/AdminGames';
 import Header from '../components/Header'
 import firebase from 'firebase'
-import { TabView, SceneMap,TabBar } from 'react-native-tab-view';
+import { TabView, TabBar } from 'react-native-tab-view';
 
 
 
@@ -15,7 +15,6 @@ export default class AdminGamesScreen extends Component{
         this.state={
             visible: false,
             title:'Juegos',
-            leagueSelect:'Guti Team',
 
             itemKeyId:'',
             itemGolesF:0,
@@ -32,19 +31,60 @@ export default class AdminGamesScreen extends Component{
             matchNext:[],
             matchFinish:[],
 
+            leagueSelect:'',
+            nleagueSelect:'',
+            keyTeam:0,
+
+            ligas:[],
+            nLigas:[],
+            ligasMaster:[],
+            equipo:'',
+            equipos:[],
+
             index: 0,
             routes: [
             { key: 'first', title: 'Próximos' },
             { key: 'second', title: 'Finalizados' },
-            { key: 'third', title: 'Mi equipo'},
             ],
         }
         }
 
     componentDidMount=()=>{
-        this.llenarpartidosEquipo();
-        this.llenarpartidosFinalizados();
-        this.llenarpartidosProximos();
+        this.obtenerLigas()
+    }
+
+    selectLeagues=(value,key)=>{
+        this.setState({leagueSelect:value},()=>{})
+        var equipo=this.state.equipos[key]
+        this.setState({equipo:equipo},()=>{this.handleRefresh();})
+        
+    }
+
+    obtenerLigas=()=>{
+        var user = firebase.auth().currentUser;
+        var db=firebase.firestore();
+        var ligas=[];
+        var ligasMaster=[];
+        var nombreLiga=[];
+        var equipos=[];
+        db.collection("usuarios").doc(user.uid).get().then((doc)=>{
+            var data = doc.data();
+            ligas = data.ligas;
+            equipos=data.Equipos;
+            for(let i=0;i<ligas.length;i++){
+            db.collection("ligas").doc(ligas[i]).get().then((doc)=>{
+                var data=doc.data();
+                nombreLiga.push(data.Nombre)
+                //console.log(nombreLiga)
+                //console.log(this.state.nleagueSelect)
+                ligasMaster.push({value:ligas[i],label:nombreLiga[i],color:'black',key:i})
+                this.setState({ligasMaster:ligasMaster},()=>{})
+                this.setState({equipos:equipos},()=>{})
+                this.setState({leagueSelect:ligas[0]},()=>{})
+                this.setState({nleagueSelect:nombreLiga[0]},()=>{})
+                this.setState({equipo:equipos[0]},()=>{})
+            })
+        }})
     }
 
     handleRefresh=()=>{
@@ -66,58 +106,10 @@ export default class AdminGamesScreen extends Component{
         this.setState({visible:false})
     }
 
-    llenarpartidosEquipo=()=>{
-        var db = firebase.firestore()
-        //aqui guardare la seleccion de la liga
-        var liga = "JxcDmZqYMj60CawzNF5l"
-        //aqui guardare el equipo del usuario
-        var equipo = "h8zh3uZ9WtzFTTtcPscV"
-        let matchArray=[];
-        this.setState({ loading: true });
-        db.collection("ligas").doc(liga).collection("equipos").doc(equipo).get().then((doc)=>{
-            var infoEquipo = doc.data();
-            var partidosEquipo = infoEquipo.Partidos;
-            for(let i = 0; i<partidosEquipo.length;i++){
-                db.collection("ligas").doc(liga).collection("partidos").doc(partidosEquipo[i]).get().then((doc)=>{
-                    let datapartido = doc.data();
-                    let keyId=doc.id
-                    let equipoF=datapartido.equipoF
-                    db.collection("ligas").doc(liga).collection("equipos").doc(equipoF).get().then((doc)=>{
-                        var dataEquipo = doc.data();
-                        var nombreEquipoF = dataEquipo.Nombre;
-                    let equipoV=datapartido.equipoV
-                    db.collection("ligas").doc(liga).collection("equipos").doc(equipoV).get().then((doc)=>{
-                        var dataEquipo = doc.data();
-                        var nombreEquipoV = dataEquipo.Nombre;
-                    let fecha=datapartido.fechaPartido
-                    let golesF=datapartido.golesequipoF
-                    let golesV=datapartido.golesequipoV
-                    let completado=datapartido.completado
-                    
-                    var date=new Date(fecha.seconds*1000)
-                    var dia=date.getDate()
-                    var mes=date.getMonth()+1
-                    var año=date.getFullYear()
-
-                    var hora=date.getHours()
-                    var minutos=date.getMinutes()
-
-                    var stringDate= (dia+"/"+mes+"/"+año+" "+hora+":"+minutos)
-                    matchArray.push({keyId,equipoV,equipoF,nombreEquipoF,nombreEquipoV,stringDate,golesF,golesV,completado});
-                    this.setState({matchTeam:matchArray,
-                                   loading:false}, () => {
-                    });
-                })
-            })
-        })
-        }
-        })
-    }
-
     llenarpartidosFinalizados=()=>{
         var db = firebase.firestore()
         //aqui guardare la seleccion de la liga
-        var liga = "JxcDmZqYMj60CawzNF5l"
+        var liga = this.state.leagueSelect
         let matchArray=[];
         db.collection("ligas").doc(liga).collection("partidos").where("completado", "==", true).orderBy("fechaPartido").get().then(querySnapshot=>{
             querySnapshot.forEach((doc)=>{
@@ -158,7 +150,7 @@ export default class AdminGamesScreen extends Component{
     llenarpartidosProximos=()=>{
         var db = firebase.firestore()
         //aqui guardare la seleccion de la liga
-        var liga = "JxcDmZqYMj60CawzNF5l"
+        var liga = this.state.leagueSelect
         let matchArray=[];
         db.collection("ligas").doc(liga).collection("partidos").where("completado", "==", false).orderBy("fechaPartido").get().then(querySnapshot=>{
             querySnapshot.forEach((doc)=>{
@@ -207,7 +199,7 @@ export default class AdminGamesScreen extends Component{
         //aqui voy a guardar los goles a favor del equipoV (del input que ellos pongan)
         var golesequipoVN = golesV;
         //aqui voy a guardar la selección de la liga que hayan elegido en el dialoglistview
-        var liga = "JxcDmZqYMj60CawzNF5l";
+        var liga = this.state.leagueSelect;
         var ganadorO = "";
         var ganadorN = "";
         var difGF = 0;
@@ -439,24 +431,17 @@ export default class AdminGamesScreen extends Component{
         this.setState({itemGolesV:num})
     }
     
-    
-
-  
-
-      _renderScene=({route})=>{
+    _renderScene=({route})=>{
         switch (route.key){
             case 'first': return <AdminGames  changeV={this.changeV} changeF={this.changeF} itemNombreV={this.state.itemNombreV} itemNombreF={this.state.itemNombreF} itemGolesV={this.state.itemGolesV} itemGolesF={this.state.itemGolesF} itemKeyId={this.state.itemKeyId} registraPartido={this.registraPartido} loading={this.state.loading} refreshing={this.state.refreshing} handleRefresh={this.handleRefresh} visible={this.state.visible} hideDialog={this.hideDialog} showDialog={this.showDialog} team={this.state.matchNext}/>
             case 'second': return <AdminGames changeV={this.changeV} changeF={this.changeF} itemNombreV={this.state.itemNombreV} itemNombreF={this.state.itemNombreF} itemGolesV={this.state.itemGolesV} itemGolesF={this.state.itemGolesF} itemKeyId={this.state.itemKeyId} registraPartido={this.registraPartido} loading={this.state.loading} refreshing={this.state.refreshing} handleRefresh={this.handleRefresh}  visible={this.state.visible} hideDialog={this.hideDialog} showDialog={this.showDialog} team={this.state.matchFinish}/>
-            case 'third': return <AdminGames  changeV={this.changeV} changeF={this.changeF} itemNombreV={this.state.itemNombreV} itemNombreF={this.state.itemNombreF} itemGolesV={this.state.itemGolesV} itemGolesF={this.state.itemGolesF} itemKeyId={this.state.itemKeyId} registraPartido={this.registraPartido} loading={this.state.loading} refreshing={this.state.refreshing} handleRefresh={this.handleRefresh} visible={this.state.visible} hideDialog={this.hideDialog} showDialog={this.showDialog} team={this.state.matchTeam}/>
         }
     }
     
-
-
     render(){
         return(
             <View style={{flex:1}}>
-              <Header tit={this.state.title}></Header>
+              <Header ligasMaster={this.state.ligasMaster} leagueSelect={this.state.leagueSelect} nleagueSelect={this.state.nleagueSelect} selectLeagues={this.selectLeagues} tit={this.state.title}></Header>              
               <TabView
                 navigationState={this.state}
                 renderScene={this._renderScene}

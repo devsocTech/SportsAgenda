@@ -2,7 +2,6 @@ import React from 'react';
 import {View,Text,ImageBackground} from 'react-native';
 import {Button,TextInput} from 'react-native-paper';
 
-
 export default (props)=>{
     return(
         <ImageBackground source={require('./Assets/Pictures/Background.png')} style={{width: '100%', height: '100%'}}>

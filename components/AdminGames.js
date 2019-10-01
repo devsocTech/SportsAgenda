@@ -3,6 +3,7 @@ import {View,FlatList,TouchableOpacity} from 'react-native';
 import InputSpinner from "react-native-input-spinner";
 import {DefaultTheme, Button,Appbar,Text,Avatar,ActivityIndicator,Portal,Dialog} from 'react-native-paper';
 
+
 export default (props)=>{
     keyId=props.itemKeyId
     nombreF=props.itemNombreF
@@ -11,7 +12,6 @@ export default (props)=>{
     golesV=props.itemGolesV
 
     return(       
-
         <View style={{flexDirection:'row',justifyContent:'space-evenly',flex:1}}>
             <FlatList
             data={props.team}
@@ -46,6 +46,7 @@ export default (props)=>{
             </TouchableOpacity>
             
             </View>
+
             )}
             keyExtractor={item=>item.keyId}
             onRefresh={props.handleRefresh}
@@ -94,11 +95,12 @@ export default (props)=>{
             </Dialog.Content>
             
             <Dialog.Actions>
-              <Button onPress={()=>props.registraPartido(keyId,golesF,golesV)}>Aceptar</Button>
               <Button onPress={()=>props.hideDialog()}>Cancelar</Button>
+              <Button onPress={()=>props.registraPartido(keyId,golesF,golesV)}>Aceptar</Button>
             </Dialog.Actions>
             </Dialog>
             </Portal>
+
         </View>
     )
 }

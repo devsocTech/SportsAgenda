@@ -1,31 +1,11 @@
 import React,{Component} from 'react'
 import {View} from 'react-native';
-import {ScrollView} from 'react-native-gesture-handler';
-import {DefaultTheme, Button,Portal,TextInput,Dialog} from 'react-native-paper';
-import Header from './Header';
-import Player from './Player';
 
  export default (props)=>{
-     let rows=[];
-     for (let i=0;i<20;i++){
-         rows.push(Player)
-     }
-
-
+     
      return(
     <View style={{flex:1}}>
-
-        <View>
-        <ScrollView>
-            {rows}
-        </ScrollView>
-        </View>
-
-        <View>
-
-        </View>
-
-        <Portal>
+         <Portal>
             <Dialog
              visible={props.visibleAgregarJugador}
              onDismiss={props.hideDialogAgregarJugador}
@@ -45,24 +25,6 @@ import Player from './Player';
 
         
         <Button onPress={() => props.showDialogAgregarJugador()}> Agrega un Jugador a un equipo </Button>
-
-
     </View>
      )
  }
-
- 
-const theme = {
-    ...DefaultTheme,
-    roundness: 10,
-    colors: {
-      ...DefaultTheme.colors,
-      primary: '#47C9C6',
-      accent: '#47C9C6',
-      background: '#3B4B61',
-      text:'white',
-      placeholder: '#FAFAFA',
-      surface: '#3B4B61',
-      disabled: 'white'
-    }
-  };

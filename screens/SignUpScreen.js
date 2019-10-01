@@ -18,7 +18,6 @@ export default class SignUpScreen extends Component{
         }
     }
 
-
     setName=(name)=>{
         this.setState({
             name:name
@@ -53,6 +52,7 @@ export default class SignUpScreen extends Component{
         this.setState({
             admin:admin
         })
+        console.log(this.state.admin)
     }
 
     createUser=()=>{
@@ -62,7 +62,7 @@ export default class SignUpScreen extends Component{
             return db.collection('usuarios').doc(cred.user.uid).set({
                 nombre: this.state.name,
                 apellido: this.state.lastname,
-                adminLigas: false,
+                adminLigas: this.state.admin,
             });
         }).catch(console.log("Hubo un error al crear tu cuenta")); //aqui remplazaremos el console.log por un error en pantalla
     }

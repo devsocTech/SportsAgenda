@@ -14,7 +14,18 @@ export default class GamesScreen extends Component{
         this.state={
             visible: false,
             title:'Juegos',
-            leagueSelect:'Guti Team',
+
+            leagueSelect:'',
+            nleagueSelect:'',
+            keyTeam:0,
+
+            ligas:[],
+            nLigas:[],
+            ligasMaster:[],
+            equipo:'',
+            equipos:[],
+
+            contador:0,
 
             matchTeam:[],
             matchNext:[],
@@ -25,23 +36,68 @@ export default class GamesScreen extends Component{
             { key: 'first', title: 'Próximos' },
             { key: 'second', title: 'Finalizados' },
             { key: 'third', title: 'Mi equipo'},
-            ],
+            ]
         }
         }
 
     componentDidMount=()=>{
+        this.obtenerLigas();
+    }
+
+    handleRefresh=()=>{
         this.llenarpartidosEquipo();
         this.llenarpartidosFinalizados();
         this.llenarpartidosProximos();
     }
 
+    selectLeagues=(value,key)=>{
+        this.setState({leagueSelect:value},()=>{})
+        var equipo=this.state.equipos[key]
+        this.setState({equipo:equipo},()=>{this.handleRefresh();})
+        
+    }
+
+    obtenerLigas=()=>{
+        var user = firebase.auth().currentUser;
+        var db=firebase.firestore();
+        var ligas=[];
+        var ligasMaster=[];
+        var nombreLiga=[];
+        var equipos=[];
+        db.collection("usuarios").doc(user.uid).get().then((doc)=>{
+            var data = doc.data();
+            ligas = data.ligas;
+            equipos=data.Equipos;
+            for(let i=0;i<ligas.length;i++){
+            db.collection("ligas").doc(ligas[i]).get().then((doc)=>{
+                var data=doc.data();
+                nombreLiga.push(data.Nombre)
+                //console.log(nombreLiga)
+                //console.log(this.state.nleagueSelect)
+                ligasMaster.push({value:ligas[i],label:nombreLiga[i],color:'black',key:i})
+                this.setState({ligasMaster:ligasMaster},()=>{})
+                this.setState({equipos:equipos},()=>{})
+                this.setState({leagueSelect:ligas[0]},()=>{})
+                this.setState({nleagueSelect:nombreLiga[0]},()=>{})
+                this.setState({equipo:equipos[0]},()=>{})
+            })
+        }})
+    }
+    
+    showDialog=()=>{
+        this.setState({visible:true})
+    }
+
+    hideDialog=()=>{
+        this.setState({visible:false})
+    }
 
     llenarpartidosEquipo=()=>{
         var db = firebase.firestore()
         //aqui guardare la seleccion de la liga
-        var liga = "JxcDmZqYMj60CawzNF5l"
+        var liga = this.state.leagueSelect
         //aqui guardare el equipo del usuario
-        var equipo = "h8zh3uZ9WtzFTTtcPscV"
+        var equipo = this.state.equipo
         let matchArray=[];
         db.collection("ligas").doc(liga).collection("equipos").doc(equipo).get().then((doc)=>{
             var infoEquipo = doc.data();
@@ -71,8 +127,7 @@ export default class GamesScreen extends Component{
                     var minutos=date.getMinutes()
 
                     var stringDate= (dia+"/"+mes+"/"+año+" "+hora+":"+minutos)
-                    console.log(stringDate)
-                    matchArray.push({nombreEquipoF,nombreEquipoV,stringDate,golesF,golesV,completado});
+                    matchArray.push({equipoV,equipoF,nombreEquipoF,nombreEquipoV,stringDate,golesF,golesV,completado});
                     this.setState({matchTeam:matchArray}, () => {
                     });
                 })
@@ -85,7 +140,7 @@ export default class GamesScreen extends Component{
     llenarpartidosFinalizados(){
         var db = firebase.firestore()
         //aqui guardare la seleccion de la liga
-        var liga = "JxcDmZqYMj60CawzNF5l"
+        var liga = this.state.leagueSelect
         let matchArray=[];
         db.collection("ligas").doc(liga).collection("partidos").where("completado", "==", true).orderBy("fechaPartido").get().then(querySnapshot=>{
             querySnapshot.forEach((doc)=>{
@@ -125,7 +180,7 @@ export default class GamesScreen extends Component{
     llenarpartidosProximos(){
         var db = firebase.firestore()
         //aqui guardare la seleccion de la liga
-        var liga = "JxcDmZqYMj60CawzNF5l"
+        var liga = this.state.leagueSelect
         let matchArray=[];
         db.collection("ligas").doc(liga).collection("partidos").where("completado", "==", false).orderBy("fechaPartido").get().then(querySnapshot=>{
             querySnapshot.forEach((doc)=>{
@@ -155,7 +210,6 @@ export default class GamesScreen extends Component{
                     var stringDate= (dia+"/"+mes+"/"+año+" "+hora+":"+minutos)
 
                 matchArray.push({nombreEquipoF,nombreEquipoV,stringDate,golesF,golesV,completado});
-                console.log(matchArray)
                 this.setState({matchNext:matchArray}, () => {
                 })
                 })
@@ -165,29 +219,11 @@ export default class GamesScreen extends Component{
         })
     }
 
-    FirstRoute= () =>{
-        return(
-        <Games team={this.state.matchNext}/>
-        )
-      }
-      
-      SecondRoute = () => {
-        return(
-            <Games team={this.state.matchNext}/>
-        )
-      }
-      
-      ThirdRoute=()=>{
-        return(
-        <Games team={this.state.matchTeam}></Games>
-        )
-      }
-
-      _renderScene=({route})=>{
+    _renderScene=({route})=>{
         switch (route.key){
-            case 'first': return <Games team={this.state.matchNext}/>
-            case 'second': return <Games team={this.state.matchFinish}/>
-            case 'third': return <Games team={this.state.matchTeam}></Games>
+            case 'first': return <Games visible={this.state.visible} hideDialog={this.hideDialog} showDialog={this.showDialog} team={this.state.matchNext}/>
+            case 'second': return <Games visible={this.state.visible} hideDialog={this.hideDialog} showDialog={this.showDialog} team={this.state.matchFinish}/>
+            case 'third': return <Games visible={this.state.visible} hideDialog={this.hideDialog} showDialog={this.showDialog} team={this.state.matchTeam}></Games>
         }
     }
     
@@ -196,7 +232,7 @@ export default class GamesScreen extends Component{
     render(){
         return(
             <View style={{flex:1}}>
-              <Header tit={this.state.title}></Header>
+                <Header ligasMaster={this.state.ligasMaster} leagueSelect={this.state.leagueSelect} nleagueSelect={this.state.nleagueSelect} selectLeagues={this.selectLeagues} tit={this.state.title}></Header>              
               <TabView
                 navigationState={this.state}
                 renderScene={this._renderScene}

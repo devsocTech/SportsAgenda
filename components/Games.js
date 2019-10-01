@@ -1,26 +1,25 @@
 import React,{Component} from 'react'
 import {ScrollView,View,Dimensions} from 'react-native'
-import {Text,Avatar,DefaultTheme} from 'react-native-paper'
+import {Text,Avatar,DefaultTheme,Portal,Dialog,Button} from 'react-native-paper'
 
 
 export default (props)=>{
-
     let rows=[];
     var array=props.team
     for (let i=0;i<array.length;i++){
         rows.push(
-        <View style={{flex:5,height:100,flexDirection:'row',justifyContent:'space-between',alignItems:'center',marginVertical:15}}>
+        <View  style={{flex:5,height:100,flexDirection:'row',justifyContent:'space-between',alignItems:'center',marginVertical:15}}>
 
         <View style={{flex:2,padding:10,alignItems:'center'}}>
-            <Avatar.Icon color="white" size={60} icon="security" />
+            <Avatar.Icon color="white" size={60} icon="security"/>
             <Text theme={theme} style={{textAlign:'center'}}>{array[i].nombreEquipoF}</Text>
         </View>
 
         <View style={{alignItems:'center'}}>
         <View style={{flexDirection:'row',alignItems:'center'}}>
-            <Text theme={theme} style={{fontSize:40,paddingHorizontal:20}}>{array[i].golesF}</Text>
-            <Text theme={theme} style={{fontSize:24}}>vs</Text>
-            <Text theme={theme} style={{fontSize:40,paddingHorizontal:20}}>{array[i].golesV}</Text>
+            <Text onPress={()=>props.showDialog()} theme={theme} style={{fontSize:40,paddingHorizontal:20}}>{array[i].golesF}</Text>
+            <Text onPress={()=>props.showDialog()} theme={theme} style={{fontSize:24}}>vs</Text>
+            <Text onPress={()=>props.showDialog()} theme={theme} style={{fontSize:40,paddingHorizontal:20}}>{array[i].golesV}</Text>
         </View>
         <View>
          <Text theme={theme}>{array[i].stringDate}</Text>
@@ -32,8 +31,6 @@ export default (props)=>{
             <Avatar.Icon color="white" size={60} icon="security" />
             <Text theme={theme} style={{textAlign:'center'}}>{array[i].nombreEquipoV}</Text>
         </View>
-        
-        
     </View>
         )
     }
@@ -46,14 +43,13 @@ export default (props)=>{
             {rows}
         </ScrollView>
         </View>
-        
     </View>
     )
 }
 
 const theme = {
     ...DefaultTheme,
-    roundness: 100,
+    roundness: 10,
     colors: {
       ...DefaultTheme.colors,
       primary: '#47C9C6',
@@ -61,7 +57,8 @@ const theme = {
       background: 'transparent',
       text:'#1E1E1E',
       placeholder: 'white',
-      surface: '#EEEEEE',
+      surface: '#3B4B61',
       disabled: 'white'
     }
   };
+

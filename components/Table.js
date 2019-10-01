@@ -2,25 +2,8 @@ import React,{Component} from 'react'
 import {View} from 'react-native'
 import {DataTable,Avatar,DefaultTheme} from 'react-native-paper'
 import { ScrollView } from 'react-native-gesture-handler';
-import Header from './Header';
 
  export default (props)=>{
-     let rows=[];
-     var array = props.team;
-     console.log(array,"HOLA")
-     for (let i=0;i<array.length;i++){
-         rows.push(
-         <DataTable.Row theme={theme}>
-            <DataTable.Cell style={{flex:6}}>{array[i].nombreEquipo}</DataTable.Cell>
-            <DataTable.Cell style={{flex:1}}numeric>{array[i].PTS}</DataTable.Cell>
-            <DataTable.Cell style={{flex:1}}numeric>{array[i].J}</DataTable.Cell>
-            <DataTable.Cell style={{flex:1}}numeric>{array[i].G}</DataTable.Cell>
-            <DataTable.Cell style={{flex:1}}numeric>{array[i].P}</DataTable.Cell>
-            <DataTable.Cell style={{flex:1}}numeric>{array[i].E}</DataTable.Cell>
-            <DataTable.Cell style={{flex:1}}numeric>{array[i].DG}</DataTable.Cell>
-        </DataTable.Row>)
-     }
-
 
      return(
       <View style={{flex:1}}>      
@@ -36,7 +19,7 @@ import Header from './Header';
           <DataTable.Title style={{flex:1}} numeric>DG</DataTable.Title>
         </DataTable.Header>
 
-        <ScrollView>{rows}</ScrollView>
+        <ScrollView>{props.rows}</ScrollView>
 
   
       </DataTable>

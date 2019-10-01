@@ -10,7 +10,6 @@ import HomeScreen from './screens/HomeScreen';
 import TableScreen from './screens/TableScreen';
 import GamesScreen from './screens/GamesScreen';
 import MyTeamScreen from './screens/MyTeamScreen';
-import ExploreScreen from './screens/ExploreScreen';
 import AuthLoadingScreen from './screens/AuthLoadingScreen';
 import HomeAdminScreen from './screens/AdminHomeScreen';
 import AdminGamesScreen from './screens/AdminGamesScreen';
@@ -48,12 +47,6 @@ const AppNavigator=createMaterialBottomTabNavigator({
                 <Icon name="shield-half-full" color={tintColor} size={26}/>
             )
             }},
-    Explore: {screen: ExploreScreen,
-            navigationOptions:{
-            tabBarIcon:({tintColor})=>(
-                <Icon name="magnify" color={tintColor} size={26}/>
-            )
-            }},
 },{
     initialRouteName: 'Home',
     labeled: false,
@@ -87,17 +80,12 @@ const AdminNavigator=createMaterialBottomTabNavigator({
                 <Icon name="shield-half-full" color={tintColor} size={26}/>
             )
             }},
-            Explore: {screen: ExploreScreen,
-            navigationOptions:{
-            tabBarIcon:({tintColor})=>(
-                <Icon name="magnify" color={tintColor} size={26}/>
-            )
-            }},
+            
 },{
     initialRouteName: 'Home',
     labeled: false,
     inactiveColor: 'white',
-    activeColor: '#3B4B61',
+    activeColor: '#47C9C6',
     barStyle: {backgroundColor:'#3B4B61',borderTopWidth:0.3}
 });
 

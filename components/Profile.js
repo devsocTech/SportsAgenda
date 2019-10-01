@@ -6,11 +6,7 @@ export default (props)=>{
     return(
         <View style={{alignItems:'center',justifyContent:'center',flex:1}}>
             <Avatar.Icon size={100} icon="account-circle"/>
-            <Text style={{padding:20,fontSize:20}}>Luis Gutiérrez</Text>            
-            <Button compact={true} style={{justifyContent:'center',width:170,height:70,alignSelf:'center',margin:10}} theme={theme} mode='text'
-                    >
-            Cerrar Sesión
-            </Button>
+            <Button onPress={() => firebase.auth().signOut()}> Cerrar Sesión </Button>
         </View>
     );
 }
@@ -23,7 +19,7 @@ const theme = {
       primary: '#47C9C6',
       accent: '#47C9C6',
       background: '#3B4B61',
-      text:'white',
+      text:'black',
       placeholder: '#FAFAFA',
       surface: 'red',
       disabled: 'white'

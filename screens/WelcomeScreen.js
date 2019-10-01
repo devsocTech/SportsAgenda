@@ -7,7 +7,6 @@ export default class WelcomeScreen extends Component{
         super(props);
         
         this.state={
-
         }
     }
 
