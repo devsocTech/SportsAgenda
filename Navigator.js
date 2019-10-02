@@ -15,7 +15,7 @@ import AuthLoadingScreen from './screens/AuthLoadingScreen';
 import HomeAdminScreen from './screens/AdminHomeScreen';
 import AdminGamesScreen from './screens/AdminGamesScreen';
 import AdminTeamsScreen from './screens/AdminTeamsScreen';
-
+import firebase from 'firebase'
 
 const AuthNavigator = createStackNavigator({
     SignUp: SignUpScreen,

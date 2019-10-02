@@ -31,6 +31,8 @@ export default class HomeScreen extends Component{
             mensajeSnackBar: '',
             visibleSnackBar: false,
 
+            costoliga:0,
+
             codigoEquipo1: '',
             codigoEquipo2:'',
             dateParti:'',
@@ -111,7 +113,9 @@ export default class HomeScreen extends Component{
         let user = firebase.auth().currentUser;
         var refNuevaLiga = db.collection("ligas").doc();
         refNuevaLiga.set({
-            Nombre: this.state.nombreLiga
+            Nombre: this.state.nombreLiga,
+            Costo: this.state.costoliga,
+            CobranzaPendiente: 0
         })
         .then(function() {
             var ligaID= (refNuevaLiga.id);
@@ -159,6 +163,12 @@ export default class HomeScreen extends Component{
     setNombreLiga = (nombreLiga) =>{
         this.setState({
             nombreLiga:nombreLiga
+        })
+    }
+
+    setcostoliga = (costoliga) =>{
+        this.setState({
+            costoliga:costoliga
         })
     }
 
@@ -249,7 +259,11 @@ export default class HomeScreen extends Component{
                 setselecEquipo2={this.setselecEquipo2}
                 setdateParti={this.setdateParti}
                 setNombreLiga={this.setNombreLiga}
+                setcostoliga = {this.setcostoliga}
+
                 nombreEquipos = {this.state.nombreEquipos}
+
+                costoliga = {this.state.costoliga}
 
                 aceptarDialogAgregarLiga = {this.aceptarDialogAgregarLiga}
                 aceptarDialogProgramarPartido = {this.aceptarDialogProgramarPartido}>

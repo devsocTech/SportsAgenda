@@ -122,7 +122,11 @@ export default class HomeScreen extends Header{
             querySnapshot.forEach(function(doc) {
                 var data = doc.data();
                 var liga = data.liga;
-                if(data.Valido == true){
+                db.collection("ligas").doc(liga).get().then((doc)=>{
+                   var data = doc.data() 
+                   var costoLiga = data.Costo;
+
+                   if(data.Valido == true){
                     db.collection("usuarios").doc(user.uid).update({
                         ligas: firebase.firestore.FieldValue.arrayUnion(liga)
                     }).catch((error)=> {
@@ -146,7 +150,8 @@ export default class HomeScreen extends Header{
                                 this.setState({visibleSnackBar: true});
                             })
                             db.collection("ligas").doc(liga).update({
-                                Equipos: firebase.firestore.FieldValue.arrayUnion(docE.id)
+                               Equipos: firebase.firestore.FieldValue.arrayUnion(docE.id),
+                               CobranzaPendiente: firebase.firestore.FieldValue.increment(costoLiga),
                             }).catch((error)=> {
                                 this.setState({mensajeSnackBar: "Hubo un error al unirte a la liga"})
                                 this.setState({visibleSnackBar: true});
@@ -190,12 +195,16 @@ export default class HomeScreen extends Header{
                             })
                         });
                     })
+                }else{
+                    this.setState({mensajeSnackBar: "Este codigo no es válido"})
                 }
             })
         }).catch((error)=> {
             this.setState({mensajeSnackBar: "Hubo un error al unirte a la liga"})
             this.setState({visibleSnackBar: true});
         })
+        })
+                
         this.hideDialogUnirteLiga();
     }
 

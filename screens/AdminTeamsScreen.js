@@ -7,14 +7,16 @@ import firebase from 'firebase'
 export default class AdminTeamsScreen extends Component{
 
     constructor(props){
-        super(props)
+
+        super(props);
 
         this.state={
+            visible:false,
             title:'Equipos',
 
             equipos:[],
-            refreshing:false, 
-            
+            refreshing:false,
+
             leagueSelect:'',
             nleagueSelect:'',
             keyTeam:0,
@@ -23,7 +25,6 @@ export default class AdminTeamsScreen extends Component{
             nLigas:[],
             ligasMaster:[],
             equipo:'',
-            equipos:[],
         }
     }
 
@@ -67,7 +68,6 @@ obtenerLigas=()=>{
 }
 
 handleRefresh=()=>{
-    this.setState({refreshing:true})
     this.obtenerEquipos()
 }
 
@@ -77,7 +77,6 @@ obtenerEquipos=()=>{
     var arrayEquipos=[];
     
         ligas=this.state.leagueSelect
-        for(let i=0;i<ligas.length;i++){
             db.collection("ligas").doc(ligas).collection("equipos").get().then(querySnapshot=>{
                 querySnapshot.forEach((doc)=>{
                 var data=doc.data()
@@ -87,7 +86,6 @@ obtenerEquipos=()=>{
                 this.setState({equipos:arrayEquipos},()=>{console.log(this.state.equipos)})
             })
             })
-    }
 }
 
 

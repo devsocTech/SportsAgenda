@@ -41,7 +41,7 @@ export default (props)=>{
 
             <DatePicker
             style={{width: 275, alignSelf:'center'}}
-            date = {datetime}
+            date = {datetime}ñ
             mode="datetime"
             format="YYYY-MM-DD HH:mm"
             confirmBtnText="Confirm"
@@ -56,7 +56,7 @@ export default (props)=>{
               color: 'white',
               justifyContent: 'flex-start'
             }
-        }}
+          }}
         />
             </Dialog.Content>
             
@@ -78,6 +78,8 @@ export default (props)=>{
             <Dialog.Title>Agregar Liga</Dialog.Title>
             <Dialog.Content>
               <TextInput style={{alignSelf:'center', width:'100%'}} label="Nombre de la liga" onChangeText={(text)=>props.setNombreLiga(text)}></TextInput>
+              <TextInput style={{alignSelf:'center', width:'100%'}} label="Costo por equipo" onChangeText={(textzkz)=>props.setcostoliga(text)}></TextInput>
+            
             </Dialog.Content>
     
             <Dialog.Actions>
