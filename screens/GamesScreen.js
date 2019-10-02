@@ -1,10 +1,10 @@
 import React,{Component} from 'react';
 import {Text,View,Dimensions,StatusBar} from 'react-native';
-
 import Games from '../components/Games'
 import firebase from 'firebase'
 import Header from '../components/Header';
 import { TabView, SceneMap,TabBar } from 'react-native-tab-view';
+import SnackBars from '../components/SnackBars';
 
 export default class GamesScreen extends Component{
 
@@ -30,6 +30,9 @@ export default class GamesScreen extends Component{
             matchTeam:[],
             matchNext:[],
             matchFinish:[],
+            
+            visibleSnackBar: false,
+            mensajeSnackBar: '',
 
             index: 0,
             routes: [
@@ -81,7 +84,15 @@ export default class GamesScreen extends Component{
                 this.setState({nleagueSelect:nombreLiga[0]},()=>{})
                 this.setState({equipo:equipos[0]},()=>{})
             })
+            .catch((error)=> {
+                this.setState({mensajeSnackBar: "Hubo un error al obtener tus ligas"})
+                this.setState({visibleSnackBar: true});
+            });
         }})
+        .catch((error)=> {
+            this.setState({mensajeSnackBar: "Hubo un error al obtener tus ligas"})
+            this.setState({visibleSnackBar: true});
+        });
     }
     
     showDialog=()=>{
@@ -131,10 +142,23 @@ export default class GamesScreen extends Component{
                     this.setState({matchTeam:matchArray}, () => {
                     });
                 })
-            })
-        })
+                .catch((error)=> {
+                    this.setState({mensajeSnackBar: "Hubo un error al cargar tus partidos"})
+                    this.setState({visibleSnackBar: true});
+                });
+            }).catch((error)=> {
+                this.setState({mensajeSnackBar: "Hubo un error al cargar tus partidos"})
+                this.setState({visibleSnackBar: true});
+            });
+        }).catch((error)=> {
+            this.setState({mensajeSnackBar: "Hubo un error al cargar tus partidos"})
+            this.setState({visibleSnackBar: true});
+        });
         }
-        })
+        }).catch((error)=> {
+            this.setState({mensajeSnackBar: "Hubo un error al cargar tus partidos"})
+            this.setState({visibleSnackBar: true});
+        });
     }
 
     llenarpartidosFinalizados(){
@@ -171,8 +195,14 @@ export default class GamesScreen extends Component{
                 matchArray.push({nombreEquipoF,nombreEquipoV,stringDate,golesF,golesV,completado});
                 this.setState({matchFinish:matchArray}, () => {
                 });
-            })  
-        })
+            }).catch((error)=> {
+                this.setState({mensajeSnackBar: "Hubo un error al cargar tus partidos"})
+                this.setState({visibleSnackBar: true});
+            });
+        }).catch((error)=> {
+            this.setState({mensajeSnackBar: "Hubo un error al cargar tus partidos"})
+            this.setState({visibleSnackBar: true});
+        });
     })
     })
     }
@@ -212,10 +242,25 @@ export default class GamesScreen extends Component{
                 matchArray.push({nombreEquipoF,nombreEquipoV,stringDate,golesF,golesV,completado});
                 this.setState({matchNext:matchArray}, () => {
                 })
-                })
+                }).catch((error)=> {
+                    this.setState({mensajeSnackBar: "Hubo un error al cargar tus partidos"})
+                    this.setState({visibleSnackBar: true});
+                });
+                }).catch((error)=> {
+                    this.setState({mensajeSnackBar: "Hubo un error al cargar tus partidos"})
+                    this.setState({visibleSnackBar: true});
                 });
                 
             })
+        }).catch((error)=> {
+            this.setState({mensajeSnackBar: "Hubo un error al cargar tus partidos"})
+            this.setState({visibleSnackBar: true});
+        });
+    }
+
+    dismissSnackbar=()=>{
+        this.setState({
+            visibleSnackBar:false
         })
     }
 
@@ -233,15 +278,21 @@ export default class GamesScreen extends Component{
         return(
             <View style={{flex:1}}>
                 <Header ligasMaster={this.state.ligasMaster} leagueSelect={this.state.leagueSelect} nleagueSelect={this.state.nleagueSelect} selectLeagues={this.selectLeagues} tit={this.state.title}></Header>              
-              <TabView
-                navigationState={this.state}
-                renderScene={this._renderScene}
-                onIndexChange={index => this.setState({ index })}
-                initialLayout={{ width: Dimensions.get('window').width }}
-                renderTabBar={props=><TabBar {...props} indicatorStyle={{ backgroundColor: '#47C9C6' }}
-                labelStyle={{color:'#47C9C6',fontWeight:'bold'}}
-                style={{ paddingTop:10,backgroundColor: '#FAFAFA' }}></TabBar>}
-              />
+            <TabView
+            navigationState={this.state}
+            renderScene={this._renderScene}
+            onIndexChange={index => this.setState({ index })}
+            initialLayout={{ width: Dimensions.get('window').width }}
+            renderTabBar={props=><TabBar {...props} indicatorStyle={{ backgroundColor: '#47C9C6' }}
+            labelStyle={{color:'#47C9C6',fontWeight:'bold'}}
+            style={{ paddingTop:10,backgroundColor: '#FAFAFA' }}></TabBar>}
+            />
+            <SnackBars
+               mensajeSnackBar= {this.state.mensajeSnackBar}
+               visibleSnackBar={this.state.visibleSnackBar}
+               dismissSnackbar = {this.dismissSnackbar}
+            ></SnackBars>
+
             </View>
         );
     }

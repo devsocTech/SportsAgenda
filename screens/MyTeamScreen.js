@@ -2,6 +2,8 @@ import React,{Component} from 'react';
 import {Text,View} from 'react-native';
 import MyTeam from '../components/MyTeam';
 import Header from '../components/Header'
+import SnackBars from '../components/SnackBars';
+import firebase from 'firebase'
 
 export default class Tablecreen extends Component{
     constructor(props){
@@ -11,6 +13,18 @@ export default class Tablecreen extends Component{
             title:'Mi Equipo',
             nombreJugador: "",
             visibleAgregarJugador:false,
+            visibleSnackBar: false,
+            mensajeSnackBar: '',
+            leagueSelect:'',
+            nleagueSelect:'',
+            keyTeam:0,
+
+            ligas:[],
+            nLigas:[],
+            ligasMaster:[],
+            equipo:'',
+            equipos:[],
+
         }
     }
 
@@ -51,19 +65,45 @@ export default class Tablecreen extends Component{
                 this.setState({leagueSelect:ligas[0]},()=>{})
                 this.setState({nleagueSelect:nombreLiga[0]},()=>{})
                 this.setState({equipo:equipos[0]},()=>{})
+            }).catch((error)=> {
+                this.setState({mensajeSnackBar: "Hubo un error al unirte al obtener tus ligas"})
+                this.setState({visibleSnackBar: true});
             })
-        }})
+        }}).catch((error)=> {
+            this.setState({mensajeSnackBar: "Hubo un error al unirte al obtener tus ligas"})
+            this.setState({visibleSnackBar: true});
+        })
     }
 
     
     aceptarDialogAgregarJugador = () => {
+        var user = firebase.auth().currentUser;
         var db = firebase.firestore();
         var liga = this.state.leagueSelect;
         var equipo = this.state.equipo;
         var nombre = this.state.nombreJugador;
-        db.collection("ligas").doc(liga).collection("equipos").doc(equipo).collection("Jugadores").add({
-            Nombre : nombre
+        db.collection("ligas").doc(liga).collection("equipos").doc(equipo).get().then((doc)=>{
+            var dataEquipo = doc.data();
+            var Capitan = dataEquipo.Capitan;
+            if(Capitan == user.uid){
+                db.collection("ligas").doc(liga).collection("equipos").doc(equipo).collection("Jugadores").add({
+                    Nombre : nombre
+                }).then(()=> {
+                    var succcess = "Se ha agregado un jugador"
+                    this.setState({mensajeSnackBar: succcess})
+                    this.setState({visibleSnackBar: true});
+                }).catch(()=> {
+                    this.setState({mensajeSnackBar: "Hubo un error al agregar un jugador"})
+                    this.setState({visibleSnackBar: true});
+                })
+    
+            }
+            else{
+                this.setState({mensajeSnackBar: "No eres capitan del equipo"})
+                this.setState({visibleSnackBar: true});
+            }
         })
+        
         this.setState({visibleAgregarJugador: false});
     }
 
@@ -81,6 +121,12 @@ export default class Tablecreen extends Component{
         this.setState({ visibleAgregarJugador: false })
     }
 
+    dismissSnackbar=()=>{
+        this.setState({
+            visibleSnackBar:false
+        })
+    }
+
 
     render(){
         return(
@@ -93,7 +139,14 @@ export default class Tablecreen extends Component{
             showDialogAgregarJugador={this.showDialogAgregarJugador}
             hideDialogAgregarJugador={this.hideDialogAgregarJugador}
             visibleAgregarJugador={this.state.visibleAgregarJugador}
-            setNombreJugador={this.setNombreJugador}/>
+            setNombreJugador={this.setNombreJugador}
+            aceptarDialogAgregarJugador = {this.aceptarDialogAgregarJugador}/>
+            
+            <SnackBars
+               mensajeSnackBar= {this.state.mensajeSnackBar}
+               visibleSnackBar={this.state.visibleSnackBar}
+               dismissSnackbar = {this.dismissSnackbar}
+            ></SnackBars>
 
             </View>
         );

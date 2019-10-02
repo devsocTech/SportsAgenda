@@ -24,7 +24,6 @@ export default class Tablecreen extends Component{
             ligasMaster:[],
             equipo:'',
             equipos:[],
-
             rows:[],
         }
     }
@@ -35,14 +34,14 @@ export default class Tablecreen extends Component{
     }
 
     selectLeagues=(value,key)=>{
-      this.setState({leagueSelect:value},()=>{})
+      this.setState({leagueSelect:value},()=>{this.handleRefresh()})
       var equipo=this.state.equipos[key]
-      this.setState({equipo:equipo},()=>{this.handleRefresh()})
+      this.setState({equipo:equipo},()=>{})
       
     }
 
     handleRefresh=()=>{
-      this.llenarTabla()
+      this.llenarTabla(()=>{})
   }
 
     obtenerLigas=()=>{
@@ -66,8 +65,14 @@ export default class Tablecreen extends Component{
               this.setState({leagueSelect:ligas[0]},()=>{})
               this.setState({nleagueSelect:nombreLiga[0]},()=>{})
               this.setState({equipo:equipos[0]},()=>{})
-          })
-      }})
+          }).catch((error)=> {
+            this.setState({mensajeSnackBar: "Hubo un error al cargar tus ligas"})
+            this.setState({visibleSnackBar: true});
+        });
+      }}).catch((error)=> {
+        this.setState({mensajeSnackBar: "Hubo un error al cargar tus ligas"})
+        this.setState({visibleSnackBar: true});
+    });
     }
 
     llenarTabla=()=>{
@@ -90,31 +95,30 @@ export default class Tablecreen extends Component{
             })
             arreglo.push({nombreEquipo, PTS, J, G, P, E, DG});
             contador++; 
-            this.setState({team:arreglo }, () => { this.llenarTablaGrafica()});
+            this.setState({team:arreglo }, () => {
+
+              var array = this.state.team;
+              var rows=[];
+              for (let i=0;i<array.length;i++){
+               rows.push(
+              <DataTable.Row theme={theme}>
+                  <DataTable.Cell style={{flex:6}}>{array[i].nombreEquipo}</DataTable.Cell>
+                  <DataTable.Cell style={{flex:1}}numeric>{array[i].PTS}</DataTable.Cell>
+                  <DataTable.Cell style={{flex:1}}numeric>{array[i].J}</DataTable.Cell>
+                  <DataTable.Cell style={{flex:1}}numeric>{array[i].G}</DataTable.Cell>
+                  <DataTable.Cell style={{flex:1}}numeric>{array[i].P}</DataTable.Cell>
+                  <DataTable.Cell style={{flex:1}}numeric>{array[i].E}</DataTable.Cell>
+                  <DataTable.Cell style={{flex:1}}numeric>{array[i].DG}</DataTable.Cell>
+              </DataTable.Row>)
+              } 
+              this.setState({rows:rows},()=>{console.log(this.state.rows)})
+            });
           })
         })
-        .catch(function(error) {
-            console.log("Error getting documents: ", error);
-        });
-    }
-
-    llenarTablaGrafica=()=>{
-      var rows=[];
-      var array = this.state.team;
-      for (let i=0;i<array.length;i++){
-          rows.push(
-          <DataTable.Row theme={theme}>
-             <DataTable.Cell style={{flex:6}}>{array[i].nombreEquipo}</DataTable.Cell>
-             <DataTable.Cell style={{flex:1}}numeric>{array[i].PTS}</DataTable.Cell>
-             <DataTable.Cell style={{flex:1}}numeric>{array[i].J}</DataTable.Cell>
-             <DataTable.Cell style={{flex:1}}numeric>{array[i].G}</DataTable.Cell>
-             <DataTable.Cell style={{flex:1}}numeric>{array[i].P}</DataTable.Cell>
-             <DataTable.Cell style={{flex:1}}numeric>{array[i].E}</DataTable.Cell>
-             <DataTable.Cell style={{flex:1}}numeric>{array[i].DG}</DataTable.Cell>
-         </DataTable.Row>)
-     }
-     this.setState({rows:rows},()=>{})
-      
+        .catch((error)=> {
+          this.setState({mensajeSnackBar: "Hubo un error al cargar la tabla de posiciones"})
+          this.setState({visibleSnackBar: true});
+      });
     }
 
     showDialog = () => {
@@ -124,11 +128,7 @@ export default class Tablecreen extends Component{
     hideDialog = () => {
         this.setState({ visible: false })
     }
-
-    selectLeague=(leagueSelect)=>{
-        this.setState({leagueSelect:leagueSelect})
-    }
-
+    
     render(){
         return(
           <View style={{flex:1}}>
@@ -136,14 +136,15 @@ export default class Tablecreen extends Component{
             <Table 
             team={this.state.team}
 
+            rows={this.state.rows}
+
             Title={this.state.title}
             showDialog={this.showDialog}
             hideDialog={this.hideDialog}
             visible={this.state.visible}
 
             selectLeague={this.selectLeague}
-            leagueSelect={this.state.leagueSelect}
-            rows={this.state.rows}/>
+            leagueSelect={this.state.leagueSelect}/>
 
           </View>
             

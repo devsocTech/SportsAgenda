@@ -4,6 +4,7 @@ import AdminGames from '../components/AdminGames';
 import Header from '../components/Header'
 import firebase from 'firebase'
 import { TabView, TabBar } from 'react-native-tab-view';
+import SnackBars from '../components/SnackBars';
 
 
 
@@ -40,6 +41,9 @@ export default class AdminGamesScreen extends Component{
             ligasMaster:[],
             equipo:'',
             equipos:[],
+
+            visibleSnackBar: false,
+            mensajeSnackBar: '',
 
             index: 0,
             routes: [
@@ -84,11 +88,19 @@ export default class AdminGamesScreen extends Component{
                 this.setState({nleagueSelect:nombreLiga[0]},()=>{})
                 this.setState({equipo:equipos[0]},()=>{})
             })
-        }})
+            .catch((error)=> {
+                this.setState({mensajeSnackBar: "Hubo un error al cargar tus ligas"})
+                this.setState({visibleSnackBar: true});
+            });
+        }
+    })
+        .catch((error)=> {
+            this.setState({mensajeSnackBar: "Hubo un error al cargar tus ligas"})
+            this.setState({visibleSnackBar: true});
+        });
     }
 
     handleRefresh=()=>{
-        this.llenarpartidosEquipo();
         this.llenarpartidosFinalizados();
         this.llenarpartidosProximos();
     }
@@ -141,8 +153,16 @@ export default class AdminGamesScreen extends Component{
                 matchArray.push({keyId,nombreEquipoF,nombreEquipoV,stringDate,golesF,golesV,completado});
                 this.setState({matchFinish:matchArray}, () => {
                 });
-            })  
+            })
+            .catch((error)=> {
+                this.setState({mensajeSnackBar: "Hubo un error al cargar tus partidos"})
+                this.setState({visibleSnackBar: true});
+            });  
         })
+        .catch((error)=> {
+            this.setState({mensajeSnackBar: "Hubo un error al cargar tus partidos"})
+            this.setState({visibleSnackBar: true});
+        });
     })
     })
     }
@@ -184,6 +204,15 @@ export default class AdminGamesScreen extends Component{
                 this.setState({matchNext:matchArray}, () => {
                 })
                 })
+                .catch((error)=> {
+                    this.setState({mensajeSnackBar: "Hubo un error al cargar tus partidos"})
+                    this.setState({visibleSnackBar: true});
+                });
+
+                })
+                .catch((error)=> {
+                    this.setState({mensajeSnackBar: "Hubo un error al cargar tus partidos"})
+                    this.setState({visibleSnackBar: true});
                 });
                 
             })
@@ -243,21 +272,53 @@ export default class AdminGamesScreen extends Component{
                     db.collection("ligas").doc(liga).collection("partidos").doc(selecciónPartido).update({
                         golesequipoF: golesequipoFN,
                         golesequipoV: golesequipoVN,  
+                    }).then(()=> {
+                        var success = "Se registró tu partido"
+                        this.setState({mensajeSnackBar: success})
+                        this.setState({visibleSnackBar: true});
                     })
+                    .catch((error)=> {
+                        this.setState({mensajeSnackBar: "Hubo un error al registrar el marcador"})
+                        this.setState({visibleSnackBar: true});
+                    });
                     db.collection("ligas").doc(liga).collection("equipos").doc(equipoF).update({
                         GolesContra: firebase.firestore.FieldValue.increment(difGV),
                         GolesFavor: firebase.firestore.FieldValue.increment(difGF),
+                    }).then(()=> {
+                        var success = "Se registró tu partido"
+                        this.setState({mensajeSnackBar: success})
+                        this.setState({visibleSnackBar: true});
                     })
+                    .catch((error)=> {
+                        this.setState({mensajeSnackBar: "Hubo un error al registrar el marcador"})
+                        this.setState({visibleSnackBar: true});
+                    });
                     db.collection("ligas").doc(liga).collection("equipos").doc(equipoV).update({
                         GolesContra: firebase.firestore.FieldValue.increment(difGF),
                         GolesFavor: firebase.firestore.FieldValue.increment(difGV),
+                    }).then(()=> {
+                        var success = "Se registró tu partido"
+                        this.setState({mensajeSnackBar: success})
+                        this.setState({visibleSnackBar: true});
                     })
+                    .catch((error)=> {
+                        this.setState({mensajeSnackBar: "Hubo un error al registrar el marcador"})
+                        this.setState({visibleSnackBar: true});
+                    });
                 }
                 else{
                     db.collection("ligas").doc(liga).collection("partidos").doc(selecciónPartido).update({
                         golesequipoF: golesequipoFN,
                         golesequipoV: golesequipoVN,  
+                    }).then(()=> {
+                        var success = "Se registró tu partido"
+                        this.setState({mensajeSnackBar: success})
+                        this.setState({visibleSnackBar: true});
                     })
+                    .catch((error)=> {
+                        this.setState({mensajeSnackBar: "Hubo un error al registrar el marcador"})
+                        this.setState({visibleSnackBar: true});
+                    });
                     if(ganadorN == "F" && ganadorO == "V"){
                         db.collection("ligas").doc(liga).collection("equipos").doc(equipoV).update({
                             PartidosGanados: firebase.firestore.FieldValue.increment(-1),
@@ -265,14 +326,30 @@ export default class AdminGamesScreen extends Component{
                             Puntos: firebase.firestore.FieldValue.increment(-3),
                             GolesContra: firebase.firestore.FieldValue.increment(difGF),
                             GolesFavor: firebase.firestore.FieldValue.increment(difGV),
+                        }).then(()=> {
+                            var success = "Se registró tu partido"
+                            this.setState({mensajeSnackBar: success})
+                            this.setState({visibleSnackBar: true});
                         })
+                        .catch((error)=> {
+                            this.setState({mensajeSnackBar: "Hubo un error al registrar el marcador"})
+                            this.setState({visibleSnackBar: true});
+                        });
                         db.collection("ligas").doc(liga).collection("equipos").doc(equipoF).update({
                             PartidosGanados: firebase.firestore.FieldValue.increment(1),
                             PartidosPerdidos: firebase.firestore.FieldValue.increment(-1),
                             Puntos: firebase.firestore.FieldValue.increment(3),
                             GolesContra: firebase.firestore.FieldValue.increment(difGV),
                             GolesFavor: firebase.firestore.FieldValue.increment(difGF),
+                        }).then(()=> {
+                            var success = "Se registró tu partido"
+                            this.setState({mensajeSnackBar: success})
+                            this.setState({visibleSnackBar: true});
                         })
+                        .catch((error)=> {
+                            this.setState({mensajeSnackBar: "Hubo un error al registrar el marcador"})
+                            this.setState({visibleSnackBar: true});
+                        });
                     }
                     else if(ganadorN == "V" && ganadorO == "F"){
                         db.collection("ligas").doc(liga).collection("equipos").doc(equipoF).update({
@@ -280,14 +357,30 @@ export default class AdminGamesScreen extends Component{
                             PartidosPerdidos: firebase.firestore.FieldValue.increment(1),
                             GolesContra: firebase.firestore.FieldValue.increment(difGV),
                             GolesFavor: firebase.firestore.FieldValue.increment(difGF),
+                        }).then(()=> {
+                            var success = "Se registró tu partido"
+                            this.setState({mensajeSnackBar: success})
+                            this.setState({visibleSnackBar: true});
                         })
+                        .catch((error)=> {
+                            this.setState({mensajeSnackBar: "Hubo un error al registrar el marcador"})
+                            this.setState({visibleSnackBar: true});
+                        });
                         db.collection("ligas").doc(liga).collection("equipos").doc(equipoV).update({
                             PartidosGanados: firebase.firestore.FieldValue.increment(1),
                             PartidosPerdidos: firebase.firestore.FieldValue.increment(-1),
                             Puntos: firebase.firestore.FieldValue.increment(3),
                             GolesContra: firebase.firestore.FieldValue.increment(difGF),
                             GolesFavor: firebase.firestore.FieldValue.increment(difGV),
+                        }).then(()=> {
+                            var success = "Se registró tu partido"
+                            this.setState({mensajeSnackBar: success})
+                            this.setState({visibleSnackBar: true});
                         })
+                        .catch((error)=> {
+                            this.setState({mensajeSnackBar: "Hubo un error al registrar el marcador"})
+                            this.setState({visibleSnackBar: true});
+                        });
                     }
                     else if(ganadorN == "E" && ganadorO == "F"){
                         db.collection("ligas").doc(liga).collection("equipos").doc(equipoF).update({
@@ -296,14 +389,30 @@ export default class AdminGamesScreen extends Component{
                             Puntos: firebase.firestore.FieldValue.increment(-2),
                             GolesContra: firebase.firestore.FieldValue.increment(difGV),
                             GolesFavor: firebase.firestore.FieldValue.increment(difGF),
+                        }).then(()=> {
+                            var success = "Se registró tu partido"
+                            this.setState({mensajeSnackBar: success})
+                            this.setState({visibleSnackBar: true});
                         })
+                        .catch((error)=> {
+                            this.setState({mensajeSnackBar: "Hubo un error al registrar el marcador"})
+                            this.setState({visibleSnackBar: true});
+                        });
                         db.collection("ligas").doc(liga).collection("equipos").doc(equipoV).update({
                             PartidosPerdidos: firebase.firestore.FieldValue.increment(-1),
                             PartidosEmpatados: firebase.firestore.FieldValue.increment(1),
                             Puntos: firebase.firestore.FieldValue.increment(1),
                             GolesContra: firebase.firestore.FieldValue.increment(difGF),
                             GolesFavor: firebase.firestore.FieldValue.increment(difGV),
+                        }).then(()=> {
+                            var success = "Se registró tu partido"
+                            this.setState({mensajeSnackBar: success})
+                            this.setState({visibleSnackBar: true});
                         })
+                        .catch((error)=> {
+                            this.setState({mensajeSnackBar: "Hubo un error al registrar el marcador"})
+                            this.setState({visibleSnackBar: true});
+                        });
                     }
                     else if(ganadorN == "E" && ganadorO == "V"){
                         db.collection("ligas").doc(liga).collection("equipos").doc(equipoV).update({
@@ -312,14 +421,30 @@ export default class AdminGamesScreen extends Component{
                             Puntos: firebase.firestore.FieldValue.increment(-2),
                             GolesContra: firebase.firestore.FieldValue.increment(difGF),
                             GolesFavor: firebase.firestore.FieldValue.increment(difGV),
+                        }).then(()=> {
+                            var success = "Se registró tu partido"
+                            this.setState({mensajeSnackBar: success})
+                            this.setState({visibleSnackBar: true});
                         })
+                        .catch((error)=> {
+                            this.setState({mensajeSnackBar: "Hubo un error al registrar el marcador"})
+                            this.setState({visibleSnackBar: true});
+                        });
                         db.collection("ligas").doc(liga).collection("equipos").doc(equipoF).update({
                             PartidosPerdidos: firebase.firestore.FieldValue.increment(-1),
                             PartidosEmpatados: firebase.firestore.FieldValue.increment(1),
                             Puntos: firebase.firestore.FieldValue.increment(1),
                             GolesContra: firebase.firestore.FieldValue.increment(difGV),
                             GolesFavor: firebase.firestore.FieldValue.increment(difGF),
+                        }).then(()=> {
+                            var success = "Se registró tu partido"
+                            this.setState({mensajeSnackBar: success})
+                            this.setState({visibleSnackBar: true});
                         })
+                        .catch((error)=> {
+                            this.setState({mensajeSnackBar: "Hubo un error al registrar el marcador"})
+                            this.setState({visibleSnackBar: true});
+                        });
                     }
                     else if(ganadorN == "V" && ganadorO == "E"){
                         db.collection("ligas").doc(liga).collection("equipos").doc(equipoF).update({
@@ -328,14 +453,30 @@ export default class AdminGamesScreen extends Component{
                             Puntos: firebase.firestore.FieldValue.increment(-1),
                             GolesContra: firebase.firestore.FieldValue.increment(difGV),
                             GolesFavor: firebase.firestore.FieldValue.increment(difGF),
+                        }).then(()=> {
+                            var success = "Se registró tu partido"
+                            this.setState({mensajeSnackBar: success})
+                            this.setState({visibleSnackBar: true});
                         })
+                        .catch((error)=> {
+                            this.setState({mensajeSnackBar: "Hubo un error al registrar el marcador"})
+                            this.setState({visibleSnackBar: true});
+                        });
                         db.collection("ligas").doc(liga).collection("equipos").doc(equipoV).update({
                             PartidosGanados: firebase.firestore.FieldValue.increment(1),
                             PartidosEmpatados: firebase.firestore.FieldValue.increment(-1),
                             Puntos: firebase.firestore.FieldValue.increment(2),
                             GolesContra: firebase.firestore.FieldValue.increment(difGF),
                             GolesFavor: firebase.firestore.FieldValue.increment(difGV),
+                        }).then(()=> {
+                            var success = "Se registró tu partido"
+                            this.setState({mensajeSnackBar: success})
+                            this.setState({visibleSnackBar: true});
                         })
+                        .catch((error)=> {
+                            this.setState({mensajeSnackBar: "Hubo un error al registrar el marcador"})
+                            this.setState({visibleSnackBar: true});
+                        });
                     }
                     else if(ganadorN == "F" && ganadorO == "E"){
                         db.collection("ligas").doc(liga).collection("equipos").doc(equipoF).update({
@@ -344,14 +485,30 @@ export default class AdminGamesScreen extends Component{
                             Puntos: firebase.firestore.FieldValue.increment(2),
                             GolesContra: firebase.firestore.FieldValue.increment(difGV),
                             GolesFavor: firebase.firestore.FieldValue.increment(difGF),
+                        }).then(()=> {
+                            var success = "Se registró tu partido"
+                            this.setState({mensajeSnackBar: success})
+                            this.setState({visibleSnackBar: true});
                         })
+                        .catch((error)=> {
+                            this.setState({mensajeSnackBar: "Hubo un error al registrar el marcador"})
+                            this.setState({visibleSnackBar: true});
+                        });
                         db.collection("ligas").doc(liga).collection("equipos").doc(equipoV).update({
                             PartidosPerdidos: firebase.firestore.FieldValue.increment(1),
                             PartidosEmpatados: firebase.firestore.FieldValue.increment(-1),
                             Puntos: firebase.firestore.FieldValue.increment(-1),
                             GolesContra: firebase.firestore.FieldValue.increment(difGF),
                             GolesFavor: firebase.firestore.FieldValue.increment(difGV),
+                        }).then(()=> {
+                            var success = "Se registró tu partido"
+                            this.setState({mensajeSnackBar: success})
+                            this.setState({visibleSnackBar: true});
                         })
+                        .catch((error)=> {
+                            this.setState({mensajeSnackBar: "Hubo un error al registrar el marcador"})
+                            this.setState({visibleSnackBar: true});
+                        });
                     }
                 }
 
@@ -361,7 +518,15 @@ export default class AdminGamesScreen extends Component{
                     completado: true,
                     golesequipoF: golesequipoFN,
                     golesequipoV: golesequipoVN
+                }).then(()=> {
+                    var success = "Se registró tu partido"
+                    this.setState({mensajeSnackBar: success})
+                    this.setState({visibleSnackBar: true});
                 })
+                .catch((error)=> {
+                    this.setState({mensajeSnackBar: "Hubo un error al registrar el marcador"})
+                    this.setState({visibleSnackBar: true});
+                });
                 db.collection("ligas").doc(liga).collection("partidos").doc(selecciónPartido).get().then(function(doc) {
                     var data = doc.data();
                     var equipoF = data.equipoF;
@@ -374,13 +539,29 @@ export default class AdminGamesScreen extends Component{
                             Puntos: firebase.firestore.FieldValue.increment(3),
                             GolesContra: firebase.firestore.FieldValue.increment(golesequipoVN),
                             GolesFavor: firebase.firestore.FieldValue.increment(golesequipoFN)
+                        }).then(()=> {
+                            var success = "Se registró tu partido"
+                            this.setState({mensajeSnackBar: success})
+                            this.setState({visibleSnackBar: true});
                         })
+                        .catch((error)=> {
+                            this.setState({mensajeSnackBar: "Hubo un error al registrar el marcador"})
+                            this.setState({visibleSnackBar: true});
+                        });
                         db.collection("ligas").doc(liga).collection("equipos").doc(equipoV).update({
                             PartidosJugados: firebase.firestore.FieldValue.increment(1),
                             PartidosPerdidos: firebase.firestore.FieldValue.increment(1),
                             GolesContra: firebase.firestore.FieldValue.increment(golesequipoFN),
                             GolesFavor: firebase.firestore.FieldValue.increment(golesequipoVN)
+                        }).then(()=> {
+                            var success = "Se registró tu partido"
+                            this.setState({mensajeSnackBar: success})
+                            this.setState({visibleSnackBar: true});
                         })
+                        .catch((error)=> {
+                            this.setState({mensajeSnackBar: "Hubo un error al registrar el marcador"})
+                            this.setState({visibleSnackBar: true});
+                        });
                     }
                     else if(golesequipoVN>golesequipoFN){
                         db.collection("ligas").doc(liga).collection("equipos").doc(equipoV).update({
@@ -389,13 +570,29 @@ export default class AdminGamesScreen extends Component{
                             Puntos: firebase.firestore.FieldValue.increment(3),
                             GolesContra: firebase.firestore.FieldValue.increment(golesequipoFN),
                             GolesFavor: firebase.firestore.FieldValue.increment(golesequipoVN)
+                        }).then(()=> {
+                            var success = "Se registró tu partido"
+                            this.setState({mensajeSnackBar: success})
+                            this.setState({visibleSnackBar: true});
                         })
+                        .catch((error)=> {
+                            this.setState({mensajeSnackBar: "Hubo un error al registrar el marcador"})
+                            this.setState({visibleSnackBar: true});
+                        });
                         db.collection("ligas").doc(liga).collection("equipos").doc(equipoF).update({
                             PartidosJugados: firebase.firestore.FieldValue.increment(1),
                             PartidosPerdidos: firebase.firestore.FieldValue.increment(1),
                             GolesContra: firebase.firestore.FieldValue.increment(golesequipoVN),
                             GolesFavor: firebase.firestore.FieldValue.increment(golesequipoFN)
+                        }).then(()=> {
+                            var success = "Se registró tu partido"
+                            this.setState({mensajeSnackBar: success})
+                            this.setState({visibleSnackBar: true});
                         })
+                        .catch((error)=> {
+                            this.setState({mensajeSnackBar: "Hubo un error al registrar el marcador"})
+                            this.setState({visibleSnackBar: true});
+                        });
                     }
                     else{
                         db.collection("ligas").doc(liga).collection("equipos").doc(equipoV).update({
@@ -404,21 +601,43 @@ export default class AdminGamesScreen extends Component{
                             Puntos: firebase.firestore.FieldValue.increment(1),
                             GolesContra: firebase.firestore.FieldValue.increment(golesequipoFN),
                             GolesFavor: firebase.firestore.FieldValue.increment(golesequipoVN)
+                        }).then(()=> {
+                            var success = "Se registró tu partido"
+                            this.setState({mensajeSnackBar: success})
+                            this.setState({visibleSnackBar: true});
                         })
+                        .catch((error)=> {
+                            this.setState({mensajeSnackBar: "Hubo un error al registrar el marcador"})
+                            this.setState({visibleSnackBar: true});
+                        });
                         db.collection("ligas").doc(liga).collection("equipos").doc(equipoF).update({
                             PartidosJugados: firebase.firestore.FieldValue.increment(1),
                             PartidosEmpatados: firebase.firestore.FieldValue.increment(1),
                             Puntos: firebase.firestore.FieldValue.increment(1),
                             GolesContra: firebase.firestore.FieldValue.increment(golesequipoVN),
                             GolesFavor: firebase.firestore.FieldValue.increment(golesequipoFN)
+                        }).then(()=> {
+                            var success = "Se registró tu partido"
+                            this.setState({mensajeSnackBar: success})
+                            this.setState({visibleSnackBar: true});
                         })
+                        .catch((error)=> {
+                            this.setState({mensajeSnackBar: "Hubo un error al registrar el marcador"})
+                            this.setState({visibleSnackBar: true});
+                        });
                     }
-                }) 
+                })
             }
-            else{
-                console.log("Hubo un error");
-            }
+        }).then(()=> {
+            var success = "Se registró tu partido"
+            this.setState({mensajeSnackBar: success})
+            this.setState({visibleSnackBar: true});
         })
+        .catch((error)=> {
+            this.setState({mensajeSnackBar: "Hubo un error al registrar el marcador"})
+            this.setState({visibleSnackBar: true});
+        });
+
         this.hideDialog();
         this.handleRefresh();
     }
@@ -429,6 +648,12 @@ export default class AdminGamesScreen extends Component{
 
     changeV=(num)=>{
         this.setState({itemGolesV:num})
+    }
+
+    dismissSnackbar=()=>{
+        this.setState({
+            visibleSnackBar:false
+        })
     }
     
     _renderScene=({route})=>{
@@ -451,6 +676,12 @@ export default class AdminGamesScreen extends Component{
                 labelStyle={{color:'#47C9C6',fontWeight:'bold'}}
                 style={{ paddingTop:10,backgroundColor: '#FAFAFA' }}></TabBar>}
               />
+            <SnackBars
+                mensajeSnackBar= {this.state.mensajeSnackBar}
+                visibleSnackBar={this.state.visibleSnackBar}
+                dismissSnackbar = {this.dismissSnackbar}
+            ></SnackBars>
+
             </View>
         );
     }

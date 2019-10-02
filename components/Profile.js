@@ -1,6 +1,7 @@
 import React,{Component} from 'react';
 import {View} from 'react-native';
 import {DefaultTheme, Button,Avatar, Text} from 'react-native-paper';
+import firebase from 'firebase';
 
 export default (props)=>{
     return(

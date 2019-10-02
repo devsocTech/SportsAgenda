@@ -10,9 +10,12 @@ import HomeScreen from './screens/HomeScreen';
 import TableScreen from './screens/TableScreen';
 import GamesScreen from './screens/GamesScreen';
 import MyTeamScreen from './screens/MyTeamScreen';
+import ProfileScreen from './screens/ProfileScreen';
 import AuthLoadingScreen from './screens/AuthLoadingScreen';
 import HomeAdminScreen from './screens/AdminHomeScreen';
 import AdminGamesScreen from './screens/AdminGamesScreen';
+import AdminTeamsScreen from './screens/AdminTeamsScreen';
+
 
 const AuthNavigator = createStackNavigator({
     SignUp: SignUpScreen,
@@ -41,10 +44,10 @@ const AppNavigator=createMaterialBottomTabNavigator({
                         <Icon name="home" color={tintColor} size={26}/>
                         )
                     }},
-            MyTeam: {screen: MyTeamScreen,
+            Profile: {screen: ProfileScreen,
             navigationOptions:{
             tabBarIcon:({tintColor})=>(
-                <Icon name="shield-half-full" color={tintColor} size={26}/>
+                <Icon name="account" color={tintColor} size={26}/>
             )
             }},
 },{
@@ -74,13 +77,20 @@ const AdminNavigator=createMaterialBottomTabNavigator({
                         <Icon name="home" color={tintColor} size={26}/>
                         )
                     }},
-            MyTeam: {screen: MyTeamScreen,
+
+            Teams: {screen: AdminTeamsScreen,
+                navigationOptions:{
+                    tabBarIcon:({tintColor})=>(
+                        <Icon name="shield-half-full" color={tintColor} size={26}/>
+                        )
+                    }},
+            
+            Profile: {screen: ProfileScreen,
             navigationOptions:{
             tabBarIcon:({tintColor})=>(
-                <Icon name="shield-half-full" color={tintColor} size={26}/>
+                <Icon name="account" color={tintColor} size={26}/>
             )
             }},
-            
 },{
     initialRouteName: 'Home',
     labeled: false,

@@ -5,6 +5,7 @@ import RNPickerSelect from 'react-native-picker-select';
 import DatePicker from 'react-native-datepicker';
 
 export default (props)=>{
+
   const datetime = props.dateParti;
   var label1 = {label: 'Equipo a favor'};
   var label2 = {label: 'Equipo en contra'};
@@ -22,6 +23,7 @@ export default (props)=>{
              theme={theme}>
             <Dialog.Title>Programar Partido</Dialog.Title>
             <Dialog.Content >
+
             <RNPickerSelect
             placeholder = {label1}
             placeholderTextColor='white'
@@ -40,7 +42,6 @@ export default (props)=>{
             <DatePicker
             style={{width: 275, alignSelf:'center'}}
             date = {datetime}
-            placeholder = "Pon tu puta liga"
             mode="datetime"
             format="YYYY-MM-DD HH:mm"
             confirmBtnText="Confirm"
@@ -52,13 +53,11 @@ export default (props)=>{
               color: '#234456'
             },
             dateText:{
-              color: '#ffff',
+              color: 'white',
               justifyContent: 'flex-start'
             }
         }}
-            />
-
-            
+        />
             </Dialog.Content>
             
             <Dialog.Actions>
@@ -68,6 +67,7 @@ export default (props)=>{
               <Button onPress={props.hideDialogProgramarPartido}>Cancelar</Button>
             </Dialog.Actions>
             </Dialog>
+            
         </Portal>
 
         <Portal>
@@ -103,7 +103,7 @@ const theme = {
       background: '#3B4B61',
       text:'white',
       placeholder: '#FAFAFA',
-      surface: 'red',
+      surface: '#3B4B61',
       disabled: 'white'
     }
   };

@@ -16,7 +16,7 @@ export default (props)=>{
             <TextInput secureTextEntry={true} style={{alignSelf:'center', width:'75%'}} label="Confirmar Contraseña" onChangeText={(text)=>props.setPassword2(text)}>{props.Pass2}</TextInput>
             
             <View style={{flexDirection:'row',paddingTop:20,paddingLeft:15,alignSelf:'center', width:'75%'}}>
-            <Subheading style={{paddingRight:10}}>Soy Admin</Subheading>
+            <Subheading style={{paddingRight:10}}>Soy administrador de una liga</Subheading>
             <Switch color="#47C9C6" value={isSwitchOn} onValueChange={()=>props.setAdmin(!isSwitchOn)}></Switch>
             </View>
 

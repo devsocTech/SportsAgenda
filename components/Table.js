@@ -2,8 +2,10 @@ import React,{Component} from 'react'
 import {View} from 'react-native'
 import {DataTable,Avatar,DefaultTheme} from 'react-native-paper'
 import { ScrollView } from 'react-native-gesture-handler';
+import Header from './Header';
 
  export default (props)=>{
+
 
      return(
       <View style={{flex:1}}>      

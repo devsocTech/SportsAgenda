@@ -58,7 +58,7 @@ export default (props)=>{
 
             <Portal>
             <Dialog
-             visible={visibleUnirteLiga}
+             visible={props.visibleUnirteLiga}
              onDismiss={props.hideDialogUnirteLiga}
              theme={theme}>
             <Dialog.Title>Crear equipo y unirte a liga</Dialog.Title>
@@ -79,7 +79,7 @@ export default (props)=>{
 
             <Portal>
             <Dialog
-             visible={visibleUnirteEquipo}
+             visible={props.visibleUnirteEquipo}
              onDismiss={props.hideDialogUnirteEquipo}
              theme={theme}>
             <Dialog.Title>Unirte Equipo</Dialog.Title>

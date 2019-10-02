@@ -2,7 +2,8 @@ import React from 'react';
 import {View} from 'react-native';
 import Home from '../components/Home';
 import firebase from 'firebase';
-import Header from '../components/Header'
+import Header from '../components/Header';
+import SnackBars from '../components/SnackBars';
 
 
 export default class HomeScreen extends Header{
@@ -32,6 +33,9 @@ export default class HomeScreen extends Header{
             codigoLiga:'',
             nombreEquipo:'',
             codigoEquipo:'',
+
+            visibleSnackBar: false,
+            mensajeSnackBar: '',
 
             visibleUnirteLiga: false,
             visibleUnirteEquipo: false,
@@ -73,8 +77,14 @@ export default class HomeScreen extends Header{
                 this.setState({leagueSelect:ligas[0]},()=>{})
                 this.setState({nleagueSelect:nombreLiga[0]},()=>{})
                 this.setState({equipo:equipos[0]},()=>{})
-            })
-        }})
+            }).catch((error)=> {
+                this.setState({mensajeSnackBar: "Hubo un error al obtener tus ligas"})
+                this.setState({visibleSnackBar: true});
+            });
+        }}).catch((error)=> {
+            this.setState({mensajeSnackBar: "Hubo un error al obtener tus ligas"})
+            this.setState({visibleSnackBar: true});
+        });
     }
     
     homeTeam=()=>{
@@ -91,6 +101,15 @@ export default class HomeScreen extends Header{
         var GC = dataEquipo.GolesContra
         this.setState({golesF:GF},()=>{})
         this.setState({golesC:GC},()=>{})
+        }).catch((error)=> {
+            this.setState({mensajeSnackBar: "Hubo un error al cargar los datos de tu equipo"})
+            this.setState({visibleSnackBar: true});
+        });
+    }
+
+    dismissSnackbar=()=>{
+        this.setState({
+            visibleSnackBar:false
         })
     }
 
@@ -106,9 +125,15 @@ export default class HomeScreen extends Header{
                 if(data.Valido == true){
                     db.collection("usuarios").doc(user.uid).update({
                         ligas: firebase.firestore.FieldValue.arrayUnion(liga)
+                    }).catch((error)=> {
+                        this.setState({mensajeSnackBar: "Hubo un error al unirte a la liga"})
+                        this.setState({visibleSnackBar: true});
                     })
                     db.collection("codigosLigas").doc(doc.id).update({
                         Valido : false
+                    }).catch((error)=> {
+                        this.setState({mensajeSnackBar: "Hubo un error al unirte a la liga"})
+                        this.setState({visibleSnackBar: true});
                     })
                     db.collection("ligas").doc(liga).collection("equipos").where("Capitan", "==", user.uid)
                     .get()
@@ -116,9 +141,15 @@ export default class HomeScreen extends Header{
                         querySnapshot.forEach(function(docE) {
                             db.collection("ligas").doc(ligas).collection("equipos").doc(docE.id).update({
                                 Ligas: firebase.firestore.FieldValue.arrayUnion(liga)
+                            }).catch((error)=> {
+                                this.setState({mensajeSnackBar: "Hubo un error al unirte a la liga"})
+                                this.setState({visibleSnackBar: true});
                             })
                             db.collection("ligas").doc(liga).update({
                                 Equipos: firebase.firestore.FieldValue.arrayUnion(docE.id)
+                            }).catch((error)=> {
+                                this.setState({mensajeSnackBar: "Hubo un error al unirte a la liga"})
+                                this.setState({visibleSnackBar: true});
                             })
                             var refNuevoEquipo = db.collection("ligas").doc(liga).collection("equipos").doc();
                             refNuevoEquipo.set({
@@ -149,18 +180,22 @@ export default class HomeScreen extends Header{
                                 Codigo: codigo,
                                 Valido: true
                                 })
-                            }); 
+                            }).then(()=> {
+                                var succcess = "Te has unido a la liga y creado tu equipo"
+                                this.setState({mensajeSnackBar: succcess})
+                                this.setState({visibleSnackBar: true});
+                            }).catch((error)=> {
+                                this.setState({mensajeSnackBar: "Hubo un error al unirte a la liga"})
+                                this.setState({visibleSnackBar: true});
+                            })
                         });
                     })
                 }
-                else{
-                    console.log("Este codigo no es valido");
-                }
             })
+        }).catch((error)=> {
+            this.setState({mensajeSnackBar: "Hubo un error al unirte a la liga"})
+            this.setState({visibleSnackBar: true});
         })
-        .catch(function(error) {
-            console.log("Error getting documents: ", error);
-        });
         this.hideDialogUnirteLiga();
     }
 
@@ -182,6 +217,9 @@ export default class HomeScreen extends Header{
                 var data = doc.data();
                 db.collection("usuarios").doc(user.uid).update({
                     Equipos: firebase.firestore.FieldValue.arrayUnion(data.equipo)
+                }).catch((error)=> {
+                    this.setState({mensajeSnackBar: "Hubo un error al unirte al equipo"})
+                    this.setState({visibleSnackBar: true});
                 })
                 db.collection("ligas").doc(liga).collection("equipos").doc(data.equipo).get().then(function(doc2) {
                     var infoEquipo = doc2.data();
@@ -192,8 +230,18 @@ export default class HomeScreen extends Header{
                         ligas: firebase.firestore.FieldValue.arrayUnion(liga)
                         })
                     }
+                }).catch((error)=> {
+                    this.setState({mensajeSnackBar: "Hubo un error al unirte al equipo"})
+                    this.setState({visibleSnackBar: true});
                 })
             })
+        }).then(()=> {
+            var succcess = "Te has unido al equipo y su liga"
+            this.setState({mensajeSnackBar: succcess})
+            this.setState({visibleSnackBar: true});
+        }).catch((error)=> {
+            this.setState({mensajeSnackBar: "Hubo un error al unirte al equipo"})
+            this.setState({visibleSnackBar: true});
         })
         this.hideDialogUnirteEquipo();
     }
@@ -273,6 +321,11 @@ export default class HomeScreen extends Header{
             setCodigoEquipo = {this.setCodigoEquipo}
             setdateParti = {this.setdateParti}
             ></Home>
+            <SnackBars
+                mensajeSnackBar= {this.state.mensajeSnackBar}
+                visibleSnackBar={this.state.visibleSnackBar}
+            ></SnackBars>
+
             </View>
         );
     }

@@ -3,6 +3,7 @@ import {View} from 'react-native';
 import HomeAdmin from '../components/HomeAdmin';
 import Header from '../components/Header';
 import firebase from 'firebase';
+import SnackBars from '../components/SnackBars';
 
 
 
@@ -27,9 +28,13 @@ export default class HomeScreen extends Component{
             equipo:'',
             equipos:[],
 
+            mensajeSnackBar: '',
+            visibleSnackBar: false,
+
             codigoEquipo1: '',
             codigoEquipo2:'',
             dateParti:'',
+            nombreLiga:'',
         }
     }
 
@@ -74,7 +79,15 @@ export default class HomeScreen extends Component{
                 this.setState({nleagueSelect:nombreLiga[0]},()=>{})
                 this.setState({equipo:equipos[0]},()=>{})
             })
+            .catch((error)=> {
+                this.setState({mensajeSnackBar: "Hubo un error al obtener tus ligas"})
+                this.setState({visibleSnackBar: true});
+            });
         }})
+        .catch((error)=> {
+            this.setState({mensajeSnackBar: "Hubo un error al obtener tus ligas"})
+            this.setState({visibleSnackBar: true});
+        });
     }
 
     showDialogAgregarLiga = () => {
@@ -118,10 +131,10 @@ export default class HomeScreen extends Component{
             })
         }
         })     
-        .catch(function(error) {
-            console.error("Error creating the codes: ", error);
-        });  
-        
+        .catch((error)=> {
+            this.setState({mensajeSnackBar: "Hubo un error al agregar una liga"})
+            this.setState({visibleSnackBar: true});
+        });
         this.hideDialogAgregarLiga();
     }
 
@@ -143,6 +156,18 @@ export default class HomeScreen extends Component{
         })
     }
 
+    setNombreLiga = (nombreLiga) =>{
+        this.setState({
+            nombreLiga:nombreLiga
+        })
+    }
+
+    dismissSnackbar=()=>{
+        this.setState({
+            visibleSnackBar:false
+        })
+    }
+
     obtenerEquipos=()=>{
         var db=firebase.firestore();
         //aqui voy a guardar la selección de la liga que hayan elegido en el dialoglistview
@@ -157,6 +182,10 @@ export default class HomeScreen extends Component{
                 this.setState({nombreEquipos:masterArreglo});
             })
         })
+        .catch((error)=> {
+            this.setState({mensajeSnackBar: "Hubo un error al cargar los equipos"})
+            this.setState({visibleSnackBar: true});
+        });
     }
 
     aceptarDialogProgramarPartido=()=>{
@@ -179,14 +208,24 @@ export default class HomeScreen extends Component{
             var partidoId= (refNuevoPartido.id);
             db.collection("ligas").doc(liga).collection("equipos").doc(equipoF).update({
                 Partidos: firebase.firestore.FieldValue.arrayUnion(partidoId)
-                })
+            })
             db.collection("ligas").doc(liga).collection("equipos").doc(equipoV).update({
                 Partidos: firebase.firestore.FieldValue.arrayUnion(partidoId)
-                })
+            })
+        }).then(()=> {
+            var success = "Se programó tu partido"
+            this.setState({mensajeSnackBar: success})
+            this.setState({visibleSnackBar: true});
         })
+        .catch((error)=> {
+            this.setState({mensajeSnackBar: "Hubo un error al programar el partido"})
+            this.setState({visibleSnackBar: true});
+        });
 
         this.setState({visibleProgramarPartido: false});
     }
+
+
 
 
     render(){
@@ -208,7 +247,22 @@ export default class HomeScreen extends Component{
                 
                 setselecEquipo1={this.setselecEquipo1}
                 setselecEquipo2={this.setselecEquipo2}
-                setdateParti={this.setdateParti}></HomeAdmin>
+                setdateParti={this.setdateParti}
+                setNombreLiga={this.setNombreLiga}
+                nombreEquipos = {this.state.nombreEquipos}
+
+                aceptarDialogAgregarLiga = {this.aceptarDialogAgregarLiga}
+                aceptarDialogProgramarPartido = {this.aceptarDialogProgramarPartido}>
+
+                
+                </HomeAdmin>
+                
+                <SnackBars
+                  mensajeSnackBar= {this.state.mensajeSnackBar}
+                  visibleSnackBar={this.state.visibleSnackBar}
+                  dismissSnackbar = {this.dismissSnackbar}
+                > </SnackBars>
+              
             </View>
         );
     }
