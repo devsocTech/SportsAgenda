@@ -21,6 +21,9 @@ export default class AdminTeamsScreen extends Component{
             nleagueSelect:'',
             keyTeam:0,
 
+            mensajeSnackBar: '',
+            visibleSnackBar: false,
+
             ligas:[],
             nLigas:[],
             ligasMaster:[],
@@ -64,7 +67,15 @@ obtenerLigas=()=>{
             this.setState({nleagueSelect:nombreLiga[0]},()=>{})
             this.setState({equipo:equipos[0]},()=>{})
         })
+        .catch((error)=> {
+            this.setState({mensajeSnackBar: "Hubo un error al obtener tus ligas"})
+            this.setState({visibleSnackBar: true});
+        });
     }})
+    .catch((error)=> {
+        this.setState({mensajeSnackBar: "Hubo un error al obtener tus ligas"})
+        this.setState({visibleSnackBar: true});
+    });
 }
 
 handleRefresh=()=>{
@@ -85,7 +96,16 @@ obtenerEquipos=()=>{
                 arrayEquipos.push({idDoc,nombreEquipo})
                 this.setState({equipos:arrayEquipos},()=>{console.log(this.state.equipos)})
             })
-            })
+            }).catch((error)=> {
+                this.setState({mensajeSnackBar: "Hubo un error al cargar los equipos"})
+                this.setState({visibleSnackBar: true});
+            });
+        }
+
+dismissSnackbar=()=>{
+    this.setState({
+        visibleSnackBar:false
+    })
 }
 
 
@@ -98,6 +118,12 @@ render(){
             handleRefresh={this.handleRefresh}
             refreshing={this.state.refreshing}>
             </AdminTeams>
+
+            <SnackBars
+                  mensajeSnackBar= {this.state.mensajeSnackBar}
+                  visibleSnackBar={this.state.visibleSnackBar}
+                  dismissSnackbar = {this.dismissSnackbar}
+            > </SnackBars>
         </View>
 
         );
