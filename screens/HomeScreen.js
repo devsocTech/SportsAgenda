@@ -48,10 +48,19 @@ export default class HomeScreen extends Header{
     }
 
     selectLeagues=(value,key)=>{
+        try {
         this.setState({leagueSelect:value},()=>{})
         var equipo=this.state.equipos[key]
-        this.setState({equipo:equipo},()=>{this.homeTeam();})
-        
+        this.setState({equipo:equipo},()=>{this.handleRefresh()})
+            
+        } catch (error) {
+            this.setState({mensajeSnackBar: "Tu liga todavía no tiene equipos"})
+            this.setState({visibleSnackBar: true});
+        }    
+    }
+
+    handleRefresh=()=>{
+        this.homeTeam()
     }
 
     obtenerLigas=()=>{
@@ -189,6 +198,7 @@ export default class HomeScreen extends Header{
                                 var succcess = "Te has unido a la liga y creado tu equipo"
                                 this.setState({mensajeSnackBar: succcess})
                                 this.setState({visibleSnackBar: true});
+                                this.obtenerLigas()
                             }).catch((error)=> {
                                 this.setState({mensajeSnackBar: "Hubo un error al unirte a la liga"})
                                 this.setState({visibleSnackBar: true});

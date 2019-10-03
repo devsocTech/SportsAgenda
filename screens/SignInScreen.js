@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import SignIn from '../components/SignIn';
 import firebase from 'firebase';
 import 'firebase/firestore';
+import SnackBars from '../components/SnackBars';
+import {Text,View} from 'react-native';
 
 
 
@@ -12,6 +14,9 @@ export default class SignInScreen extends Component{
         this.state={
             email: '',
             password:'',
+
+            visibleSnackBar: false,
+            mensajeSnackBar: '',
         }
     }
     
@@ -27,8 +32,18 @@ export default class SignInScreen extends Component{
         })
     }
 
+    dismissSnackbar=()=>{
+        this.setState({
+            visibleSnackBar:false
+        })
+    }
+
     signIn=()=>{
         firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
+        .catch(()=> {
+            this.setState({mensajeSnackBar: "Contraseña incorrecta, o esta cuenta no existe"})
+            this.setState({visibleSnackBar: true});
+        }) 
     }
 
     static navigationOptions = {
@@ -38,12 +53,22 @@ export default class SignInScreen extends Component{
 
     render(){
         return(
+            <View style={{flex:1}}>
+
             <SignIn setPassword={this.setPassword} 
                     setEmail={this.setEmail}
                     signIn={this.signIn}
                     Mail={this.state.email}
                     Pass={this.state.password}>
             </SignIn>
+
+            <SnackBars
+                    mensajeSnackBar= {this.state.mensajeSnackBar}
+                    visibleSnackBar={this.state.visibleSnackBar}
+                    dismissSnackbar = {this.dismissSnackbar}>   
+            </SnackBars>
+
+            </View>
         )
     }
 }

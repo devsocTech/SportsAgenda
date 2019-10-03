@@ -2,6 +2,9 @@ import React, {Component} from 'react';
 import SignUp from '../components/SignUp';
 import firebase from 'firebase';
 import 'firebase/firestore';
+import SnackBars from '../components/SnackBars';
+import {Text,View} from 'react-native';
+
 
 
 export default class SignUpScreen extends Component{
@@ -14,7 +17,10 @@ export default class SignUpScreen extends Component{
             email: '',
             password1:'',
             password2:'',
-            admin: false
+            admin: false,
+
+            visibleSnackBar: false,
+            mensajeSnackBar: '',
         }
     }
 
@@ -52,19 +58,38 @@ export default class SignUpScreen extends Component{
         this.setState({
             admin:admin
         })
-        console.log(this.state.admin)
+    }
+
+    dismissSnackbar=()=>{
+        this.setState({
+            visibleSnackBar:false
+        })
     }
 
     createUser=()=>{
         var db = firebase.firestore();
-        firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password1)
-        .then(cred => {
-            return db.collection('usuarios').doc(cred.user.uid).set({
-                nombre: this.state.name,
-                apellido: this.state.lastname,
-                adminLigas: this.state.admin,
-            });
-        }).catch(console.log("Hubo un error al crear tu cuenta")); //aqui remplazaremos el console.log por un error en pantalla
+        if(this.state.password1 != this.state.password2){
+            this.setState({mensajeSnackBar: "Los passwords no coinciden"});
+            this.setState({visibleSnackBar: true});
+        }
+        else if (this.state.name == '' || this.state.lastname == '' || this.state.Mail == '' || this.state.password1 == '' || this.state.password2 == ''){
+            this.setState({mensajeSnackBar: "Porfavor llena todos los campos"})
+            this.setState({visibleSnackBar: true});
+        }
+        else{
+            passwordFinal = this.state.password2
+            firebase.auth().createUserWithEmailAndPassword(this.state.email, passwordFinal)
+            .then(cred => {
+                return db.collection('usuarios').doc(cred.user.uid).set({
+                    nombre: this.state.name,
+                    apellido: this.state.lastname,
+                    adminLigas: this.state.admin,
+                });
+            }).catch(()=> {
+                this.setState({mensajeSnackBar: "Esta cuenta ya existe, o hubo un error al crearla"})
+                this.setState({visibleSnackBar: true});
+            }) 
+        }
     }
 
     static navigationOptions = {
@@ -74,6 +99,7 @@ export default class SignUpScreen extends Component{
 
     render(){
         return(
+            <View style={{flex:1}}>
             <SignUp setName={this.setName}
                     setLastName={this.setLastName}
                     setPassword1={this.setPassword1} 
@@ -89,6 +115,14 @@ export default class SignUpScreen extends Component{
                     Pass = {this.state.password1}
                     Pass2 = {this.state.password2}>
             </SignUp>
+            <SnackBars
+                    mensajeSnackBar= {this.state.mensajeSnackBar}
+                    visibleSnackBar={this.state.visibleSnackBar}
+                    dismissSnackbar = {this.dismissSnackbar}>   
+            </SnackBars>
+
+            </View>
+
         )
     }
 }

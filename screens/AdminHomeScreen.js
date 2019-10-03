@@ -37,6 +37,7 @@ export default class HomeScreen extends Component{
             codigoEquipo2:'',
             dateParti:'',
             nombreLiga:'',
+            sepuedeabrir:true
         }
     }
 
@@ -44,17 +45,30 @@ export default class HomeScreen extends Component{
         this.obtenerLigas()
         var today = new Date();
         var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-        this.setState({dateParti:date},()=>{})  
+        this.setState({dateParti:date},()=>{}) 
+
     }
 
     handleRefresh=()=>{ 
+        this.obtenerEquipos();
+        
     }
 
     selectLeagues=(value,key)=>{
-        this.setState({leagueSelect:value},()=>{})
+        this.obtenerLigas()
+        try{
+            this.setState({leagueSelect:value},()=>{}) 
+        } catch(error){
+            this.setState({mensajeSnackBar: "Hubo un error al obtener tus ligas2"})
+            this.setState({visibleSnackBar: true});
+        }
+        try {
         var equipo=this.state.equipos[key]
-        this.setState({equipo:equipo},()=>{this.obtenerEquipos()})
-        
+        this.setState({equipo:equipo},()=>{this.handleRefresh()})   
+        } catch (error) {
+            this.setState({mensajeSnackBar: "Tu liga todavía no tiene equipos"})
+            this.setState({visibleSnackBar: true});
+        }    
     }
 
     obtenerLigas=()=>{
@@ -79,15 +93,16 @@ export default class HomeScreen extends Component{
                 this.setState({equipos:equipos},()=>{})
                 this.setState({leagueSelect:ligas[0]},()=>{})
                 this.setState({nleagueSelect:nombreLiga[0]},()=>{})
+                if(equipos!=null){
                 this.setState({equipo:equipos[0]},()=>{})
-            })
-            .catch((error)=> {
-                this.setState({mensajeSnackBar: "Hubo un error al obtener tus ligas"})
+                }
+            }).catch((error)=> {
+                this.setState({mensajeSnackBar: "Hubo un error al obtener tus ligas3"})
                 this.setState({visibleSnackBar: true});
             });
         }})
         .catch((error)=> {
-            this.setState({mensajeSnackBar: "Hubo un error al obtener tus ligas"})
+            this.setState({mensajeSnackBar: "Hubo un error al obtener tus ligas4"})
             this.setState({visibleSnackBar: true});
         });
     }
@@ -101,7 +116,13 @@ export default class HomeScreen extends Component{
     }
 
     showDialogProgramarPartido = () => {
+        if(this.state.equipos==null || this.state.sepuedeabrir == false){
+            this.setState({mensajeSnackBar: "Primero necesitas 2 equipos en tu liga"})
+            this.setState({visibleSnackBar: true});
+        }
+        else{
         this.setState({ visibleProgramarPartido: true })
+        }
     }
 
     hideDialogProgramarPartido = () => {
@@ -139,7 +160,8 @@ export default class HomeScreen extends Component{
             this.setState({mensajeSnackBar: "Hubo un error al agregar una liga"})
             this.setState({visibleSnackBar: true});
         });
-        this.hideDialogAgregarLiga();
+        this.hideDialogAgregarLiga()
+        this.obtenerLigas();
     }
 
     setselecEquipo1=(codigoEquipo1)=>{
@@ -185,11 +207,15 @@ export default class HomeScreen extends Component{
         var masterArreglo=[];
         db.collection("ligas").doc(liga).collection("equipos").get().then(querySnapshot=>{
             querySnapshot.forEach((doc)=>{
-                var data = doc.data();
-                var nombreEquipo= data.Nombre;
-                var codigoEquipo= doc.id;
-                masterArreglo.push({label:nombreEquipo, value:codigoEquipo});
-                this.setState({nombreEquipos:masterArreglo});
+                if (doc.exists) {
+                    var data = doc.data();
+                    var nombreEquipo= data.Nombre;
+                    var codigoEquipo= doc.id;
+                    masterArreglo.push({label:nombreEquipo, value:codigoEquipo});
+                    this.setState({nombreEquipos:masterArreglo},()=>(console.log("Hola")));
+                } else {
+                    this.setState({sepuedeabrir: false})
+                }    
             })
         })
         .catch((error)=> {
@@ -199,40 +225,52 @@ export default class HomeScreen extends Component{
     }
 
     aceptarDialogProgramarPartido=()=>{
-        var db = firebase.firestore();
-        //aqui voy a guardar la selección que hayan elegido en el dialog box de equipo 1
-        var equipoV = this.state.codigoEquipo2;
-        //aqui voy a guardar la selección que hayan elegido en el dialog box de equipo 2
-        var equipoF = this.state.codigoEquipo1;
-        //aqui voy a guardar la selección de la liga que hayan elegido en el dialoglistview
-        var liga = this.state.leagueSelect;
-        var refNuevoPartido = db.collection("ligas").doc(liga).collection("partidos").doc();
-        refNuevoPartido.set({
-            fechaPartido: firebase.firestore.Timestamp.fromDate(new Date(this.state.dateParti)),
-            equipoV : equipoV,
-            golesequipoV : 0,
-            equipoF : equipoF,
-            golesequipoF : 0,
-            completado : false
-        }).then(function() {
-            var partidoId= (refNuevoPartido.id);
-            db.collection("ligas").doc(liga).collection("equipos").doc(equipoF).update({
-                Partidos: firebase.firestore.FieldValue.arrayUnion(partidoId)
-            })
-            db.collection("ligas").doc(liga).collection("equipos").doc(equipoV).update({
-                Partidos: firebase.firestore.FieldValue.arrayUnion(partidoId)
-            })
-        }).then(()=> {
-            var success = "Se programó tu partido"
-            this.setState({mensajeSnackBar: success})
+        if(this.state.equipos.length < 2){
+            this.setState({mensajeSnackBar: "Para programar un partido, primero necesitas 2 equipos en tu liga"})
             this.setState({visibleSnackBar: true});
-        })
-        .catch((error)=> {
-            this.setState({mensajeSnackBar: "Hubo un error al programar el partido"})
-            this.setState({visibleSnackBar: true});
-        });
-
-        this.setState({visibleProgramarPartido: false});
+        }
+        else{
+            try {
+                var db = firebase.firestore();
+                //aqui voy a guardar la selección que hayan elegido en el dialog box de equipo 1
+                var equipoV = this.state.codigoEquipo2;
+                //aqui voy a guardar la selección que hayan elegido en el dialog box de equipo 2
+                var equipoF = this.state.codigoEquipo1;
+                //aqui voy a guardar la selección de la liga que hayan elegido en el dialoglistview
+                var liga = this.state.leagueSelect;
+                var refNuevoPartido = db.collection("ligas").doc(liga).collection("partidos").doc();
+                refNuevoPartido.set({
+                    fechaPartido: firebase.firestore.Timestamp.fromDate(new Date(this.state.dateParti)),
+                    equipoV : equipoV,
+                    golesequipoV : 0,
+                    equipoF : equipoF,
+                    golesequipoF : 0,
+                    completado : false
+                }).then(function() {
+                    var partidoId= (refNuevoPartido.id);
+                    db.collection("ligas").doc(liga).collection("equipos").doc(equipoF).update({
+                        Partidos: firebase.firestore.FieldValue.arrayUnion(partidoId)
+                    })
+                    db.collection("ligas").doc(liga).collection("equipos").doc(equipoV).update({
+                        Partidos: firebase.firestore.FieldValue.arrayUnion(partidoId)
+                    })
+                }).then(()=> {
+                    var success = "Se programó tu partido"
+                    this.setState({mensajeSnackBar: success})
+                    this.setState({visibleSnackBar: true});
+                })
+                .catch((error)=> {
+                    this.setState({mensajeSnackBar: "Hubo un error al programar el partido"})
+                    this.setState({visibleSnackBar: true});
+                });
+        
+                this.setState({visibleProgramarPartido: false});
+                
+            } catch (error) {
+                this.setState({mensajeSnackBar: "Hubo un error al programar el partido"})
+                this.setState({visibleSnackBar: true});      
+            }
+        }
     }
 
 
@@ -264,6 +302,7 @@ export default class HomeScreen extends Component{
                 nombreEquipos = {this.state.nombreEquipos}
 
                 costoliga = {this.state.costoliga}
+                nombreLiga = {this.state.nombreLiga}
 
                 aceptarDialogAgregarLiga = {this.aceptarDialogAgregarLiga}
                 aceptarDialogProgramarPartido = {this.aceptarDialogProgramarPartido}>

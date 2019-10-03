@@ -39,8 +39,12 @@ selectLeague=(value,key)=>{
             var data=doc.data();
             var nombreLiga=data.Nombre;
             this.setState({nleagueSelect:nombreLiga},()=>{})
-        })
-  this.props.selectLeagues(value,key,()=>{})
+            this.props.selectLeagues(value,key,()=>{})
+        }).catch((error)=> {
+          this.setState({mensajeSnackBar: "Hubo un error al obtener tus ligas1"})
+          this.setState({visibleSnackBar: true});
+      });
+  
 }
 
  render(){

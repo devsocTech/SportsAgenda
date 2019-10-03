@@ -6,8 +6,8 @@ export default (props)=>{
     return(
         <ImageBackground source={require('./Assets/Pictures/WelcomeScreen.png')} style={{justifyContent: 'center', width: '100%', height: '100%'}}>
         <View style={{flex:0, paddingTop:'30%'}}>
-            <Button theme={theme} style={{backgroundColor:'white',width: '75%', alignSelf:'center', margin:10}} onPress={()=>props.navigationAction2()} mode="contained">Iniciar Sesión</Button>
-            <Button theme={theme} style={{borderWidth:2,borderColor: 'white',width: '75%', alignSelf:'center', margin:10}} onPress={()=>props.navigationAction1()} mode="outlined">Registrarse</Button>
+            <Button theme={theme} style={{backgroundColor:'white',width: '75%', alignSelf:'center', marginTop:'7%'}} onPress={()=>props.navigationAction2()} mode="contained">Iniciar Sesión</Button>
+            <Button theme={theme} style={{borderWidth:2,borderColor: 'white',width: '75%', alignSelf:'center',marginTop:'7%'}} onPress={()=>props.navigationAction1()} mode="outlined">Registrarse</Button>
         </View>
         </ImageBackground>
     );

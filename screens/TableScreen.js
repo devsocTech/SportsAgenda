@@ -2,9 +2,9 @@ import React,{Component} from 'react';
 import {Text,View} from 'react-native';
 import firebase from 'firebase';
 import {DataTable,Avatar,DefaultTheme} from 'react-native-paper'
-
 import Table from '../components/Table'
 import Header from '../components/Header'
+import SnackBars from '../components/SnackBars';
 
 export default class Tablecreen extends Component{
     constructor(props){
@@ -25,6 +25,8 @@ export default class Tablecreen extends Component{
             equipo:'',
             equipos:[],
             rows:[],
+            visibleSnackBar: false,
+            mensajeSnackBar: '',
         }
     }
     
@@ -33,12 +35,23 @@ export default class Tablecreen extends Component{
         this.obtenerLigas();
     }
 
+    dismissSnackbar=()=>{
+      this.setState({
+          visibleSnackBar:false
+      })
+  }
+
     selectLeagues=(value,key)=>{
-      this.setState({leagueSelect:value},()=>{this.handleRefresh()})
+      try {
+      this.setState({leagueSelect:value},()=>{})
       var equipo=this.state.equipos[key]
-      this.setState({equipo:equipo},()=>{})
-      
-    }
+      this.setState({equipo:equipo},()=>{this.handleRefresh()})
+          
+      } catch (error) {
+          this.setState({mensajeSnackBar: "Tu liga todavía no tiene equipos"})
+          this.setState({visibleSnackBar: true});
+      }    
+  }
 
     handleRefresh=()=>{
       this.llenarTabla(()=>{})
@@ -145,6 +158,12 @@ export default class Tablecreen extends Component{
 
             selectLeague={this.selectLeague}
             leagueSelect={this.state.leagueSelect}/>
+            
+            <SnackBars
+               mensajeSnackBar= {this.state.mensajeSnackBar}
+               visibleSnackBar={this.state.visibleSnackBar}
+               dismissSnackbar = {this.dismissSnackbar}
+            ></SnackBars>
 
           </View>
             

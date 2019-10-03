@@ -61,10 +61,10 @@ export default (props)=>{
             </Dialog.Content>
             
             <Dialog.Actions>
-              <Button onPress={props.aceptarDialogProgramarPartido}>Aceptar</Button>
+              <Button onPress={()=>props.aceptarDialogProgramarPartido()}>Aceptar</Button>
             </Dialog.Actions>
             <Dialog.Actions>
-              <Button onPress={props.hideDialogProgramarPartido}>Cancelar</Button>
+              <Button onPress={()=>props.hideDialogProgramarPartido()}>Cancelar</Button>
             </Dialog.Actions>
             </Dialog>
             
@@ -77,16 +77,16 @@ export default (props)=>{
              theme={theme}>
             <Dialog.Title>Agregar Liga</Dialog.Title>
             <Dialog.Content>
-              <TextInput style={{alignSelf:'center', width:'100%'}} label="Nombre de la liga" onChangeText={(text)=>props.setNombreLiga(text)}></TextInput>
-              <TextInput style={{alignSelf:'center', width:'100%'}} label="Costo por equipo" onChangeText={(textzkz)=>props.setcostoliga(text)}></TextInput>
+              <TextInput style={{alignSelf:'center', width:'100%'}} label="Nombre de la liga" onChangeText={(text)=>props.setNombreLiga(text)} >{props.nombreLiga}</TextInput>
+              <TextInput style={{alignSelf:'center', width:'100%'}} label="Costo por equipo" onChangeText={(value)=>props.setcostoliga(value)}></TextInput>
             
             </Dialog.Content>
     
             <Dialog.Actions>
-              <Button onPress={props.aceptarDialogAgregarLiga}>Aceptar</Button>
+              <Button onPress={()=>props.aceptarDialogAgregarLiga()}>Aceptar</Button>
             </Dialog.Actions>
             <Dialog.Actions>
-              <Button onPress={props.hideDialogAgregarLiga}>Cancelar</Button>
+              <Button onPress={()=>props.hideDialogAgregarLiga()}>Cancelar</Button>
             </Dialog.Actions>
             </Dialog>
             </Portal>

@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-
 import Welcome from '../components/Welcome';
 
 export default class WelcomeScreen extends Component{

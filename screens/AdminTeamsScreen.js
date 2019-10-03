@@ -3,6 +3,7 @@ import {View} from 'react-native'
 import Header from '../components/Header'
 import AdminTeams from '../components/AdminTeams'
 import firebase from 'firebase'
+import SnackBars from '../components/SnackBars';
 
 export default class AdminTeamsScreen extends Component{
 
@@ -37,10 +38,15 @@ componentDidMount=()=>{
 }
 
 selectLeagues=(value,key)=>{
+    try {
     this.setState({leagueSelect:value},()=>{})
     var equipo=this.state.equipos[key]
-    this.setState({equipo:equipo},()=>{this.handleRefresh();})
-    
+    this.setState({equipo:equipo},()=>{this.handleRefresh()})
+        
+    } catch (error) {
+        this.setState({mensajeSnackBar: "Tu liga todavía no tiene equipos"})
+        this.setState({visibleSnackBar: true});
+    }    
 }
 
 obtenerLigas=()=>{

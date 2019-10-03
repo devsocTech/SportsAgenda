@@ -36,10 +36,15 @@ export default class Tablecreen extends Component{
     }
 
     selectLeagues=(value,key)=>{
+        try {
         this.setState({leagueSelect:value},()=>{})
         var equipo=this.state.equipos[key]
-        this.setState({equipo:equipo},()=>{this.handleRefresh();})
-        
+        this.setState({equipo:equipo},()=>{this.handleRefresh()})
+            
+        } catch (error) {
+            this.setState({mensajeSnackBar: "Tu liga todavía no tiene equipos"})
+            this.setState({visibleSnackBar: true});
+        }    
     }
 
     obtenerLigas=()=>{
