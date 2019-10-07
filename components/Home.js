@@ -63,8 +63,8 @@ export default (props)=>{
              theme={theme}>
             <Dialog.Title>Crear equipo y unirte a liga</Dialog.Title>
             <Dialog.Content>
-              <TextInput style={{alignSelf:'center', width:'100%'}} label="Nombre del Equipo" onChangeText={(text)=>props.setNombreEquipo(text)}></TextInput>
-              <TextInput style={{alignSelf:'center', width:'100%'}} label="Código de liga" onChangeText={(text)=>props.setCodigoLiga(text)}></TextInput>
+              <TextInput style={{alignSelf:'center', width:'100%'}} label="Nombre del Equipo" onChangeText={(text)=>props.setNombreEquipo(text)}>{props.nombreEquipo}</TextInput>
+              <TextInput style={{alignSelf:'center', width:'100%'}} label="Código de liga" onChangeText={(text)=>props.setCodigoLiga(text)}>{props.codigoLiga}</TextInput>
               
             </Dialog.Content>
             

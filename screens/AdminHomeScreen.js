@@ -97,12 +97,12 @@ export default class HomeScreen extends Component{
                 this.setState({equipo:equipos[0]},()=>{})
                 }
             }).catch((error)=> {
-                this.setState({mensajeSnackBar: "Hubo un error al obtener tus ligas3"})
+                this.setState({mensajeSnackBar: "Hubo un error al acceder a la base de datos"})
                 this.setState({visibleSnackBar: true});
             });
         }})
         .catch((error)=> {
-            this.setState({mensajeSnackBar: "Hubo un error al obtener tus ligas4"})
+            this.setState({mensajeSnackBar: "Todavía no tienes ligas"})
             this.setState({visibleSnackBar: true});
         });
     }
@@ -132,10 +132,11 @@ export default class HomeScreen extends Component{
     aceptarDialogAgregarLiga = () => {
         var db = firebase.firestore();
         let user = firebase.auth().currentUser;
+        var cost = parseInt(this.state.costoliga)
         var refNuevaLiga = db.collection("ligas").doc();
         refNuevaLiga.set({
             Nombre: this.state.nombreLiga,
-            Costo: this.state.costoliga,
+            Costo: cost,
             CobranzaPendiente: 0
         })
         .then(function() {

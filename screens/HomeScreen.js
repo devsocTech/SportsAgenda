@@ -54,7 +54,7 @@ export default class HomeScreen extends Header{
         this.setState({equipo:equipo},()=>{this.handleRefresh()})
             
         } catch (error) {
-            this.setState({mensajeSnackBar: "Tu liga todavía no tiene equipos"})
+            this.setState({mensajeSnackBar: "Todavía no tienes equipo"})
             this.setState({visibleSnackBar: true});
         }    
     }
@@ -87,11 +87,11 @@ export default class HomeScreen extends Header{
                 this.setState({nleagueSelect:nombreLiga[0]},()=>{})
                 this.setState({equipo:equipos[0]},()=>{})
             }).catch((error)=> {
-                this.setState({mensajeSnackBar: "Hubo un error al obtener tus ligas"})
+                this.setState({mensajeSnackBar: "Todavía no te has unido a una liga"})
                 this.setState({visibleSnackBar: true});
             });
         }}).catch((error)=> {
-            this.setState({mensajeSnackBar: "Hubo un error al obtener tus ligas"})
+            this.setState({mensajeSnackBar: "Todavía no te has unido a una liga"})
             this.setState({visibleSnackBar: true});
         });
     }
@@ -123,99 +123,89 @@ export default class HomeScreen extends Header{
     }
 
     aceptarDialogUnirteLiga = () => {
-        var db = firebase.firestore();
-        let user = firebase.auth().currentUser;
-        var codigo = this.state.codigoLiga;
-        db.collection("codigosLigas").where("Codigo", "==", codigo).get()
-        .then(function(querySnapshot) {
-            querySnapshot.forEach(function(doc) {
-                var data = doc.data();
-                var liga = data.liga;
-                db.collection("ligas").doc(liga).get().then((doc)=>{
-                   var data = doc.data() 
-                   var costoLiga = data.Costo;
+        if(this.state.codigoLiga !='' && this.state.nombreEquipo !=''){
+            var db = firebase.firestore();
+            let user = firebase.auth().currentUser;
+            var codigo = this.state.codigoLiga;
+            var nomEq = this.state.nombreEquipo;
+            db.collection("codigosLigas").where("Codigo", "==", codigo).get()
+            .then(function(querySnapshot) {
+                querySnapshot.forEach((doc)=> {
+                    var data = doc.data();
+                    var liga = data.liga;
+                    db.collection("ligas").doc(liga).get().then((doc2)=>{
+                        var data2 = doc2.data() 
+                        var costoLiga = data2.Costo;
 
-                   if(data.Valido == true){
-                    db.collection("usuarios").doc(user.uid).update({
-                        ligas: firebase.firestore.FieldValue.arrayUnion(liga)
-                    }).catch((error)=> {
-                        this.setState({mensajeSnackBar: "Hubo un error al unirte a la liga"})
-                        this.setState({visibleSnackBar: true});
-                    })
-                    db.collection("codigosLigas").doc(doc.id).update({
-                        Valido : false
-                    }).catch((error)=> {
-                        this.setState({mensajeSnackBar: "Hubo un error al unirte a la liga"})
-                        this.setState({visibleSnackBar: true});
-                    })
-                    db.collection("ligas").doc(liga).collection("equipos").where("Capitan", "==", user.uid)
-                    .get()
-                    .then(function(querySnapshot) {
-                        querySnapshot.forEach(function(docE) {
-                            db.collection("ligas").doc(ligas).collection("equipos").doc(docE.id).update({
-                                Ligas: firebase.firestore.FieldValue.arrayUnion(liga)
-                            }).catch((error)=> {
-                                this.setState({mensajeSnackBar: "Hubo un error al unirte a la liga"})
-                                this.setState({visibleSnackBar: true});
-                            })
-                            db.collection("ligas").doc(liga).update({
-                               Equipos: firebase.firestore.FieldValue.arrayUnion(docE.id),
-                               CobranzaPendiente: firebase.firestore.FieldValue.increment(costoLiga),
-                            }).catch((error)=> {
-                                this.setState({mensajeSnackBar: "Hubo un error al unirte a la liga"})
-                                this.setState({visibleSnackBar: true});
-                            })
-                            var refNuevoEquipo = db.collection("ligas").doc(liga).collection("equipos").doc();
-                            refNuevoEquipo.set({
-                                Capitan: userId,
-                                Jugadores: [],
-                                Nombre: this.state.nombreEquipo,
-                                GolesFavor: 0,
-                                GolesContra: 0,
-                                PartidosJugados: 0,
-                                PartidosGanados: 0,
-                                PartidosPerdidos: 0,
-                                PartidosEmpatados: 0,
-                                Puntos: 0,
-                            })
-                            .then(function() {
-                                var equipoID= (refNuevoEquipo.id);
-                                db.collection("usuarios").doc(user.uid).update({
-                                Equipos: firebase.firestore.FieldValue.arrayUnion(equipoID),
-                                CapitanEquipo: true
+                    if(data.Valido == true){
+                        var refNuevoEquipo = db.collection("ligas").doc(liga).collection("equipos").doc();
+                        refNuevoEquipo.set({
+                            Capitan: user.uid,
+                            Jugadores: [],
+                            Nombre: nomEq,
+                            GolesFavor: 0,
+                            GolesContra: 0,
+                            PartidosJugados: 0,
+                            PartidosGanados: 0,
+                            PartidosPerdidos: 0,
+                            PartidosEmpatados: 0,
+                            Puntos: 0,
+                        })
+                        db.collection("usuarios").doc(user.uid).update({
+                            ligas: firebase.firestore.FieldValue.arrayUnion(liga),
+                        })
+                        db.collection("codigosLigas").doc(doc.id).update({
+                            Valido : false
+                        })
+                        db.collection("ligas").doc(liga).collection("equipos").where("Capitan", "==", user.uid)
+                        .get()
+                        .then(function(querySnapshot) {
+                            querySnapshot.forEach((docE)=> {
+                                db.collection("ligas").doc(liga).update({
+                                Equipos: firebase.firestore.FieldValue.arrayUnion(docE.id),
+                                CobranzaPendiente: firebase.firestore.FieldValue.increment(costoLiga),
                                 })
-                            })
-                            .then(function() {
-                                var equipoID= (refNuevoEquipo.id);
-                                var inicialesEquipo = equipoID.substr(0, 2);
-                                var codigo = (inicialesEquipo + (Math.floor(1000 + Math.random() * 9000)));
-                                db.collection("codigosEquipos").add({
-                                equipo: equipoID,
-                                Codigo: codigo,
-                                Valido: true
+                                .then(function() {
+                                    var equipoID= (refNuevoEquipo.id);
+                                    db.collection("usuarios").doc(user.uid).update({
+                                    Equipos: firebase.firestore.FieldValue.arrayUnion(equipoID),
+                                    CapitanEquipo: true
+                                    })
                                 })
-                            }).then(()=> {
-                                var succcess = "Te has unido a la liga y creado tu equipo"
-                                this.setState({mensajeSnackBar: succcess})
-                                this.setState({visibleSnackBar: true});
-                                this.obtenerLigas()
-                            }).catch((error)=> {
-                                this.setState({mensajeSnackBar: "Hubo un error al unirte a la liga"})
-                                this.setState({visibleSnackBar: true});
-                            })
-                        });
-                    })
-                }else{
-                    this.setState({mensajeSnackBar: "Este codigo no es válido"})
-                }
+                                .then(function() {
+                                    var equipoID= (refNuevoEquipo.id);
+                                    var inicialesEquipo = equipoID.substr(0, 2);
+                                    var codigo = (inicialesEquipo + (Math.floor(1000 + Math.random() * 9000)));
+                                    db.collection("codigosEquipos").add({
+                                    equipo: equipoID,
+                                    Codigo: codigo,
+                                    Valido: true
+                                    })
+                                }).then(()=> {
+                                    var succcess = "Te has unido a la liga y creado tu equipo"
+                                    this.setState({mensajeSnackBar: succcess})
+                                    this.setState({visibleSnackBar: true});
+                                    //this.obtenerLigas()
+                                }).catch((error)=> {
+                                    this.setState({mensajeSnackBar: "Hubo un error al unirte a la liga"})
+                                    this.setState({visibleSnackBar: true});
+                                })
+                            });
+                        })
+                        
+                    }else{
+                        this.setState({mensajeSnackBar: "Este codigo no es válido"})
+                    }
+                }) 
             })
-        }).catch((error)=> {
-            this.setState({mensajeSnackBar: "Hubo un error al unirte a la liga"})
+            })          
+            this.hideDialogUnirteLiga();
+        }
+            
+        else{
+            this.setState({mensajeSnackBar: "Porfavor llena todos los campos primero"})
             this.setState({visibleSnackBar: true});
-        })
-        })
-                
-        this.hideDialogUnirteLiga();
+        }
     }
 
     setNombreEquipo=(nombreEquipo)=>{
@@ -282,6 +272,8 @@ export default class HomeScreen extends Header{
     }
 
     hideDialogUnirteLiga = () => {
+        this.setState({nombreEquipo: ''})
+        this.setState({codigoEquipo: ''})
         this.setState({ visibleUnirteLiga: false })
     }
 
@@ -311,6 +303,9 @@ export default class HomeScreen extends Header{
             teamPos={this.state.teamPos}
             golesF={this.state.golesF}
             golesC={this.state.golesC}
+
+            nombreEquipo = {this.state.nombreEquipo}
+            codigoLiga = {this.state.codigoLiga}
             
             ligas={this.state.ligas}
             nLigas={this.state.nLigas}
@@ -327,7 +322,7 @@ export default class HomeScreen extends Header{
             visibleUnirteEquipo={this.state.visibleUnirteEquipo}
 
             showDialogUnirteLiga={this.showDialogUnirteLiga}
-            aceptarDialogUnirteLiga={this.aceptarDialogAgregarLiga}
+            aceptarDialogUnirteLiga={this.aceptarDialogUnirteLiga}
             hideDialogUnirteLiga = {this.hideDialogUnirteLiga}
 
             showDialogUnirteEquipo={this.showDialogUnirteEquipo}
@@ -343,6 +338,7 @@ export default class HomeScreen extends Header{
             <SnackBars
                 mensajeSnackBar= {this.state.mensajeSnackBar}
                 visibleSnackBar={this.state.visibleSnackBar}
+                dismissSnackbar = {this.dismissSnackbar}
             ></SnackBars>
 
             </View>
