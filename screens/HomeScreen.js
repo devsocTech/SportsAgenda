@@ -129,7 +129,7 @@ export default class HomeScreen extends Header{
             var codigo = this.state.codigoLiga;
             var nomEq = this.state.nombreEquipo;
             db.collection("codigosLigas").where("Codigo", "==", codigo).get()
-            .then(function(querySnapshot) {
+            .then((querySnapshot)=> {
                 querySnapshot.forEach((doc)=> {
                     var data = doc.data();
                     var liga = data.liga;
@@ -150,6 +150,7 @@ export default class HomeScreen extends Header{
                             PartidosPerdidos: 0,
                             PartidosEmpatados: 0,
                             Puntos: 0,
+                            Pagos: 0,
                         })
                         db.collection("usuarios").doc(user.uid).update({
                             ligas: firebase.firestore.FieldValue.arrayUnion(liga),
@@ -159,20 +160,20 @@ export default class HomeScreen extends Header{
                         })
                         db.collection("ligas").doc(liga).collection("equipos").where("Capitan", "==", user.uid)
                         .get()
-                        .then(function(querySnapshot) {
+                        .then((querySnapshot)=> {
                             querySnapshot.forEach((docE)=> {
                                 db.collection("ligas").doc(liga).update({
                                 Equipos: firebase.firestore.FieldValue.arrayUnion(docE.id),
                                 CobranzaPendiente: firebase.firestore.FieldValue.increment(costoLiga),
                                 })
-                                .then(function() {
+                                .then(()=> {
                                     var equipoID= (refNuevoEquipo.id);
                                     db.collection("usuarios").doc(user.uid).update({
                                     Equipos: firebase.firestore.FieldValue.arrayUnion(equipoID),
                                     CapitanEquipo: true
                                     })
                                 })
-                                .then(function() {
+                                .then(()=> {
                                     var equipoID= (refNuevoEquipo.id);
                                     var inicialesEquipo = equipoID.substr(0, 2);
                                     var codigo = (inicialesEquipo + (Math.floor(1000 + Math.random() * 9000)));

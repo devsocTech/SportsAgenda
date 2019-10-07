@@ -142,7 +142,8 @@ export default class HomeScreen extends Component{
         .then(function() {
             var ligaID= (refNuevaLiga.id);
             db.collection("usuarios").doc(user.uid).update({
-            ligas: firebase.firestore.FieldValue.arrayUnion(ligaID)
+            ligas: firebase.firestore.FieldValue.arrayUnion(ligaID),
+            Equipos: firebase.firestore.FieldValue.arrayUnion('Equipo Admin')
             })
         })
         .then(function() {
@@ -156,9 +157,12 @@ export default class HomeScreen extends Component{
             Valido: true
             })
         }
-        })     
+        }).then(()=> {
+            this.setState({mensajeSnackBar: "Se creo tu liga exitosamente"})
+            this.setState({visibleSnackBar: true});
+        }) 
         .catch((error)=> {
-            this.setState({mensajeSnackBar: "Hubo un error al agregar una liga"})
+            this.setState({mensajeSnackBar: "Hubo un error al crear una liga"})
             this.setState({visibleSnackBar: true});
         });
         this.hideDialogAgregarLiga()
