@@ -33,6 +33,10 @@ export default class HomeScreen extends Component{
 
             costoliga:0,
 
+            cobranza: 0,
+            jornadas: 0,
+            equipoLider: '',
+
             codigoEquipo1: '',
             codigoEquipo2:'',
             dateParti:'',
@@ -46,7 +50,45 @@ export default class HomeScreen extends Component{
         var today = new Date();
         var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
         this.setState({dateParti:date},()=>{}) 
+    }
 
+    adminhomeTeam=()=>{
+        var db = firebase.firestore();
+        var liga = this.state.leagueSelect;
+        var contador = 0;
+        var contador2 = 0;
+        db.collection("ligas").doc(liga).get().then((doc)=>{
+            var data = doc.data();
+            var cobranza = data.CobranzaPendiente;
+            this.setState({cobranza:cobranza}, ()=>{})
+        })
+        db.collection("ligas").doc(liga).collection("equipos").orderBy("PartidosJugados", "desc").get().then(querySnapshot => {
+            querySnapshot.forEach((doc)=> {
+                var dataEquipo = doc.data();
+                var PartidosJugados = dataEquipo.PartidosJugados;
+                if(contador = 0){
+                    this.setState({jornadas:PartidosJugados}, ()=>{})
+                }
+                else{
+                    continue
+                }
+                contador++;
+            })
+        })
+        db.collection("ligas").doc(liga).collection("equipos").orderBy("Puntos", "desc").get().then(querySnapshot => {
+            querySnapshot.forEach((doc)=> {
+                var dataEquipo = doc.data();
+                var equipoLider = dataEquipo.Nombre;
+                if(contador2 = 0){
+                    this.setState({equipoLider:equipoLider}, ()=>{})
+                }
+                else{
+                    continue
+                }
+                contador2++;
+            })
+        })
+        
     }
 
     handleRefresh=()=>{ 

@@ -664,8 +664,6 @@ export default class AdminGamesScreen extends Component{
         this.handleRefresh();
     }
 
-
-    
     changeF=(num)=>{
         this.setState({itemGolesF:num})
     }
