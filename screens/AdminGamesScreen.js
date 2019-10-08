@@ -646,6 +646,25 @@ export default class AdminGamesScreen extends Component{
         this.hideDialog();
         this.handleRefresh();
     }
+
+    cancelarPartido=(keyId)=>{
+        var db = firebase.firestore();
+        var selecciónPartido = keyId;
+        var liga = this.state.leagueSelect;
+        db.collection("ligas").doc(liga).collection("partidos").doc(selecciónPartido).delete()
+        .then(()=> {
+            var success = "Se canceló el partido"
+            this.setState({mensajeSnackBar: success})
+            this.setState({visibleSnackBar: true});
+        }).catch((error)=> {
+            this.setState({mensajeSnackBar: "Hubo un error al cancelar el partido"})
+            this.setState({visibleSnackBar: true});
+        });
+        this.hideDialog();
+        this.handleRefresh();
+    }
+
+
     
     changeF=(num)=>{
         this.setState({itemGolesF:num})
@@ -663,8 +682,8 @@ export default class AdminGamesScreen extends Component{
     
     _renderScene=({route})=>{
         switch (route.key){
-            case 'first': return <AdminGames  changeV={this.changeV} changeF={this.changeF} itemNombreV={this.state.itemNombreV} itemNombreF={this.state.itemNombreF} itemGolesV={this.state.itemGolesV} itemGolesF={this.state.itemGolesF} itemKeyId={this.state.itemKeyId} registraPartido={this.registraPartido} loading={this.state.loading} refreshing={this.state.refreshing} handleRefresh={this.handleRefresh} visible={this.state.visible} hideDialog={this.hideDialog} showDialog={this.showDialog} team={this.state.matchNext}/>
-            case 'second': return <AdminGames changeV={this.changeV} changeF={this.changeF} itemNombreV={this.state.itemNombreV} itemNombreF={this.state.itemNombreF} itemGolesV={this.state.itemGolesV} itemGolesF={this.state.itemGolesF} itemKeyId={this.state.itemKeyId} registraPartido={this.registraPartido} loading={this.state.loading} refreshing={this.state.refreshing} handleRefresh={this.handleRefresh}  visible={this.state.visible} hideDialog={this.hideDialog} showDialog={this.showDialog} team={this.state.matchFinish}/>
+            case 'first': return <AdminGames cancelarPartido={this.cancelarPartido} changeV={this.changeV} changeF={this.changeF} itemNombreV={this.state.itemNombreV} itemNombreF={this.state.itemNombreF} itemGolesV={this.state.itemGolesV} itemGolesF={this.state.itemGolesF} itemKeyId={this.state.itemKeyId} registraPartido={this.registraPartido} loading={this.state.loading} refreshing={this.state.refreshing} handleRefresh={this.handleRefresh} visible={this.state.visible} hideDialog={this.hideDialog} showDialog={this.showDialog} team={this.state.matchNext} />
+            case 'second': return <AdminGames cancelarPartido={this.cancelarPartido} changeV={this.changeV} changeF={this.changeF} itemNombreV={this.state.itemNombreV} itemNombreF={this.state.itemNombreF} itemGolesV={this.state.itemGolesV} itemGolesF={this.state.itemGolesF} itemKeyId={this.state.itemKeyId} registraPartido={this.registraPartido} loading={this.state.loading} refreshing={this.state.refreshing} handleRefresh={this.handleRefresh}  visible={this.state.visible} hideDialog={this.hideDialog} showDialog={this.showDialog} team={this.state.matchFinish}/>
         }
     }
     

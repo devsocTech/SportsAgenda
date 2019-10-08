@@ -92,6 +92,10 @@ export default (props)=>{
                 </View>
                 </View>
 
+            <Dialog.Actions>
+            <Button onPress={()=>props.cancelarPartido(keyId)}>Cancelar el Partido</Button>
+            </Dialog.Actions>
+
             </Dialog.Content>
             
             <Dialog.Actions>
