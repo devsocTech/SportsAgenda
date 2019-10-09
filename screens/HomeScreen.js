@@ -123,9 +123,14 @@ export default class HomeScreen extends Header{
     }
 
     aceptarDialogUnirteLiga = () => {
+        var db = firebase.firestore();
+        let user = firebase.auth().currentUser;
+        db.collection("usuarios").doc(user.uid).get().then((doc)=>{
+            var data = doc.data()
+            var nombreUser = data.nombre
+
         if(this.state.codigoLiga !='' && this.state.nombreEquipo !=''){
-            var db = firebase.firestore();
-            let user = firebase.auth().currentUser;
+            
             var codigo = this.state.codigoLiga;
             var nomEq = this.state.nombreEquipo;
             db.collection("codigosLigas").where("Codigo", "==", codigo).get()
@@ -164,7 +169,7 @@ export default class HomeScreen extends Header{
                         .then((querySnapshot)=> {
                             querySnapshot.forEach((docE)=> {
                                 db.collection("ligas").doc(liga).collection("equipos").doc(docE.id).collection("jugadores").add({
-                                    jugador: user.uid,
+                                    jugador: nombreUser,
                                     capitan: true,
                                     goles: 0,
                                     pago: 0
@@ -193,7 +198,7 @@ export default class HomeScreen extends Header{
                                 }).then(()=> {
                                     var succcess = "Te has unido a la liga y creado tu equipo"
                                     this.setState({mensajeSnackBar: succcess})
-                                    this.setState({visibleSnackBar: true});
+                                    this.setState({visibleSnackBar: true},()=>{this.obtenerLigas()});
                                     //this.obtenerLigas()
                                 }).catch((error)=> {
                                     this.setState({mensajeSnackBar: "Hubo un error al unirte a la liga"})
@@ -215,6 +220,7 @@ export default class HomeScreen extends Header{
             this.setState({mensajeSnackBar: "Porfavor llena todos los campos primero"})
             this.setState({visibleSnackBar: true});
         }
+    })
     }
 
     setNombreEquipo=(nombreEquipo)=>{
@@ -229,6 +235,9 @@ export default class HomeScreen extends Header{
         var codigo = this.state.codigoEquipo;
         //aqui guardare la seleccion de la liga
         //var liga = this.state.leagueSelect
+        db.collection("usuarios").doc(user.uid).get().then((doc)=>{
+            var data = doc.data()
+            var nombreUser = data.nombre
         db.collection("codigosEquipos").where("Codigo", "==", codigo).get().then((querySnapshot)=> {
             querySnapshot.forEach((doc)=> {
                 var data = doc.data();
@@ -243,7 +252,7 @@ export default class HomeScreen extends Header{
                     })
                 }).then(()=> {   
                     db.collection("ligas").doc(ligaEquipo).collection("equipos").doc(codiEquipo).collection("jugadores").add({
-                        jugador: user.uid,
+                        jugador: nombreUser,
                         capitan: false,
                         goles: 0,
                         pago: 0
@@ -257,6 +266,7 @@ export default class HomeScreen extends Header{
                     this.setState({visibleSnackBar: true});
                 });
             })
+        })
         })
         this.hideDialogUnirteEquipo();
     }

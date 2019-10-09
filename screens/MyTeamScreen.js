@@ -24,7 +24,9 @@ export default class Tablecreen extends Component{
             ligasMaster:[],
             equipo:'',
             equipos:[],
+            jugadoresMaster:[],
 
+            refreshing:false,
         }
     }
 
@@ -33,6 +35,7 @@ export default class Tablecreen extends Component{
     }
 
     handleRefresh=()=>{
+        this.obtenerJugadores();
     }
 
     selectLeagues=(value,key)=>{
@@ -80,6 +83,20 @@ export default class Tablecreen extends Component{
         })
     }
 
+    obtenerJugadores=()=>{
+        var db=firebase.firestore();
+        var liga=this.state.leagueSelect;
+        var equipo=this.state.equipo;
+        var jugadoresMaster=[];
+        db.collection("ligas").doc(liga).collection("equipos").doc(equipo).collection("jugadores").get().then(querySnapshot=>{querySnapshot.forEach((doc)=>{
+            var data=doc.data();
+            var jugador=data.jugador
+            jugadoresMaster.push({nombre:jugador})
+            this.setState({jugadoresMaster:jugadoresMaster});
+        })
+    })
+    }
+
     
     aceptarDialogAgregarJugador = () => {
         var user = firebase.auth().currentUser;
@@ -91,7 +108,7 @@ export default class Tablecreen extends Component{
             var dataEquipo = doc.data();
             var Capitan = dataEquipo.Capitan;
             if(Capitan == user.uid){
-                db.collection("ligas").doc(liga).collection("equipos").doc(equipo).collection("Jugadores").add({
+                db.collection("ligas").doc(liga).collection("equipos").doc(equipo).collection("jugadores").add({
                     Nombre : nombre
                 }).then(()=> {
                     var succcess = "Se ha agregado un jugador"
@@ -105,7 +122,7 @@ export default class Tablecreen extends Component{
             }
             else{
                 this.setState({mensajeSnackBar: "No eres capitan del equipo"})
-                this.setState({visibleSnackBar: true});
+                this.setState({visibleSnackBar: true},()=>{this.obtenerJugadores() });
             }
         })
         
@@ -145,7 +162,10 @@ export default class Tablecreen extends Component{
             hideDialogAgregarJugador={this.hideDialogAgregarJugador}
             visibleAgregarJugador={this.state.visibleAgregarJugador}
             setNombreJugador={this.setNombreJugador}
-            aceptarDialogAgregarJugador = {this.aceptarDialogAgregarJugador}/>
+            aceptarDialogAgregarJugador = {this.aceptarDialogAgregarJugador}
+            jugadores={this.state.jugadoresMaster}
+            handleRefresh={this.handleRefresh}
+            refreshing={this.state.refreshing}/>
             
             <SnackBars
                mensajeSnackBar= {this.state.mensajeSnackBar}

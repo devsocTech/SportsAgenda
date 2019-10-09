@@ -360,6 +360,7 @@ export default class AdminGamesScreen extends Component{
                         db.collection("ligas").doc(liga).collection("equipos").doc(equipoF).update({
                             PartidosGanados: firebase.firestore.FieldValue.increment(-1),
                             PartidosPerdidos: firebase.firestore.FieldValue.increment(1),
+                            Puntos: firebase.firestore.FieldValue.increment(-3),
                             GolesContra: firebase.firestore.FieldValue.increment(difGV),
                             GolesFavor: firebase.firestore.FieldValue.increment(difGF),
                         }).then(()=> {

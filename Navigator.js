@@ -44,6 +44,12 @@ const AppNavigator=createMaterialBottomTabNavigator({
                         <Icon name="home" color={tintColor} size={26}/>
                         )
                     }},
+            Teams: {screen: MyTeamScreen,
+                navigationOptions:{
+                    tabBarIcon:({tintColor})=>(
+                        <Icon name="shield-half-full" color={tintColor} size={26}/>
+                        )
+                    }},
             Profile: {screen: ProfileScreen,
             navigationOptions:{
             tabBarIcon:({tintColor})=>(

@@ -17,14 +17,15 @@ export default (props)=>{
                         </View>
                         <View style={{alignItems:'center',paddingRight:20}}>
                             <Text theme={theme}>Por pagar:</Text>
-                            <Text style={{fontSize:16}} theme={theme}>$60</Text>
+                            <Text style={{fontSize:16}} theme={theme}>{item.Pagos}</Text>
                         </View>
                         </View>
                     </TouchableOpacity>
                 </View>
             )}
             onRefresh={props.handleRefresh}
-            refreshing={props.refreshing}>
+            refreshing={props.refreshing}
+            keyExtractor={item=>item.idDoc}>
             </FlatList>
 
             <Portal>

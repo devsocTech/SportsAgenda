@@ -29,6 +29,8 @@ export default class AdminTeamsScreen extends Component{
             nLigas:[],
             ligasMaster:[],
             equipo:'',
+
+            equiposMaster:[],
         }
     }
 
@@ -88,6 +90,8 @@ handleRefresh=()=>{
     this.obtenerEquipos()
 }
 
+
+
 obtenerEquipos=()=>{
     var db=firebase.firestore()
     var user =firebase.auth().currentUser
@@ -99,8 +103,10 @@ obtenerEquipos=()=>{
                 var data=doc.data()
                 var idDoc=doc.id
                 var nombreEquipo=data.Nombre
-                arrayEquipos.push({idDoc,nombreEquipo})
-                this.setState({equipos:arrayEquipos},()=>{console.log(this.state.equipos)})
+                var Pagos=data.Pagos
+                
+                arrayEquipos.push({idDoc,nombreEquipo,Pagos})
+                this.setState({equiposMaster:arrayEquipos},()=>{console.log(arrayEquipos)})
             })
             }).catch((error)=> {
                 this.setState({mensajeSnackBar: "Hubo un error al cargar los equipos"})
@@ -120,7 +126,7 @@ render(){
         <View style={{flex:1}}>
             <Header ligasMaster={this.state.ligasMaster} leagueSelect={this.state.leagueSelect} nleagueSelect={this.state.nleagueSelect} selectLeagues={this.selectLeagues} tit={this.state.title}></Header>
             <AdminTeams
-            equipos={this.state.equipos}
+            equipos={this.state.equiposMaster}
             handleRefresh={this.handleRefresh}
             refreshing={this.state.refreshing}>
             </AdminTeams>

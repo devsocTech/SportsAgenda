@@ -1,11 +1,28 @@
 import React,{Component} from 'react'
-import {View} from 'react-native';
-import {Portal,Dialog,TextInput,Button,DefaultTheme} from 'react-native-paper'
+import {View,FlatList} from 'react-native';
+import {Portal,Dialog,TextInput,Button,DefaultTheme,Avatar,Text} from 'react-native-paper'
 
  export default (props)=>{
      
      return(
     <View style={{flex:1}}>
+      <FlatList
+            data={props.jugadores}
+            renderItem={({item})=>(
+                <View>
+                        <View style={{alignItems:'center',flexDirection:'row',justifyContent:'space-evenly'}}>
+                        <View style={{flex:1,padding:20,alignItems:'center',flexDirection:'row'}}>
+                            <Avatar.Icon color="white" size={60} icon="account-circle"/>
+                            <Text style={{paddingLeft:20,fontSize:18}} theme={theme2}>{item.nombre}</Text>
+                        </View>
+                        </View>
+                </View>
+            )}
+            onRefresh={props.handleRefresh}
+            refreshing={props.refreshing}
+            ListFooterComponent={()=><Button onPress={() => props.showDialogAgregarJugador()}> Agrega un Jugador a un equipo </Button>}>
+            </FlatList>
+
          <Portal>
             <Dialog
              visible={props.visibleAgregarJugador}
@@ -23,9 +40,6 @@ import {Portal,Dialog,TextInput,Button,DefaultTheme} from 'react-native-paper'
             </Dialog.Actions>
             </Dialog>
         </Portal>
-
-        
-        <Button onPress={() => props.showDialogAgregarJugador()}> Agrega un Jugador a un equipo </Button>
     </View>
      )
  }
@@ -39,6 +53,21 @@ import {Portal,Dialog,TextInput,Button,DefaultTheme} from 'react-native-paper'
     accent: '#47C9C6',
     background: '#3B4B61',
     text:'white',
+    placeholder: '#FAFAFA',
+    surface: '#3B4B61',
+    disabled: 'white'
+  }
+};
+
+const theme2 = {
+  ...DefaultTheme,
+  roundness: 10,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: '#47C9C6',
+    accent: '#47C9C6',
+    background: '#3B4B61',
+    text:'black',
     placeholder: '#FAFAFA',
     surface: '#3B4B61',
     disabled: 'white'
