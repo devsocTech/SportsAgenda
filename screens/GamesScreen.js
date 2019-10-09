@@ -118,51 +118,51 @@ export default class GamesScreen extends Component{
         db.collection("ligas").doc(liga).collection("equipos").doc(equipo).get().then((doc)=>{
             var infoEquipo = doc.data();
             var partidosEquipo = infoEquipo.Partidos;
+            if(partidosEquipo[0] != ''){
             for(let i = 0; i<partidosEquipo.length;i++){
                 db.collection("ligas").doc(liga).collection("partidos").doc(partidosEquipo[i]).get().then((doc)=>{
+                    if(doc.exists){
                     let datapartido = doc.data();
                     let equipoF=datapartido.equipoF
                     db.collection("ligas").doc(liga).collection("equipos").doc(equipoF).get().then((doc)=>{
                         var dataEquipo = doc.data();
                         var nombreEquipoF = dataEquipo.Nombre;
-                    let equipoV=datapartido.equipoV
+                        let equipoV=datapartido.equipoV
                     db.collection("ligas").doc(liga).collection("equipos").doc(equipoV).get().then((doc)=>{
                         var dataEquipo = doc.data();
                         var nombreEquipoV = dataEquipo.Nombre;
-                    let fecha=datapartido.fechaPartido
-                    let golesF=datapartido.golesequipoF
-                    let golesV=datapartido.golesequipoV
-                    let completado=datapartido.completado
-                    
-                    var date=new Date(fecha.seconds*1000)
-                    var dia=date.getDate()
-                    var mes=date.getMonth()+1
-                    var año=date.getFullYear()
+                        let fecha=datapartido.fechaPartido
+                        let golesF=datapartido.golesequipoF
+                        let golesV=datapartido.golesequipoV
+                        let completado=datapartido.completado
+                        
+                        var date=new Date(fecha.seconds*1000)
+                        var dia=date.getDate()
+                        var mes=date.getMonth()+1
+                        var año=date.getFullYear()
 
-                    var hora=date.getHours()
-                    var minutos=date.getMinutes()
+                        var hora=date.getHours()
+                        var minutos=date.getMinutes()
 
-                    var stringDate= (dia+"/"+mes+"/"+año+" "+hora+":"+minutos)
-                    matchArray.push({equipoV,equipoF,nombreEquipoF,nombreEquipoV,stringDate,golesF,golesV,completado});
-                    this.setState({matchTeam:matchArray}, () => {
-                    });
+                        var stringDate= (dia+"/"+mes+"/"+año+" "+hora+":"+minutos)
+                        matchArray.push({equipoV,equipoF,nombreEquipoF,nombreEquipoV,stringDate,golesF,golesV,completado});
+                        this.setState({matchTeam:matchArray}, () => {});
+                    })
                 })
-                .catch((error)=> {
-                    this.setState({mensajeSnackBar: "Hubo un error al cargar tus partidos"})
+                }else{
+                    this.setState({mensajeSnackBar: "Tu equipo todavía no tiene partidos"})
                     this.setState({visibleSnackBar: true});
-                });
-            }).catch((error)=> {
-                this.setState({mensajeSnackBar: "Hubo un error al cargar tus partidos"})
-                this.setState({visibleSnackBar: true});
-            });
-        }).catch((error)=> {
-            this.setState({mensajeSnackBar: "Hubo un error al cargar tus partidos"})
+                }
+            })
+            }   
+            }
+        else{
+            this.setState({mensajeSnackBar: "Tu equipo todavía no tiene partidos"})
             this.setState({visibleSnackBar: true});
-        });
-        }
-        }).catch((error)=> {
-            this.setState({mensajeSnackBar: "Hubo un error al cargar tus partidos"})
-            this.setState({visibleSnackBar: true});
+        }})
+        .catch((error)=> {
+        this.setState({mensajeSnackBar: "Hubo un error al cargar tus partidos"})
+        this.setState({visibleSnackBar: true});
         });
     }
 

@@ -156,13 +156,11 @@ export default class HomeScreen extends Header{
                             PartidosEmpatados: 0,
                             Puntos: 0,
                             Pagos: costoLiga,
+                            Partidos: []
                         })
                         
                         db.collection("usuarios").doc(user.uid).update({
                             ligas: firebase.firestore.FieldValue.arrayUnion(liga),
-                        })
-                        db.collection("codigosLigas").doc(doc.id).update({
-                            Valido : false
                         })
                         db.collection("ligas").doc(liga).collection("equipos").where("Capitan", "==", user.uid)
                         .get()

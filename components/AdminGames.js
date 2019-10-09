@@ -60,6 +60,7 @@ export default (props)=>{
              theme={theme2}>
             <Dialog.Title>Registrar marcador</Dialog.Title>
             <Dialog.Content>
+                
                 <View style={{flexDirection:'row',justifyContent:'space-evenly',marginTop:10}}>
                 <View style={{alignItems:'center',marginHorizontal:10}}>
                     <InputSpinner

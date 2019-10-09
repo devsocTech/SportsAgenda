@@ -93,7 +93,6 @@ export default class HomeScreen extends Component{
 
     handleRefresh=()=>{ 
         this.obtenerEquipos();
-        
     }
 
     selectLeagues=(value,key)=>{
@@ -191,14 +190,13 @@ export default class HomeScreen extends Component{
         .then(function() {
             var ligaID= (refNuevaLiga.id);
             var inicialesLiga = ligaID.substr(0, 2);
-            for(ciclo = 0; ciclo<8; ciclo++){
             var codigo = (inicialesLiga + (Math.floor(1000 + Math.random() * 9000)));
             db.collection("codigosLigas").add({
             liga: ligaID,
             Codigo: codigo,
             Valido: true
             })
-        }
+        
         }).then(()=> {
             this.setState({mensajeSnackBar: "Se creo tu liga exitosamente"},()=>{this.obtenerLigas()})
             this.setState({visibleSnackBar: true});
