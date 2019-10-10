@@ -1,8 +1,10 @@
 import React,{Component} from 'react';
 import {View,  StyleSheet} from 'react-native';
-import {DefaultTheme, Button,Portal,TextInput, Dialog} from 'react-native-paper';
+import {DefaultTheme, Button,Portal,TextInput, Dialog,Card,Text} from 'react-native-paper';
 import RNPickerSelect from 'react-native-picker-select';
 import DatePicker from 'react-native-datepicker';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
 
 export default (props)=>{
 
@@ -11,8 +13,54 @@ export default (props)=>{
   var label2 = {label: 'Equipo en contra'};
   var array = props.nombreEquipos;
 
+
     return(
-        <View style={{flex:1,justifyContent:'center'}}>
+        <View style={{flex:1}}>
+          <View style={{paddingTop:1}}>
+          <View style={{justifyContent:'space-around',flexDirection:'row',paddingVertical:5,zIndex:1}}>
+                    <Card theme={theme} style={{alignItems:'flex-start',height:100,width:"45%",marginLeft:10,marginRight:10}}>
+                        <Card.Content>
+                            <Text style={{fontSize:15}}>CÓDIGO</Text>
+                            <Text style={{fontSize:20,fontWeight:'bold'}}>{props.codigoliga}</Text>
+                        </Card.Content>
+                    </Card>
+
+                    <Card theme={theme} style={{alignItems:'flex-end',height:100,width:"45%",marginLeft:10,marginRight:10}}>
+                        <Card.Content>
+                            <Text style={{fontSize:15,alignSelf:'flex-end'}}>EQUIPO LIDER</Text>
+                            <Text style={{fontSize:20,fontWeight:'bold',alignSelf:'flex-end',textAlign:'right'}}>{props.equipoLider}</Text>
+                        </Card.Content>
+                    </Card>
+
+
+                </View>
+
+                <View style={{zIndex:2,flexDirection:'row',paddingVertical:5,justifyContent:'space-around'}}>
+
+                    <Card theme={theme} style={{alignItems:'flex-start',height:100,width:"45%",marginLeft:10,marginRight:10}}>
+                        <Card.Content>
+                            <Text style={{fontSize:35,fontWeight:'bold'}}>{props.jornada}</Text>
+                            <Text style={{fontSize:17,alignSelf:'flex-end'}}>JORNADA</Text>
+                        </Card.Content>
+                    </Card>
+                    
+
+                    <Card theme={theme} style={{alignItems:'flex-end',height:100,width:"45%",marginLeft:10,marginRight:10}}>
+                        <Card.Content>
+                            <Text style={{paddingTop:12,fontSize:25,fontWeight:'bold',alignSelf:'flex-end'}}>${props.cobranza}</Text>
+                            <Text style={{fontSize:17,alignSelf:'flex-end'}}>COBRANZA</Text>
+                        </Card.Content>
+                    </Card>
+
+                </View>
+
+                <View style={{zIndex:3,marginTop:20,position:'absolute',height:210,width:370,alignSelf:'center',alignItems:'center',justifyContent:'center'}}>
+                    <Icon style={{position:'absolute'}} name="shield" color='#FAFAFA' size={160}/>
+                    <Icon name="security" color='#47C9C6' size={130}/>
+                </View>
+
+          </View>
+
             <Button onPress={() => props.showDialogAgregarLiga()}> Crear Liga</Button>
             <Button onPress={() => props.showDialogProgramarPartido()}> Programa un partido </Button>
 

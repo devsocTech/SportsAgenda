@@ -1,15 +1,20 @@
 import React,{Component} from 'react'
 import {View,FlatList,TouchableOpacity} from 'react-native';
 import {DefaultTheme, Button,Appbar,Text,Avatar,ActivityIndicator,Portal,Dialog} from 'react-native-paper';
+import InputSpinner from "react-native-input-spinner";
+
 
 export default (props)=>{
+    keyId=props.keyId
+    pago=props.pago
+
     return(
         <View style={{flexDirection:'row',justifyContent:'space-evenly',flex:1}}>
             <FlatList
             data={props.equipos}
             renderItem={({item})=>(
                 <View style={{flex:1}}>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={()=>props.showDialog(item.idDoc)}>
                         <View style={{alignItems:'center',flexDirection:'row',justifyContent:'space-evenly'}}>
                         <View style={{flex:1,padding:20,alignItems:'center',flexDirection:'row'}}>
                             <Avatar.Icon color="white" size={60} icon="security"/>
@@ -34,7 +39,27 @@ export default (props)=>{
                 onDismiss={()=>props.hideDialog()}
                 theme={theme2}>
                 <Dialog.Title>Registrar pago</Dialog.Title>
-
+                <Dialog.Content>
+                <View style={{flexDirection:'row',justifyContent:'space-evenly',marginTop:10}}>
+                <View style={{alignItems:'center',marginHorizontal:10}}>
+                    <InputSpinner
+                    textColor="white"
+	                max={10000}
+	                min={0}
+                    step={50}
+                    colorLeft="#47C9C6"
+                    colorRight="#47C9C6"
+                    colorPress="#47C9C6"
+                    value={props.pago}
+                    onChange={(num)=>props.changePago(num)}
+                    />
+                </View>
+                </View>
+                </Dialog.Content>
+                <Dialog.Actions>
+                    <Button onPress={()=>props.hideDialog()}>Cancelar</Button>
+                    <Button onPress={()=>props.registraPago(keyId,pago)}>Aceptar</Button>
+                </Dialog.Actions>
                 </Dialog>
             </Portal>
         </View>

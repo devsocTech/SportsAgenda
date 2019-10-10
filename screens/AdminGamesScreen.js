@@ -106,8 +106,10 @@ export default class AdminGamesScreen extends Component{
     }
 
     handleRefresh=()=>{
+        this.setState({refreshing:true});
         this.llenarpartidosFinalizados();
         this.llenarpartidosProximos();
+        this.setState({refreshing:false});
     }
 
     showDialog=(keyId,nombreEquipoF,nombreEquipoV,golesF,golesV)=>{

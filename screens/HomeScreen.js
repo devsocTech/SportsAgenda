@@ -133,19 +133,15 @@ export default class HomeScreen extends Header{
             
             var codigo = this.state.codigoLiga;
             var nomEq = this.state.nombreEquipo;
-            db.collection("codigosLigas").where("Codigo", "==", codigo).get()
-            .then((querySnapshot)=> {
-                querySnapshot.forEach((doc)=> {
-                    var data = doc.data();
-                    var liga = data.liga;
-                    db.collection("ligas").doc(liga).get().then((doc2)=>{
-                        var data2 = doc2.data() 
-                        var costoLiga = data2.Costo;
+            db.collection("ligas").where("Codigo", "==", codigo).get().then((querySnapshot)=> {
+                querySnapshot.forEach((doc2)=> {
+                    var data2 = doc2.data() 
+                    var costoLiga = data2.Costo;
 
-                    if(data.Valido == true){
-                        var refNuevoEquipo = db.collection("ligas").doc(liga).collection("equipos").doc();
+                    if(doc2.exists){
+                        var refNuevoEquipo = db.collection("ligas").doc(doc2.id).collection("equipos").doc();
                         refNuevoEquipo.set({
-                            Liga: liga,
+                            Liga: doc2.id,
                             Capitan: user.uid,
                             Nombre: nomEq,
                             GolesFavor: 0,
@@ -160,19 +156,19 @@ export default class HomeScreen extends Header{
                         })
                         
                         db.collection("usuarios").doc(user.uid).update({
-                            ligas: firebase.firestore.FieldValue.arrayUnion(liga),
+                            ligas: firebase.firestore.FieldValue.arrayUnion(doc2.id),
                         })
-                        db.collection("ligas").doc(liga).collection("equipos").where("Capitan", "==", user.uid)
+                        db.collection("ligas").doc(doc2.id).collection("equipos").where("Capitan", "==", user.uid)
                         .get()
                         .then((querySnapshot)=> {
                             querySnapshot.forEach((docE)=> {
-                                db.collection("ligas").doc(liga).collection("equipos").doc(docE.id).collection("jugadores").add({
+                                db.collection("ligas").doc(doc2.id).collection("equipos").doc(docE.id).collection("jugadores").add({
                                     jugador: nombreUser,
                                     capitan: true,
                                     goles: 0,
                                     pago: 0
                                 })
-                                db.collection("ligas").doc(liga).update({
+                                db.collection("ligas").doc(doc2.id).update({
                                 Equipos: firebase.firestore.FieldValue.arrayUnion(docE.id),
                                 CobranzaPendiente: firebase.firestore.FieldValue.increment(costoLiga),
                                 })
@@ -191,7 +187,7 @@ export default class HomeScreen extends Header{
                                     equipo: equipoID,
                                     Codigo: codigo,
                                     Valido: true,
-                                    Liga: liga
+                                    Liga: doc2.id
                                     })
                                 }).then(()=> {
                                     var succcess = "Te has unido a la liga y creado tu equipo"
@@ -208,10 +204,11 @@ export default class HomeScreen extends Header{
                     }else{
                         this.setState({mensajeSnackBar: "Este codigo no es válido"})
                     }
-                }) 
+                 
             })
             })          
             this.hideDialogUnirteLiga();
+            this.setState({codigoLiga:''})
         }
             
         else{

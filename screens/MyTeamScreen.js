@@ -35,7 +35,9 @@ export default class Tablecreen extends Component{
     }
 
     handleRefresh=()=>{
+        this.setState({refreshing:true})
         this.obtenerJugadores();
+        this.setState({refreshing:false})
     }
 
     selectLeagues=(value,key)=>{
@@ -93,6 +95,7 @@ export default class Tablecreen extends Component{
             var jugador=data.jugador
             jugadoresMaster.push({nombre:jugador})
             this.setState({jugadoresMaster:jugadoresMaster});
+
         })
     })
     }
@@ -109,10 +112,10 @@ export default class Tablecreen extends Component{
             var Capitan = dataEquipo.Capitan;
             if(Capitan == user.uid){
                 db.collection("ligas").doc(liga).collection("equipos").doc(equipo).collection("jugadores").add({
-                    Nombre : nombre
+                    jugador : nombre
                 }).then(()=> {
                     var succcess = "Se ha agregado un jugador"
-                    this.setState({mensajeSnackBar: succcess})
+                    this.setState({mensajeSnackBar: succcess},()=>{this.handleRefresh()})
                     this.setState({visibleSnackBar: true});
                 }).catch(()=> {
                     this.setState({mensajeSnackBar: "Hubo un error al agregar un jugador"})
@@ -122,7 +125,7 @@ export default class Tablecreen extends Component{
             }
             else{
                 this.setState({mensajeSnackBar: "No eres capitan del equipo"})
-                this.setState({visibleSnackBar: true},()=>{this.obtenerJugadores() });
+                this.setState({visibleSnackBar: true},()=>{this.handleRefresh()});
             }
         })
         

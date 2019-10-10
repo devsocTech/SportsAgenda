@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import firebase from 'firebase';
 
 export default (props)=>{
+    
     return(
         <View style={{flex:1}}>
             

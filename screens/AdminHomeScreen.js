@@ -36,6 +36,7 @@ export default class HomeScreen extends Component{
             cobranza: 0,
             jornadas: 0,
             equipoLider: '',
+            codigoliga:'',
 
             codigoEquipo1: '',
             codigoEquipo2:'',
@@ -60,13 +61,15 @@ export default class HomeScreen extends Component{
         db.collection("ligas").doc(liga).get().then((doc)=>{
             var data = doc.data();
             var cobranza = data.CobranzaPendiente;
+            var codigoliga = data.Codigo;
+            this.setState({codigoliga:codigoliga}, ()=>{})
             this.setState({cobranza:cobranza}, ()=>{})
         })
         db.collection("ligas").doc(liga).collection("equipos").orderBy("PartidosJugados", "desc").get().then(querySnapshot => {
             querySnapshot.forEach((doc)=> {
                 var dataEquipo = doc.data();
                 var PartidosJugados = dataEquipo.PartidosJugados;
-                if(contador = 0){
+                if(contador == 0){
                     this.setState({jornadas:PartidosJugados}, ()=>{})
                 }
                 else{
@@ -79,7 +82,7 @@ export default class HomeScreen extends Component{
             querySnapshot.forEach((doc)=> {
                 var dataEquipo = doc.data();
                 var equipoLider = dataEquipo.Nombre;
-                if(contador2 = 0){
+                if(contador2 == 0){
                     this.setState({equipoLider:equipoLider}, ()=>{})
                 }
                 else{
@@ -91,12 +94,12 @@ export default class HomeScreen extends Component{
         
     }
 
-    handleRefresh=()=>{ 
+    handleRefresh=()=>{
+        this.adminhomeTeam();
         this.obtenerEquipos();
     }
 
     selectLeagues=(value,key)=>{
-        this.obtenerLigas()
         try{
             this.setState({leagueSelect:value},()=>{}) 
         } catch(error){
@@ -191,10 +194,8 @@ export default class HomeScreen extends Component{
             var ligaID= (refNuevaLiga.id);
             var inicialesLiga = ligaID.substr(0, 2);
             var codigo = (inicialesLiga + (Math.floor(1000 + Math.random() * 9000)));
-            db.collection("codigosLigas").add({
-            liga: ligaID,
+            db.collection("ligas").doc(ligaID).update({
             Codigo: codigo,
-            Valido: true
             })
         
         }).then(()=> {
@@ -202,6 +203,7 @@ export default class HomeScreen extends Component{
             this.setState({visibleSnackBar: true});
         }) 
         .catch((error)=> {
+            console.log(error);
             this.setState({mensajeSnackBar: "Hubo un error al crear una liga"})
             this.setState({visibleSnackBar: true});
         });
@@ -344,7 +346,15 @@ export default class HomeScreen extends Component{
                 nombreLiga = {this.state.nombreLiga}
 
                 aceptarDialogAgregarLiga = {this.aceptarDialogAgregarLiga}
-                aceptarDialogProgramarPartido = {this.aceptarDialogProgramarPartido}>
+                aceptarDialogProgramarPartido = {this.aceptarDialogProgramarPartido}
+                
+                cobranza={this.state.cobranza}
+                equipoLider={this.state.equipoLider}
+                jornada={this.state.jornadas}
+                codigoliga={this.state.codigoliga}
+
+                >
+                    
 
                 
                 </HomeAdmin>

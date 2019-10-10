@@ -31,6 +31,10 @@ export default class AdminTeamsScreen extends Component{
             equipo:'',
 
             equiposMaster:[],
+
+            
+            pago:0,
+            keyId:'',
         }
     }
 
@@ -87,7 +91,9 @@ obtenerLigas=()=>{
 }
 
 handleRefresh=()=>{
+    this.setState({refreshing:true})
     this.obtenerEquipos()
+    this.setState({refreshing:false})
 }
 
 
@@ -112,7 +118,7 @@ obtenerEquipos=()=>{
                 this.setState({mensajeSnackBar: "Hubo un error al cargar los equipos"})
                 this.setState({visibleSnackBar: true});
             });
-        }
+}
 
 dismissSnackbar=()=>{
     this.setState({
@@ -120,6 +126,43 @@ dismissSnackbar=()=>{
     })
 }
 
+visiblePago=(keyId)=>{
+    this.setState({visible:true})
+    this.setState({keyId:keyId})
+}
+
+hideDialogPago=()=>{
+    this.setState({visible:false})
+}
+
+changePago=(value)=>{
+    this.setState({pago:value})
+}
+
+registraPago=(equipo,pago)=>{
+    var db=firebase.firestore();
+    var user =firebase.auth().currentUser;
+    var liga=this.state.leagueSelect
+    db.collection("ligas").doc(liga).collection("equipos").doc(equipo).update({
+        Pagos: firebase.firestore.FieldValue.increment(-pago),
+    }).then(()=> {
+        db.collection("ligas").doc(liga).update({
+            CobranzaPendiente: firebase.firestore.FieldValue.increment(-pago)
+        })
+    })
+    .then(()=> {
+        var success = "Se registró el pago"
+        this.setState({mensajeSnackBar: success})
+        this.setState({visibleSnackBar: true},()=>{this.handleRefresh();});
+    })
+    .catch((error)=> {
+        this.setState({mensajeSnackBar: "Hubo un error al registrar el pago"})
+        this.setState({visibleSnackBar: true});
+    });
+
+    this.setState({pago: 0})
+    this.hideDialogPago();
+}
 
 render(){
     return(
@@ -128,7 +171,16 @@ render(){
             <AdminTeams
             equipos={this.state.equiposMaster}
             handleRefresh={this.handleRefresh}
-            refreshing={this.state.refreshing}>
+            refreshing={this.state.refreshing}
+            hideDialog={this.hideDialogPago}
+            showDialog={this.visiblePago}
+            visible={this.state.visible}
+            changePago={this.changePago}
+            registraPago={this.registraPago}
+
+            pago={this.state.pago}
+            keyId={this.state.keyId}
+            >
             </AdminTeams>
 
             <SnackBars

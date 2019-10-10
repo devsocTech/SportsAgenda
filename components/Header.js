@@ -38,10 +38,10 @@ selectLeague=(value,key)=>{
         db.collection("ligas").doc(value).get().then((doc)=>{
             var data=doc.data();
             var nombreLiga=data.Nombre;
-            this.setState({nleagueSelect:nombreLiga},()=>{})
-            this.props.selectLeagues(value,key,()=>{})
+            this.setState({nleagueSelect:nombreLiga},()=>{this.props.selectLeagues(value,key)})
+            
         }).catch((error)=> {
-          this.setState({mensajeSnackBar: "Hubo un error al obtener tus ligas1"})
+          this.setState({mensajeSnackBar: "Hubo un error al obtener tus ligas"})
           this.setState({visibleSnackBar: true});
       });
   
