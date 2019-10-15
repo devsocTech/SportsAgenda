@@ -56,8 +56,12 @@ export default class Tablecreen extends Component{
 
     handleRefresh=()=>{
       this.setState({refreshing:true})
-      this.llenarTabla(()=>{})
+      this.obtenerLigas(()=>{})
+      if(this.state.leagueSelect!=""){
+        this.llenarTabla(()=>{})
+      }
       this.setState({refreshing:false})
+      
   }
 
     obtenerLigas=()=>{
@@ -78,9 +82,9 @@ export default class Tablecreen extends Component{
               ligasMaster.push({value:ligas[i],label:nombreLiga[i],color:'black',key:i})
               this.setState({ligasMaster:ligasMaster},()=>{})
               this.setState({equipos:equipos},()=>{})
-              this.setState({leagueSelect:ligas[0]},()=>{})
-              this.setState({nleagueSelect:nombreLiga[0]},()=>{})
-              this.setState({equipo:equipos[0]},()=>{})
+              //this.setState({leagueSelect:ligas[0]},()=>{})
+              //this.setState({nleagueSelect:nombreLiga[0]},()=>{})
+              //this.setState({equipo:equipos[0]},()=>{})
           }).catch((error)=> {
             this.setState({mensajeSnackBar: "Hubo un error al cargar tus ligas"})
             this.setState({visibleSnackBar: true});
