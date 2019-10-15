@@ -45,7 +45,7 @@ export default (props)=>{
                     <InputSpinner
                     textColor="white"
 	                max={10000}
-	                min={0}
+	                min={-10000}
                     step={50}
                     colorLeft="#47C9C6"
                     colorRight="#47C9C6"

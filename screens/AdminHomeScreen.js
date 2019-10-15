@@ -174,6 +174,7 @@ export default class HomeScreen extends Component{
     }
 
     aceptarDialogAgregarLiga = () => {
+        if(this.state.nombreLiga != '' && this.state.cost != 0){
         var db = firebase.firestore();
         let user = firebase.auth().currentUser;
         var cost = parseInt(this.state.costoliga)
@@ -203,13 +204,16 @@ export default class HomeScreen extends Component{
             this.setState({visibleSnackBar: true});
         }) 
         .catch((error)=> {
-            console.log(error);
             this.setState({mensajeSnackBar: "Hubo un error al crear una liga"})
             this.setState({visibleSnackBar: true});
         });
         this.setState({nombreLiga: ''});
         this.hideDialogAgregarLiga()
         this.obtenerLigas();
+    }else{
+        this.setState({mensajeSnackBar: "Porfavor llena todos los campos"})
+        this.setState({visibleSnackBar: true});
+    }
     }
 
     setselecEquipo1=(codigoEquipo1)=>{
@@ -260,7 +264,7 @@ export default class HomeScreen extends Component{
                     var nombreEquipo= data.Nombre;
                     var codigoEquipo= doc.id;
                     masterArreglo.push({label:nombreEquipo, value:codigoEquipo});
-                    this.setState({nombreEquipos:masterArreglo},()=>(console.log("Hola")));
+                    this.setState({nombreEquipos:masterArreglo},()=>(console.log("")));
                 } else {
                     this.setState({sepuedeabrir: false})
                 }    
@@ -273,7 +277,7 @@ export default class HomeScreen extends Component{
     }
 
     aceptarDialogProgramarPartido=()=>{
-       
+        if(this.state.equipoF != '' && this.state.equipoF != null && this.state.equipoV != '' && this.state.equipoV != null){
         var db = firebase.firestore();
         //aqui voy a guardar la selección que hayan elegido en el dialog box de equipo 1
         var equipoV = this.state.codigoEquipo2;
@@ -281,9 +285,13 @@ export default class HomeScreen extends Component{
         var equipoF = this.state.codigoEquipo1;
         //aqui voy a guardar la selección de la liga que hayan elegido en el dialoglistview
         var liga = this.state.leagueSelect;
+        //var date = Date.parse(this.state.dateparti)
+        var primerapartedate =((this.state.dateParti.substring(0, 10)));
+        var segundapartedate = (this.state.dateParti.substring(11,16));
+        var date = primerapartedate.concat("T",segundapartedate,":00Z")
         var refNuevoPartido = db.collection("ligas").doc(liga).collection("partidos").doc();
         refNuevoPartido.set({
-            fechaPartido: firebase.firestore.Timestamp.fromDate(new Date(this.state.dateParti)),
+            fechaPartido: firebase.firestore.Timestamp.fromDate(new Date(date )),
             equipoV : equipoV,
             golesequipoV : 0,
             equipoF : equipoF,
@@ -301,15 +309,15 @@ export default class HomeScreen extends Component{
             var success = "Se programó tu partido"
             this.setState({mensajeSnackBar: success})
             this.setState({visibleSnackBar: true});
-        })
-        .catch((error)=> {
-            console.log(error);
-            this.setState({mensajeSnackBar: "Hubo un error al programar el partido"})
+        }).catch((error)=> {
+            this.setState({mensajeSnackBar: "Hubo un error al programar tu partido"})
             this.setState({visibleSnackBar: true});
         });
-
         this.setState({visibleProgramarPartido: false});
-        
+    }else{
+        this.setState({mensajeSnackBar: "Porfavor selecciona dos equipos sin repetirse"})
+        this.setState({visibleSnackBar: true});
+    }
     } 
         
     

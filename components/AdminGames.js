@@ -73,6 +73,9 @@ export default (props)=>{
                     colorPress="#47C9C6"
                     value={golesF}
                     onChange={(num)=>props.changeF(num)}
+                    style={{width:130}}
+                    buttonStyle={{width:48,height:48}}
+
                     />
                     <Text style={{marginTop:5}}>{nombreF}</Text>
                 </View>
@@ -88,21 +91,34 @@ export default (props)=>{
                     colorPress="#47C9C6"
                     value={golesV}
                     onChange={(num)=>props.changeV(num)}
+                    style={{width:130}}
+                    buttonStyle={{width:48,height:48}}
+
                     />
                     <Text style={{marginTop:5}}>{nombreV}</Text>
                 </View>
                 </View>
-
-            <Dialog.Actions>
-            <Button onPress={()=>props.cancelarPartido(keyId)}>Cancelar el Partido</Button>
-            </Dialog.Actions>
-
             </Dialog.Content>
-            
-            <Dialog.Actions>
-              <Button onPress={()=>props.hideDialog()}>Cancelar</Button>
-              <Button onPress={()=>props.registraPartido(keyId,golesF,golesV)}>Aceptar</Button>
+
+            <Dialog.Actions style={{alignSelf:'center'}}>
+            <Button  onPress={()=>props.cancelarPartido(keyId)}>Cancelar el Partido</Button>
             </Dialog.Actions>
+
+            <View style={{flexDirection:'row',justifyContent:'space-between'}}>
+
+            <Dialog.Actions style={{alignSelf:'flex-start'}}>
+              <Button style={{alignSelf:'flex-start'}} onPress={()=>props.hideDialog()}>Cancelar</Button>
+             
+            </Dialog.Actions>
+
+            <Dialog.Actions style={{alignSelf:'flex-end'}}>
+                <Button style={{alignSelf:'flex-end'}} onPress={()=>props.registraPartido(keyId,golesF,golesV)}>Aceptar</Button>
+            </Dialog.Actions>
+
+
+            </View>
+            
+
             </Dialog>
             </Portal>
 

@@ -225,6 +225,7 @@ export default class HomeScreen extends Header{
     }
 
     aceptarDialogUnirteEquipo = () => {
+        if(this.state.codigoEquipo != ''){
         var db = firebase.firestore();
         let user = firebase.auth().currentUser;
         var codigo = this.state.codigoEquipo;
@@ -255,7 +256,7 @@ export default class HomeScreen extends Header{
                 }).then(()=> { 
                     var succcess = "Te has unido a un equipo y su liga"
                     this.setState({mensajeSnackBar: succcess})
-                    this.setState({visibleSnackBar: true});
+                    this.setState({visibleSnackBar: true},()=>{this.obtenerLigas()});
                 }).catch((error)=> {
                     this.setState({mensajeSnackBar: "Hubo un error al unirte al equipo"})
                     this.setState({visibleSnackBar: true});
@@ -264,6 +265,10 @@ export default class HomeScreen extends Header{
         })
         })
         this.hideDialogUnirteEquipo();
+    }else{
+        this.setState({mensajeSnackBar: "Porfavor llena todos los campos    "})
+        this.setState({visibleSnackBar: true});
+    }
     }
 
     setCodigoEquipo=(codigoEquipo)=>{

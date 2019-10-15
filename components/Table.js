@@ -1,15 +1,17 @@
 import React,{Component} from 'react'
-import {View} from 'react-native'
-import {DataTable,Avatar,DefaultTheme} from 'react-native-paper'
+import {View,RefreshControl} from 'react-native'
+import {DataTable,DefaultTheme} from 'react-native-paper'
 import { ScrollView } from 'react-native-gesture-handler';
-import Header from './Header';
 
  export default (props)=>{
 
 
      return(
-      <View style={{flex:1}}>      
+      <View style={{flex:1}}>
 
+      <ScrollView
+      refreshControl={
+        <RefreshControl refreshing={props.refreshing} onRefresh={props.handleRefresh}/>}>
       <DataTable style={{paddingTop:20,flex:1}}>
         <DataTable.Header theme={theme}>
           <DataTable.Title style={{flex:6}}>Equipo</DataTable.Title>
@@ -21,13 +23,17 @@ import Header from './Header';
           <DataTable.Title style={{flex:1}} numeric>DG</DataTable.Title>
         </DataTable.Header>
 
-        <ScrollView>{props.rows}</ScrollView>
+        <ScrollView>
+        {props.rows}
+        </ScrollView>
 
   
       </DataTable>
 
 
+      </ScrollView>
       </View>
+
      )
  }
 

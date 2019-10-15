@@ -27,6 +27,7 @@ export default class Tablecreen extends Component{
             rows:[],
             visibleSnackBar: false,
             mensajeSnackBar: '',
+            refreshing:false,
         }
     }
     
@@ -54,7 +55,9 @@ export default class Tablecreen extends Component{
   }
 
     handleRefresh=()=>{
+      this.setState({refreshing:true})
       this.llenarTabla(()=>{})
+      this.setState({refreshing:false})
   }
 
     obtenerLigas=()=>{
@@ -157,7 +160,9 @@ export default class Tablecreen extends Component{
             visible={this.state.visible}
 
             selectLeague={this.selectLeague}
-            leagueSelect={this.state.leagueSelect}/>
+            leagueSelect={this.state.leagueSelect}
+            refreshing={this.state.refreshing}
+            handleRefresh={this.handleRefresh}/>
             
             <SnackBars
                mensajeSnackBar= {this.state.mensajeSnackBar}

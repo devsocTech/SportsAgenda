@@ -8,7 +8,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default (props)=>{
 
-  const datetime = props.dateParti;
+  
   var label1 = {label: 'Equipo a favor'};
   var label2 = {label: 'Equipo en contra'};
   var array = props.nombreEquipos;
@@ -89,7 +89,9 @@ export default (props)=>{
 
             <DatePicker
             style={{width: 275, alignSelf:'center'}}
-            date = {datetime}ñ
+            date = {props.dateParti}
+            placeholder="Fecha del Partido"
+            placeholderTextColor = "white"
             mode="datetime"
             format="YYYY-MM-DD HH:mm"
             confirmBtnText="Confirm"
@@ -98,7 +100,7 @@ export default (props)=>{
             onDateChange={(date) => props.setdateParti(date)}
             customStyles={{dateInput: {},
             placeholderText: {
-              color: '#234456'
+              color: 'white'
             },
             dateText:{
               color: 'white',

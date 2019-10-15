@@ -647,7 +647,10 @@ export default class AdminGamesScreen extends Component{
         });
 
         this.hideDialog();
-        this.handleRefresh();
+
+        this.setState({matchTeam:[]})
+        this.setState({matchNext:[]})
+        this.setState({matchFinish:[]},()=>{this.handleRefresh()})
     }
 
     cancelarPartido=(keyId)=>{
@@ -664,7 +667,11 @@ export default class AdminGamesScreen extends Component{
             this.setState({visibleSnackBar: true});
         });
         this.hideDialog();
-        this.handleRefresh();
+
+        this.setState({matchTeam:[]})
+        this.setState({matchNext:[]})
+        this.setState({matchFinish:[]},()=>{this.handleRefresh()})
+        
     }
 
     changeF=(num)=>{
