@@ -1,13 +1,19 @@
 import React,{Component} from 'react';
-import {View,  StyleSheet} from 'react-native';
+import {View,  StyleSheet,RefreshControl} from 'react-native';
 import {DefaultTheme, Button,Portal,TextInput, Card, Text,Dialog} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import firebase from 'firebase';
+import { ScrollView } from 'react-native-gesture-handler';
 
 export default (props)=>{
     
     return(
         <View style={{flex:1}}>
+
+            <ScrollView       
+            refreshControl={
+            <RefreshControl refreshing={props.refreshing} onRefresh={props.handleRefresh}/>}>
+
             
             <View style={{paddingTop:1}}>
 
@@ -75,6 +81,8 @@ export default (props)=>{
             </Dialog.Actions>
             </Dialog>
             </Portal>
+
+            </ScrollView>
 
 
         </View>

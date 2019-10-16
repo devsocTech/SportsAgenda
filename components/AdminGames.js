@@ -1,7 +1,8 @@
 import React,{Component} from 'react';
-import {View,FlatList,TouchableOpacity} from 'react-native';
+import {View,FlatList,TouchableOpacity,RefreshControl} from 'react-native';
 import InputSpinner from "react-native-input-spinner";
 import {DefaultTheme, Button,Appbar,Text,Avatar,ActivityIndicator,Portal,Dialog} from 'react-native-paper';
+import { ScrollView } from 'react-native-gesture-handler';
 
 
 export default (props)=>{
@@ -48,9 +49,9 @@ export default (props)=>{
             </View>
 
             )}
-            keyExtractor={item=>item.keyId}
             onRefresh={props.handleRefresh}
-            refreshing={props.refreshing}>
+            refreshing={props.refreshing}
+            keyExtractor={item=>item.keyId}>
             </FlatList>
 
             <Portal theme={theme2}>

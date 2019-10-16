@@ -75,9 +75,9 @@ obtenerLigas=()=>{
             ligasMaster.push({value:ligas[i],label:nombreLiga[i],color:'black',key:i})
             this.setState({ligasMaster:ligasMaster},()=>{})
             this.setState({equipos:equipos},()=>{})
-            this.setState({leagueSelect:ligas[0]},()=>{})
-            this.setState({nleagueSelect:nombreLiga[0]},()=>{})
-            this.setState({equipo:equipos[0]},()=>{})
+            //this.setState({leagueSelect:ligas[0]},()=>{})
+            //this.setState({nleagueSelect:nombreLiga[0]},()=>{})
+            //this.setState({equipo:equipos[0]},()=>{})
         })
         .catch((error)=> {
             this.setState({mensajeSnackBar: "Hubo un error al obtener tus ligas"})
@@ -92,7 +92,10 @@ obtenerLigas=()=>{
 
 handleRefresh=()=>{
     this.setState({refreshing:true})
-    this.obtenerEquipos()
+    this.obtenerLigas()
+    if(this.state.leagueSelect!=""){
+        this.obtenerEquipos()
+    }
     this.setState({refreshing:false})
 }
 
@@ -110,8 +113,9 @@ obtenerEquipos=()=>{
                 var idDoc=doc.id
                 var nombreEquipo=data.Nombre
                 var Pagos=data.Pagos
+                var codigoEquipos = data.Codigo;
                 
-                arrayEquipos.push({idDoc,nombreEquipo,Pagos})
+                arrayEquipos.push({idDoc,nombreEquipo,Pagos,codigoEquipos})
                 this.setState({equiposMaster:arrayEquipos},()=>{console.log(arrayEquipos)})
             })
             }).catch((error)=> {

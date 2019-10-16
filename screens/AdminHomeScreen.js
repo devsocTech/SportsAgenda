@@ -46,7 +46,9 @@ export default class HomeScreen extends Component{
             codigoEquipo2:'',
             dateParti:'',
             nombreLiga:'',
-            sepuedeabrir:true
+            sepuedeabrir:true,
+
+            refreshing:false
         }
     }
 
@@ -99,8 +101,13 @@ export default class HomeScreen extends Component{
     }
 
     handleRefresh=()=>{
-        this.adminhomeTeam();
-        this.obtenerEquipos();
+        this.setState({refreshing:true})
+        this.obtenerLigas(()=>{})
+        if(this.state.leagueSelect!=""){
+            this.adminhomeTeam();
+            this.obtenerEquipos();
+        }
+        this.setState({refreshing:false})
     }
 
     selectLeagues=(value,key)=>{
@@ -377,11 +384,8 @@ export default class HomeScreen extends Component{
                     var equipoID= (refNuevoEquipo.id);
                     var inicialesEquipo = equipoID.substr(0, 2);
                     var codigo = (inicialesEquipo + (Math.floor(1000 + Math.random() * 9000)));
-                    db.collection("codigosEquipos").add({
-                    equipo: equipoID,
+                    db.collection("ligas").doc(liga).collection("equipos").doc(refNuevoEquipo.id).update({
                     Codigo: codigo,
-                    Valido: true,
-                    Liga: liga
                     })
                 }).then(()=> {
                     var succcess = "Has agregado el equipo" 
@@ -453,6 +457,9 @@ export default class HomeScreen extends Component{
                 equipoLider={this.state.equipoLider}
                 jornada={this.state.jornadas}
                 codigoliga={this.state.codigoliga}
+
+                handleRefresh={this.handleRefresh}
+                refreshing={this.state.refreshing}
 
                 >
                     

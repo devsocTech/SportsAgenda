@@ -14,6 +14,8 @@ export default class GamesScreen extends Component{
         this.state={
             visible: false,
             title:'Juegos',
+
+            refreshing:false,
             
 
             leagueSelect:'',
@@ -49,9 +51,16 @@ export default class GamesScreen extends Component{
     }
 
     handleRefresh=()=>{
-        this.llenarpartidosEquipo();
-        this.llenarpartidosFinalizados();
-        this.llenarpartidosProximos();
+        this.setState({refreshing:true});
+        this.obtenerLigas(()=>{})
+        if(this.state.equipo!=""){
+            this.llenarpartidosEquipo();
+        }
+        if(this.state.leagueSelect!=""){
+            this.llenarpartidosFinalizados();
+            this.llenarpartidosProximos();    
+        }
+        this.setState({refreshing:false});
     }
 
     selectLeagues=(value,key)=>{
@@ -86,9 +95,9 @@ export default class GamesScreen extends Component{
                 ligasMaster.push({value:ligas[i],label:nombreLiga[i],color:'black',key:i})
                 this.setState({ligasMaster:ligasMaster},()=>{})
                 this.setState({equipos:equipos},()=>{})
-                this.setState({leagueSelect:ligas[0]},()=>{})
-                this.setState({nleagueSelect:nombreLiga[0]},()=>{})
-                this.setState({equipo:equipos[0]},()=>{})
+                //this.setState({leagueSelect:ligas[0]},()=>{})
+                //this.setState({nleagueSelect:nombreLiga[0]},()=>{})
+                //this.setState({equipo:equipos[0]},()=>{})
             })
             .catch((error)=> {
                 this.setState({mensajeSnackBar: "Hubo un error al obtener tus ligas"})
@@ -272,9 +281,9 @@ export default class GamesScreen extends Component{
 
     _renderScene=({route})=>{
         switch (route.key){
-            case 'first': return <Games visible={this.state.visible} hideDialog={this.hideDialog} showDialog={this.showDialog} team={this.state.matchNext}/>
-            case 'second': return <Games visible={this.state.visible} hideDialog={this.hideDialog} showDialog={this.showDialog} team={this.state.matchFinish}/>
-            case 'third': return <Games visible={this.state.visible} hideDialog={this.hideDialog} showDialog={this.showDialog} team={this.state.matchTeam}></Games>
+            case 'first': return <Games  handleRefresh={this.handleRefresh} refreshing={this.state.refreshing} visible={this.state.visible} hideDialog={this.hideDialog} showDialog={this.showDialog} team={this.state.matchNext}/>
+            case 'second': return <Games handleRefresh={this.handleRefresh} refreshing={this.state.refreshing} visible={this.state.visible} hideDialog={this.hideDialog} showDialog={this.showDialog} team={this.state.matchFinish}/>
+            case 'third': return <Games  handleRefresh={this.handleRefresh} refreshing={this.state.refreshing} visible={this.state.visible} hideDialog={this.hideDialog} showDialog={this.showDialog} team={this.state.matchTeam}></Games>
         }
     }
     

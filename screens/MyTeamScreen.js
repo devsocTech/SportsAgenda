@@ -36,7 +36,10 @@ export default class Tablecreen extends Component{
 
     handleRefresh=()=>{
         this.setState({refreshing:true})
-        this.obtenerJugadores();
+        this.obtenerLigas()
+        if(this.state.equipo!="" && this.state.leagueSelect!=""){
+            this.obtenerJugadores();
+        }
         this.setState({refreshing:false})
     }
 
@@ -72,15 +75,15 @@ export default class Tablecreen extends Component{
                 ligasMaster.push({value:ligas[i],label:nombreLiga[i],color:'black',key:i})
                 this.setState({ligasMaster:ligasMaster},()=>{})
                 this.setState({equipos:equipos},()=>{})
-                this.setState({leagueSelect:ligas[0]},()=>{})
-                this.setState({nleagueSelect:nombreLiga[0]},()=>{})
-                this.setState({equipo:equipos[0]},()=>{})
+                //this.setState({leagueSelect:ligas[0]},()=>{})
+                //this.setState({nleagueSelect:nombreLiga[0]},()=>{})
+                //this.setState({equipo:equipos[0]},()=>{})
             }).catch((error)=> {
-                this.setState({mensajeSnackBar: "Hubo un error al unirte al obtener tus ligas"})
+                this.setState({mensajeSnackBar: "Hubo un error al obtener tus ligas"})
                 this.setState({visibleSnackBar: true});
             })
         }}).catch((error)=> {
-            this.setState({mensajeSnackBar: "Hubo un error al unirte al obtener tus ligas"})
+            this.setState({mensajeSnackBar: "Hubo un error al obtener tus ligas"})
             this.setState({visibleSnackBar: true});
         })
     }

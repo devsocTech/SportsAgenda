@@ -18,7 +18,10 @@ export default (props)=>{
                         <View style={{alignItems:'center',flexDirection:'row',justifyContent:'space-evenly'}}>
                         <View style={{flex:1,padding:20,alignItems:'center',flexDirection:'row'}}>
                             <Avatar.Icon color="white" size={60} icon="security"/>
-                            <Text style={{paddingLeft:20,fontSize:18}} theme={theme}>{item.nombreEquipo}</Text>
+                            <View>
+                            <Text style={{paddingLeft:20,fontSize:17}} theme={theme}>{item.nombreEquipo}</Text>
+                            <Text style={{paddingLeft:20,fontSize:15}} theme={theme}>{item.codigoEquipos}</Text>                                
+                            </View>
                         </View>
                         <View style={{alignItems:'center',paddingRight:20}}>
                             <Text theme={theme}>Por pagar:</Text>

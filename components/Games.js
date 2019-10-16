@@ -1,5 +1,5 @@
 import React,{Component} from 'react'
-import {ScrollView,View,Dimensions} from 'react-native'
+import {ScrollView,View,Dimensions,RefreshControl} from 'react-native'
 import {Text,Avatar,DefaultTheme,Portal,Dialog,Button} from 'react-native-paper'
 
 
@@ -39,7 +39,10 @@ export default (props)=>{
     <View style={{flex:1}}>
 
         <View style={{flex:1,width: Dimensions.get('window').width}}>
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView 
+        refreshControl={
+        <RefreshControl refreshing={props.refreshing} onRefresh={props.handleRefresh}
+        showsVerticalScrollIndicator={false}/>}>
             {rows}
         </ScrollView>
         </View>

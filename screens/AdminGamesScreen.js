@@ -84,14 +84,12 @@ export default class AdminGamesScreen extends Component{
             db.collection("ligas").doc(ligas[i]).get().then((doc)=>{
                 var data=doc.data();
                 nombreLiga.push(data.Nombre)
-                //console.log(nombreLiga)
-                //console.log(this.state.nleagueSelect)
                 ligasMaster.push({value:ligas[i],label:nombreLiga[i],color:'black',key:i})
                 this.setState({ligasMaster:ligasMaster},()=>{})
                 this.setState({equipos:equipos},()=>{})
-                this.setState({leagueSelect:ligas[0]},()=>{})
-                this.setState({nleagueSelect:nombreLiga[0]},()=>{})
-                this.setState({equipo:equipos[0]},()=>{})
+                //this.setState({leagueSelect:ligas[0]},()=>{})
+                //this.setState({nleagueSelect:nombreLiga[0]},()=>{})
+                //this.setState({equipo:equipos[0]},()=>{})
             })
             .catch((error)=> {
                 this.setState({mensajeSnackBar: "Hubo un error al cargar tus ligas"})
@@ -107,8 +105,11 @@ export default class AdminGamesScreen extends Component{
 
     handleRefresh=()=>{
         this.setState({refreshing:true});
-        this.llenarpartidosFinalizados();
-        this.llenarpartidosProximos();
+        this.obtenerLigas(()=>{})
+        if(this.state.leagueSelect!=""){
+            this.llenarpartidosFinalizados();
+            this.llenarpartidosProximos();
+        }
         this.setState({refreshing:false});
     }
 

@@ -1,9 +1,10 @@
 import React,{Component} from 'react';
-import {View,  StyleSheet} from 'react-native';
+import {View,  StyleSheet,RefreshControl} from 'react-native';
 import {DefaultTheme, Button,Portal,TextInput, Dialog,Card,Text} from 'react-native-paper';
 import RNPickerSelect from 'react-native-picker-select';
 import DatePicker from 'react-native-datepicker';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { ScrollView } from 'react-native-gesture-handler';
 
 
 export default (props)=>{
@@ -16,6 +17,9 @@ export default (props)=>{
 
     return(
         <View style={{flex:1}}>
+          <ScrollView
+                refreshControl={
+                  <RefreshControl refreshing={props.refreshing} onRefresh={props.handleRefresh}/>}>          
           <View style={{paddingTop:1}}>
           <View style={{justifyContent:'space-around',flexDirection:'row',paddingVertical:5,zIndex:1}}>
                     <Card theme={theme} style={{alignItems:'flex-start',height:100,width:"45%",marginLeft:10,marginRight:10}}>
@@ -160,6 +164,7 @@ export default (props)=>{
             </Dialog.Actions>
             </Dialog>
             </Portal>
+            </ScrollView>
 
         </View>
     );
