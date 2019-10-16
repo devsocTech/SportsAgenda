@@ -69,6 +69,7 @@ export default class AdminGamesScreen extends Component{
         }    
     }
 
+    
     obtenerLigas=()=>{
         var user = firebase.auth().currentUser;
         var db=firebase.firestore();
