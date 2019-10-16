@@ -63,6 +63,7 @@ export default (props)=>{
 
             <Button onPress={() => props.showDialogAgregarLiga()}> Crear Liga</Button>
             <Button onPress={() => props.showDialogProgramarPartido()}> Programa un partido </Button>
+            <Button onPress={() => props.showDialogCrearEquipo()}> Agregar Equipo</Button>
 
             <Portal>
             <Dialog
@@ -119,6 +120,25 @@ export default (props)=>{
             </Dialog>
             
         </Portal>
+
+        <Portal>
+            <Dialog
+             visible={props.visibleCrearEquipo}
+             onDismiss={props.hideDialogCrearEquipo}
+             theme={theme}>
+            <Dialog.Title>Crear equipo</Dialog.Title>
+            <Dialog.Content>
+              <TextInput style={{alignSelf:'center', width:'100%'}} label="Nombre del Equipo" onChangeText={(text)=>props.setNombreEquipo(text)}>{props.nombreEquipo}</TextInput>
+              
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button onPress={()=>props.aceptarDialogCrearEquipo()}>Aceptar</Button>
+            </Dialog.Actions>
+            <Dialog.Actions>
+              <Button onPress={()=>props.hideDialogCrearEquipo()}>Cancelar</Button>
+            </Dialog.Actions>
+            </Dialog>
+          </Portal>
 
         <Portal>
             <Dialog

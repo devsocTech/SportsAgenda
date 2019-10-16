@@ -54,29 +54,8 @@ export default (props)=>{
                 </View>
 
         </View>
-            <Button onPress={() => props.showDialogUnirteLiga()}>Crear equipo y unirte a liga</Button>
-            <Button onPress={() => props.showDialogUnirteEquipo()}> Unete a un equipo </Button>
+            <Button onPress={() => props.showDialogUnirteEquipo()}> Unete a un equipo y su liga </Button>
 
-            <Portal>
-            <Dialog
-             visible={props.visibleUnirteLiga}
-             onDismiss={props.hideDialogUnirteLiga}
-             theme={theme}>
-            <Dialog.Title>Crear equipo y unirte a liga</Dialog.Title>
-            <Dialog.Content>
-              <TextInput style={{alignSelf:'center', width:'100%'}} label="Nombre del Equipo" onChangeText={(text)=>props.setNombreEquipo(text)}>{props.nombreEquipo}</TextInput>
-              <TextInput style={{alignSelf:'center', width:'100%'}} label="Código de liga" onChangeText={(text)=>props.setCodigoLiga(text)}>{props.codigoLiga}</TextInput>
-              
-            </Dialog.Content>
-            
-            <Dialog.Actions>
-              <Button onPress={props.aceptarDialogUnirteLiga}>Aceptar</Button>
-            </Dialog.Actions>
-            <Dialog.Actions>
-              <Button onPress={props.hideDialogUnirteLiga}>Cancelar</Button>
-            </Dialog.Actions>
-            </Dialog>
-            </Portal>
 
             <Portal>
             <Dialog

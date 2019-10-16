@@ -17,6 +17,7 @@ export default class HomeScreen extends Component{
 
             visibleAgregarLiga:false,
             visibleProgramarPartido:false,
+            visibleCrearEquipo: false,
 
             leagueSelect:'',
             nleagueSelect:'',
@@ -32,6 +33,9 @@ export default class HomeScreen extends Component{
             visibleSnackBar: false,
 
             costoliga:0,
+
+            codigoLiga:'',
+            nombreEquipo:'',
 
             cobranza: 0,
             jornadas: 0,
@@ -318,7 +322,88 @@ export default class HomeScreen extends Component{
         this.setState({mensajeSnackBar: "Porfavor selecciona dos equipos sin repetirse"})
         this.setState({visibleSnackBar: true});
     }
-    } 
+    }
+
+    setNombreEquipo=(nombreEquipo)=>{
+        this.setState({
+            nombreEquipo:nombreEquipo
+        })
+    }
+
+    showDialogCrearEquipo = () => {
+        this.setState({ visibleCrearEquipo: true })
+    }
+
+    hideDialogCrearEquipo = () => {
+        this.setState({nombreEquipo: ''})
+        this.setState({codigoEquipo: ''})
+        this.setState({ visibleCrearEquipo: false })
+    }
+
+    
+    aceptarDialogCrearEquipo = () => {
+        var db = firebase.firestore();
+        var user = firebase.auth().currentUser;
+        var liga = this.state.leagueSelect;
+
+        if(this.state.nombreEquipo !=''){
+
+            var nomEq = this.state.nombreEquipo;
+
+            db.collection("ligas").doc(liga).get().then((doc2)=>{
+                var data = doc2.data();
+                var costo = data.Costo;
+            
+                var refNuevoEquipo = db.collection("ligas").doc(liga).collection("equipos").doc();
+                refNuevoEquipo.set({
+                    Liga: liga,
+                    Capitan: '',
+                    Nombre: nomEq,
+                    GolesFavor: 0,
+                    GolesContra: 0,
+                    PartidosJugados: 0,
+                    PartidosGanados: 0,
+                    PartidosPerdidos: 0,
+                    PartidosEmpatados: 0,
+                    Puntos: 0,
+                    Pagos: costo,
+                    Partidos: []
+                }) 
+                db.collection("ligas").doc(liga).update({
+                Equipos: firebase.firestore.FieldValue.arrayUnion(refNuevoEquipo.id),
+                CobranzaPendiente: firebase.firestore.FieldValue.increment(costo),
+                })
+                .then(()=> {
+                    var equipoID= (refNuevoEquipo.id);
+                    var inicialesEquipo = equipoID.substr(0, 2);
+                    var codigo = (inicialesEquipo + (Math.floor(1000 + Math.random() * 9000)));
+                    db.collection("codigosEquipos").add({
+                    equipo: equipoID,
+                    Codigo: codigo,
+                    Valido: true,
+                    Liga: liga
+                    })
+                }).then(()=> {
+                    var succcess = "Has agregado el equipo" 
+                    this.setState({mensajeSnackBar: succcess})
+                    this.setState({visibleSnackBar: true},()=>{this.obtenerLigas()});
+                    //this.obtenerLigas()
+                }).catch((error)=> {
+                    this.setState({mensajeSnackBar: "Hubo un error al crear el equipo"})
+                    this.setState({visibleSnackBar: true});
+                })
+            
+            })
+                                    
+                this.hideDialogCrearEquipo();
+                this.setState({codigoLiga:''})
+        }
+            
+        else{
+            this.setState({mensajeSnackBar: "Porfavor llena todos los campos primero"})
+            this.setState({visibleSnackBar: true});
+        }
+    }
         
     
 
@@ -341,20 +426,28 @@ export default class HomeScreen extends Component{
 
                 visibleAgregarLiga={this.state.visibleAgregarLiga}
                 visibleProgramarPartido={this.state.visibleProgramarPartido}
+                visibleCrearEquipo = {this.state.visibleCrearEquipo}
                 
                 setselecEquipo1={this.setselecEquipo1}
                 setselecEquipo2={this.setselecEquipo2}
                 setdateParti={this.setdateParti}
                 setNombreLiga={this.setNombreLiga}
                 setcostoliga = {this.setcostoliga}
+                setNombreEquipo = {this.setNombreEquipo}
 
+                nombreEquipo = {this.state.nombreEquipo}
                 nombreEquipos = {this.state.nombreEquipos}
+
+                showDialogCrearEquipo={this.showDialogCrearEquipo}
+                aceptarDialogCrearEquipo={this.aceptarDialogCrearEquipo}
+                hideDialogUnirteLiga = {this.hideDialogCrearEquipo}
 
                 costoliga = {this.state.costoliga}
                 nombreLiga = {this.state.nombreLiga}
 
                 aceptarDialogAgregarLiga = {this.aceptarDialogAgregarLiga}
                 aceptarDialogProgramarPartido = {this.aceptarDialogProgramarPartido}
+                aceptarDialogCrearEquipo = {this.aceptarDialogCrearEquipo}
                 
                 cobranza={this.state.cobranza}
                 equipoLider={this.state.equipoLider}

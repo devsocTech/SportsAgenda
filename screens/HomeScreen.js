@@ -30,14 +30,11 @@ export default class HomeScreen extends Header{
             equipo:'',
             equipos:[],
 
-            codigoLiga:'',
-            nombreEquipo:'',
             codigoEquipo:'',
 
             visibleSnackBar: false,
             mensajeSnackBar: '',
 
-            visibleUnirteLiga: false,
             visibleUnirteEquipo: false,
 
         }
@@ -122,107 +119,7 @@ export default class HomeScreen extends Header{
         })
     }
 
-    aceptarDialogUnirteLiga = () => {
-        var db = firebase.firestore();
-        let user = firebase.auth().currentUser;
-        db.collection("usuarios").doc(user.uid).get().then((doc)=>{
-            var data = doc.data()
-            var nombreUser = data.nombre
 
-        if(this.state.codigoLiga !='' && this.state.nombreEquipo !=''){
-            
-            var codigo = this.state.codigoLiga;
-            var nomEq = this.state.nombreEquipo;
-            db.collection("ligas").where("Codigo", "==", codigo).get().then((querySnapshot)=> {
-                querySnapshot.forEach((doc2)=> {
-                    var data2 = doc2.data() 
-                    var costoLiga = data2.Costo;
-
-                    if(doc2.exists){
-                        var refNuevoEquipo = db.collection("ligas").doc(doc2.id).collection("equipos").doc();
-                        refNuevoEquipo.set({
-                            Liga: doc2.id,
-                            Capitan: user.uid,
-                            Nombre: nomEq,
-                            GolesFavor: 0,
-                            GolesContra: 0,
-                            PartidosJugados: 0,
-                            PartidosGanados: 0,
-                            PartidosPerdidos: 0,
-                            PartidosEmpatados: 0,
-                            Puntos: 0,
-                            Pagos: costoLiga,
-                            Partidos: []
-                        })
-                        
-                        db.collection("usuarios").doc(user.uid).update({
-                            ligas: firebase.firestore.FieldValue.arrayUnion(doc2.id),
-                        })
-                        db.collection("ligas").doc(doc2.id).collection("equipos").where("Capitan", "==", user.uid)
-                        .get()
-                        .then((querySnapshot)=> {
-                            querySnapshot.forEach((docE)=> {
-                                db.collection("ligas").doc(doc2.id).collection("equipos").doc(docE.id).collection("jugadores").add({
-                                    jugador: nombreUser,
-                                    capitan: true,
-                                    goles: 0,
-                                    pago: 0
-                                })
-                                db.collection("ligas").doc(doc2.id).update({
-                                Equipos: firebase.firestore.FieldValue.arrayUnion(docE.id),
-                                CobranzaPendiente: firebase.firestore.FieldValue.increment(costoLiga),
-                                })
-                                .then(()=> {
-                                    var equipoID= (refNuevoEquipo.id);
-                                    db.collection("usuarios").doc(user.uid).update({
-                                    Equipos: firebase.firestore.FieldValue.arrayUnion(equipoID),
-                                    CapitanEquipo: true
-                                    })
-                                })
-                                .then(()=> {
-                                    var equipoID= (refNuevoEquipo.id);
-                                    var inicialesEquipo = equipoID.substr(0, 2);
-                                    var codigo = (inicialesEquipo + (Math.floor(1000 + Math.random() * 9000)));
-                                    db.collection("codigosEquipos").add({
-                                    equipo: equipoID,
-                                    Codigo: codigo,
-                                    Valido: true,
-                                    Liga: doc2.id
-                                    })
-                                }).then(()=> {
-                                    var succcess = "Te has unido a la liga y creado tu equipo"
-                                    this.setState({mensajeSnackBar: succcess})
-                                    this.setState({visibleSnackBar: true},()=>{this.obtenerLigas()});
-                                    //this.obtenerLigas()
-                                }).catch((error)=> {
-                                    this.setState({mensajeSnackBar: "Hubo un error al unirte a la liga"})
-                                    this.setState({visibleSnackBar: true});
-                                })
-                            });
-                        })
-                        
-                    }else{
-                        this.setState({mensajeSnackBar: "Este codigo no es válido"})
-                    }
-                 
-            })
-            })          
-            this.hideDialogUnirteLiga();
-            this.setState({codigoLiga:''})
-        }
-            
-        else{
-            this.setState({mensajeSnackBar: "Porfavor llena todos los campos primero"})
-            this.setState({visibleSnackBar: true});
-        }
-    })
-    }
-
-    setNombreEquipo=(nombreEquipo)=>{
-        this.setState({
-            nombreEquipo:nombreEquipo
-        })
-    }
 
     aceptarDialogUnirteEquipo = () => {
         if(this.state.codigoEquipo != ''){
@@ -249,7 +146,7 @@ export default class HomeScreen extends Header{
                 }).then(()=> {   
                     db.collection("ligas").doc(ligaEquipo).collection("equipos").doc(codiEquipo).collection("jugadores").add({
                         jugador: nombreUser,
-                        capitan: false,
+                        capitan: true,
                         goles: 0,
                         pago: 0
                     })
@@ -283,15 +180,7 @@ export default class HomeScreen extends Header{
         })
     }
 
-    showDialogUnirteLiga = () => {
-        this.setState({ visibleUnirteLiga: true })
-    }
-
-    hideDialogUnirteLiga = () => {
-        this.setState({nombreEquipo: ''})
-        this.setState({codigoEquipo: ''})
-        this.setState({ visibleUnirteLiga: false })
-    }
+    
 
     showDialogUnirteEquipo = () => {
         this.setState({ visibleUnirteEquipo: true })
@@ -337,9 +226,7 @@ export default class HomeScreen extends Header{
             visibleUnirteLiga={this.state.visibleUnirteLiga}
             visibleUnirteEquipo={this.state.visibleUnirteEquipo}
 
-            showDialogUnirteLiga={this.showDialogUnirteLiga}
-            aceptarDialogUnirteLiga={this.aceptarDialogUnirteLiga}
-            hideDialogUnirteLiga = {this.hideDialogUnirteLiga}
+            
 
             showDialogUnirteEquipo={this.showDialogUnirteEquipo}
             aceptarDialogUnirteEquipo={this.aceptarDialogUnirteEquipo}
