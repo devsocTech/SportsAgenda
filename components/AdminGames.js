@@ -50,7 +50,7 @@ export default (props)=>{
 
             )}
             onRefresh={props.handleRefresh}
-            refreshing={props.refreshing}
+            refreshing={props.refreshing    }
             keyExtractor={item=>item.keyId}>
             </FlatList>
 

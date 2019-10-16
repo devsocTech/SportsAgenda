@@ -41,6 +41,7 @@ export default class HomeScreen extends Component{
             jornadas: 0,
             equipoLider: '',
             codigoliga:'',
+            nombreUser:'',
 
             codigoEquipo1: '',
             codigoEquipo2:'',
@@ -61,9 +62,15 @@ export default class HomeScreen extends Component{
 
     adminhomeTeam=()=>{
         var db = firebase.firestore();
+        var user = firebase.auth().currentUser;
         var liga = this.state.leagueSelect;
         var contador = 0;
         var contador2 = 0;
+        db.collection("usuarios").doc(user.uid).get().then((doc)=>{
+            var data = doc.data();
+            var nombreUser = data.nombre
+            this.setState({nombreUser: nombreUser}, ()=>{});
+        })
         db.collection("ligas").doc(liga).get().then((doc)=>{
             var data = doc.data();
             var cobranza = data.CobranzaPendiente;
@@ -288,7 +295,7 @@ export default class HomeScreen extends Component{
     }
 
     aceptarDialogProgramarPartido=()=>{
-        if(this.state.equipoF != '' && this.state.equipoF != null && this.state.equipoV != '' && this.state.equipoV != null){
+        if(this.state.codigoEquipo1 != '' && this.state.codigoEquipo1 != null && this.state.codigoEquipo2 != '' && this.state.codigoEquipo2 != null){
         var db = firebase.firestore();
         //aqui voy a guardar la selección que hayan elegido en el dialog box de equipo 1
         var equipoV = this.state.codigoEquipo2;
@@ -390,7 +397,7 @@ export default class HomeScreen extends Component{
                 }).then(()=> {
                     var succcess = "Has agregado el equipo" 
                     this.setState({mensajeSnackBar: succcess})
-                    this.setState({visibleSnackBar: true},()=>{this.obtenerLigas()});
+                    this.setState({visibleSnackBar: true},()=>{this.handleRefresh()});
                     //this.obtenerLigas()
                 }).catch((error)=> {
                     this.setState({mensajeSnackBar: "Hubo un error al crear el equipo"})
@@ -457,6 +464,7 @@ export default class HomeScreen extends Component{
                 equipoLider={this.state.equipoLider}
                 jornada={this.state.jornadas}
                 codigoliga={this.state.codigoliga}
+                nombreUser = {this.state.nombreUser}
 
                 handleRefresh={this.handleRefresh}
                 refreshing={this.state.refreshing}
