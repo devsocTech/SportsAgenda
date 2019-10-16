@@ -24,8 +24,8 @@ export default (props)=>{
           <View style={{justifyContent:'space-around',flexDirection:'row',paddingVertical:5,zIndex:1}}>
                     <Card theme={theme} style={{alignItems:'flex-start',height:100,width:"45%",marginLeft:10,marginRight:10}}>
                         <Card.Content>
-                            <Text style={{fontSize:15}}>CÓDIGO</Text>
-                            <Text style={{fontSize:20,fontWeight:'bold'}}>{props.codigoliga}</Text>
+                            <Text style={{fontSize:15}}>USUARIO</Text>
+                            <Text style={{fontSize:20,fontWeight:'bold'}}>{props.nombreUser}</Text>
                         </Card.Content>
                     </Card>
 
