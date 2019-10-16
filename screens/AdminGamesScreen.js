@@ -68,6 +68,7 @@ export default class AdminGamesScreen extends Component{
             this.setState({visibleSnackBar: true});
         }    
     }
+    
 
     obtenerLigas=()=>{
         var user = firebase.auth().currentUser;
