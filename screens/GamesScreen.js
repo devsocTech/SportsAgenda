@@ -14,6 +14,7 @@ export default class GamesScreen extends Component{
         this.state={
             visible: false,
             title:'Juegos',
+            
 
             leagueSelect:'',
             nleagueSelect:'',
