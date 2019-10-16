@@ -20,6 +20,7 @@ import firebase from 'firebase'
 
 const AuthNavigator = createStackNavigator({
     SignUp: SignUpScreen,
+    
     SignIn: SignInScreen,
     Welcome: WelcomeScreen,
 },{
