@@ -109,12 +109,15 @@ export default class HomeScreen extends Component{
     }
 
     handleRefresh=()=>{
-        this.setState({refreshing:true})
-        this.obtenerLigas(()=>{})
         if(this.state.leagueSelect!=""){
             this.adminhomeTeam();
             this.obtenerEquipos();
         }
+    }
+
+    handleRefresh2=()=>{
+        this.setState({refreshing:true})
+        this.obtenerLigas(()=>{})
         this.setState({refreshing:false})
     }
 
@@ -154,11 +157,11 @@ export default class HomeScreen extends Component{
                 ligasMaster.push({value:ligas[i],label:nombreLiga[i],color:'black',key:i})
                 this.setState({ligasMaster:ligasMaster},()=>{})
                 this.setState({equipos:equipos},()=>{})
-                this.setState({leagueSelect:ligas[0]},()=>{})
-                this.setState({nleagueSelect:nombreLiga[0]},()=>{})
-                if(equipos!=null){
-                this.setState({equipo:equipos[0]},()=>{})
-                }
+                // this.setState({leagueSelect:ligas[0]},()=>{})
+                // this.setState({nleagueSelect:nombreLiga[0]},()=>{})
+                // if(equipos!=null){
+                // this.setState({equipo:equipos[0]},()=>{})
+                // }
             }).catch((error)=> {
                 this.setState({mensajeSnackBar: "Hubo un error al acceder a la base de datos"})
                 this.setState({visibleSnackBar: true});
@@ -473,6 +476,8 @@ export default class HomeScreen extends Component{
                 nombreUser = {this.state.nombreUser}
 
                 handleRefresh={this.handleRefresh}
+                handleRefresh2={this.handleRefresh2}
+
                 refreshing={this.state.refreshing}
 
                 >
