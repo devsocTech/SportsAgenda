@@ -361,7 +361,7 @@ export default class HomeScreen extends Component{
         var user = firebase.auth().currentUser;
         var liga = this.state.leagueSelect;
 
-        if(this.state.nombreEquipo !=''){
+        if(this.state.nombreEquipo !='' && this.state.leagueSelect != ''){
 
             var nomEq = this.state.nombreEquipo;
 
@@ -392,8 +392,13 @@ export default class HomeScreen extends Component{
                     var equipoID= (refNuevoEquipo.id);
                     var inicialesEquipo = equipoID.substr(0, 2);
                     var codigo = (inicialesEquipo + (Math.floor(1000 + Math.random() * 9000)));
-                    db.collection("ligas").doc(liga).collection("equipos").doc(refNuevoEquipo.id).update({
+                    db.collection("codigosEquipos").add({
                     Codigo: codigo,
+                    Liga: liga,
+                    Equipo: refNuevoEquipo.id
+                    })
+                    db.collection("ligas").doc(liga).collection("equipos").doc(refNuevoEquipo.id).update({
+                        Codigo: codigo,
                     })
                 }).then(()=> {
                     var succcess = "Has agregado el equipo" 

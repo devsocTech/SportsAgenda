@@ -146,7 +146,7 @@ export default class HomeScreen extends Header{
         db.collection("codigosEquipos").where("Codigo", "==", codigo).get().then((querySnapshot)=> {
             querySnapshot.forEach((doc)=> {
                 var data = doc.data();
-                var codiEquipo = data.equipo; 
+                var codiEquipo = data.Equipo; 
                 var ligaEquipo = data.Liga; 
 
                 db.collection("usuarios").doc(user.uid).update({
