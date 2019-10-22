@@ -28,6 +28,7 @@ showDialog = () => {
   this.setState({ visible: true })
 }
 
+
 hideDialog = () => {
   this.setState({ visible: false })
 }

@@ -164,12 +164,12 @@ export default class AdminGamesScreen extends Component{
                 });
             })
             .catch((error)=> {
-                this.setState({mensajeSnackBar: "Hubo un error al cargar tus partidos"})
+                this.setState({mensajeSnackBar: "No tienes partidos finalizados, o hubo un error al cargarlos"})
                 this.setState({visibleSnackBar: true});
             });  
         })
         .catch((error)=> {
-            this.setState({mensajeSnackBar: "Hubo un error al cargar tus partidos"})
+            this.setState({mensajeSnackBar: "No tienes partidos finalizados, o hubo un error al cargarlos"})
             this.setState({visibleSnackBar: true});
         });
     })
@@ -214,13 +214,13 @@ export default class AdminGamesScreen extends Component{
                 })
                 })
                 .catch((error)=> {
-                    this.setState({mensajeSnackBar: "Hubo un error al cargar tus partidos"})
+                    this.setState({mensajeSnackBar: "No tienes partidos proximos, o hubo un error al cargarlos"})
                     this.setState({visibleSnackBar: true});
                 });
 
                 })
                 .catch((error)=> {
-                    this.setState({mensajeSnackBar: "Hubo un error al cargar tus partidos"})
+                    this.setState({mensajeSnackBar: "No tienes partidos proximos, o hubo un error al cargarlos"})
                     this.setState({visibleSnackBar: true});
                 });
                 
