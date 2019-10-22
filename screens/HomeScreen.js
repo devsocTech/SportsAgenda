@@ -60,10 +60,15 @@ export default class HomeScreen extends Header{
 
     handleRefresh=()=>{
         this.setState({refreshing:true});
-        this.obtenerLigas()
         if(this.state.leagueSelect!="" && this.state.equipo!=""){
             this.homeTeam()
         }
+        this.setState({refreshing:false});
+    }
+
+    handleRefresh2=()=>{
+        this.setState({refreshing:true});
+        this.obtenerLigas()
         this.setState({refreshing:false});
     }
 
@@ -232,7 +237,6 @@ export default class HomeScreen extends Header{
 
             visibleUnirteLiga={this.state.visibleUnirteLiga}
             visibleUnirteEquipo={this.state.visibleUnirteEquipo}
-
             
 
             showDialogUnirteEquipo={this.showDialogUnirteEquipo}
@@ -246,6 +250,8 @@ export default class HomeScreen extends Header{
             setdateParti = {this.setdateParti}
             refreshing={this.state.refreshing}
             handleRefresh={this.handleRefresh}
+            handleRefresh2={this.handleRefresh2}
+
             ></Home>
             <SnackBars
                 mensajeSnackBar= {this.state.mensajeSnackBar}
