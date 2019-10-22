@@ -19,7 +19,7 @@ export default (props)=>{
         <View style={{flex:1}}>
           <ScrollView
                 refreshControl={
-                  <RefreshControl refreshing={props.refreshing} onRefresh={props.handleRefresh2}/>}>          
+                  <RefreshControl refreshing={props.refreshing} onRefresh={props.handleRefresh}/>}>          
           <View style={{paddingTop:1}}>
           <View style={{justifyContent:'space-around',flexDirection:'row',paddingVertical:5,zIndex:1}}>
                     <Card theme={theme} style={{alignItems:'flex-start',height:100,width:"45%",marginLeft:10,marginRight:10}}>
