@@ -60,7 +60,7 @@ export default class HomeScreen extends Header{
 
     handleRefresh=()=>{
         this.setState({refreshing:true});
-        if(this.state.leagueSelect!="" && this.state.equipo!=""){
+        if(this.state.leagueSelect!="" && this.state.equipo!=null){
             this.homeTeam()
         }
         this.setState({refreshing:false});
@@ -92,9 +92,9 @@ export default class HomeScreen extends Header{
                 ligasMaster.push({value:ligas[i],label:nombreLiga[i],color:'black',key:i})
                 this.setState({ligasMaster:ligasMaster},()=>{})
                 this.setState({equipos:equipos},()=>{})
-                this.setState({leagueSelect:ligas[0]},()=>{})
-                this.setState({nleagueSelect:nombreLiga[0]},()=>{})
-                this.setState({equipo:equipos[0]},()=>{})
+                //this.setState({leagueSelect:ligas[0]},()=>{})
+                //this.setState({nleagueSelect:nombreLiga[0]},()=>{})
+                //this.setState({equipo:equipos[0]},()=>{})
             }).catch((error)=> {
                 this.setState({mensajeSnackBar: "Todavía no te has unido a una liga"})
                 this.setState({visibleSnackBar: true});
