@@ -8,6 +8,7 @@ import SnackBars from '../components/SnackBars';
 
 
 export default class HomeScreen extends Component{
+    
 
     constructor(props){
         super(props);
