@@ -52,7 +52,10 @@ export default class GamesScreen extends Component{
 
     handleRefresh=()=>{
         this.setState({refreshing:true});
-        this.obtenerLigas(()=>{})
+        this.setState({matchFinish:[]})
+        this.setState({matchNext:[]})
+        this.setState({matchTeam:[]})
+
         if(this.state.equipo!=""){
             this.llenarpartidosEquipo();
         }
@@ -171,7 +174,7 @@ export default class GamesScreen extends Component{
             this.setState({visibleSnackBar: true});
         }})
         .catch((error)=> {
-        this.setState({mensajeSnackBar: "Hubo un error al cargar tus partidos"})
+        this.setState({mensajeSnackBar: "Tu equipo todavía no tiene partidos"})
         this.setState({visibleSnackBar: true});
         });
     }
@@ -211,11 +214,11 @@ export default class GamesScreen extends Component{
                 this.setState({matchFinish:matchArray}, () => {
                 });
             }).catch((error)=> {
-                this.setState({mensajeSnackBar: "Hubo un error al cargar tus partidos"})
+                this.setState({mensajeSnackBar: "Tu liga todavía no tiene partidos finalizados"})
                 this.setState({visibleSnackBar: true});
             });
         }).catch((error)=> {
-            this.setState({mensajeSnackBar: "Hubo un error al cargar tus partidos"})
+            this.setState({mensajeSnackBar: "Tu liga todavía no tiene partidos finalizados"})
             this.setState({visibleSnackBar: true});
         });
     })
@@ -258,17 +261,17 @@ export default class GamesScreen extends Component{
                 this.setState({matchNext:matchArray}, () => {
                 })
                 }).catch((error)=> {
-                    this.setState({mensajeSnackBar: "Hubo un error al cargar tus partidos"})
+                    this.setState({mensajeSnackBar: "Tu liga todavía no tiene partidos proximos"})
                     this.setState({visibleSnackBar: true});
                 });
                 }).catch((error)=> {
-                    this.setState({mensajeSnackBar: "Hubo un error al cargar tus partidos"})
+                    this.setState({mensajeSnackBar: "Tu liga todavía no tiene partidos proximos"})
                     this.setState({visibleSnackBar: true});
                 });
                 
             })
         }).catch((error)=> {
-            this.setState({mensajeSnackBar: "Hubo un error al cargar tus partidos"})
+            this.setState({mensajeSnackBar: "Tu liga todavía no tiene partidos proximos"})
             this.setState({visibleSnackBar: true});
         });
     }

@@ -56,7 +56,7 @@ export default class Tablecreen extends Component{
 
     handleRefresh=()=>{
       this.setState({refreshing:true})
-      this.obtenerLigas(()=>{})
+      this.setState({rows:[]})
       if(this.state.leagueSelect!=""){
         this.llenarTabla(()=>{})
       }

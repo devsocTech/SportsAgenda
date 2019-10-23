@@ -109,6 +109,14 @@ export default class HomeScreen extends Component{
     }
 
     handleRefresh=()=>{
+        this.setState({nombreEquipos:[]})
+        this.setState({nombreUser: ""});
+        this.setState({codigoliga:""})
+        this.setState({cobranza:0})
+        this.setState({jornadas:0})
+        this.setState({equipoLider:"Sin equipos"})
+
+
         if(this.state.leagueSelect!=""){
             this.adminhomeTeam();
             this.obtenerEquipos();
@@ -182,7 +190,7 @@ export default class HomeScreen extends Component{
     }
 
     showDialogProgramarPartido = () => {
-        if(this.state.nombreEquipos==null || this.state.sepuedeabrir == false){
+        if(this.state.nombreEquipos.length < 2 || this.state.sepuedeabrir == false){
             this.setState({mensajeSnackBar: "Primero necesitas 2 equipos en tu liga"})
             this.setState({visibleSnackBar: true});
         }
@@ -460,7 +468,7 @@ export default class HomeScreen extends Component{
 
                 showDialogCrearEquipo={this.showDialogCrearEquipo}
                 aceptarDialogCrearEquipo={this.aceptarDialogCrearEquipo}
-                hideDialogUnirteLiga = {this.hideDialogCrearEquipo}
+                hideDialogCrearEquipo = {this.hideDialogCrearEquipo}
 
                 costoliga = {this.state.costoliga}
                 nombreLiga = {this.state.nombreLiga}

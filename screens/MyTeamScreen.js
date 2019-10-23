@@ -36,7 +36,6 @@ export default class Tablecreen extends Component{
 
     handleRefresh=()=>{
         this.setState({refreshing:true})
-        this.obtenerLigas()
         if(this.state.equipo!="" && this.state.leagueSelect!=""){
             this.obtenerJugadores();
         }
@@ -142,7 +141,14 @@ export default class Tablecreen extends Component{
     }
 
     showDialogAgregarJugador = () => {
-        this.setState({ visibleAgregarJugador: true })
+        if(this.state.equipos != ''){
+            this.setState({ visibleAgregarJugador: true })
+        }
+        else{
+            this.setState({mensajeSnackBar: "Primero necesitas estar en un equipo!"})
+            this.setState({visibleSnackBar: true},()=>{});
+        }
+        
     }
 
     hideDialogAgregarJugador = () => {
