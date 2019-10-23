@@ -92,7 +92,7 @@ obtenerLigas=()=>{
 
 handleRefresh=()=>{
     this.setState({refreshing:true})
-    this.obtenerLigas()
+    this.setState({equiposMaster:[]})
     if(this.state.leagueSelect!=""){
         this.obtenerEquipos()
     }

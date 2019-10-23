@@ -36,7 +36,6 @@ export default class Tablecreen extends Component{
 
     handleRefresh=()=>{
         this.setState({refreshing:true})
-        this.obtenerLigas()
         if(this.state.equipo!="" && this.state.leagueSelect!=""){
             this.obtenerJugadores();
         }

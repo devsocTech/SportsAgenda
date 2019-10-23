@@ -106,11 +106,19 @@ export default class AdminGamesScreen extends Component{
 
     handleRefresh=()=>{
         this.setState({refreshing:true});
-        this.obtenerLigas(()=>{})
+        this.setState({matchFinish:[]})
+        this.setState({matchNext:[]})
+
         if(this.state.leagueSelect!=""){
             this.llenarpartidosFinalizados();
             this.llenarpartidosProximos();
         }
+        this.setState({refreshing:false});
+    }
+
+    handleRefresh2=()=>{
+        this.setState({refreshing:true});
+        this.obtenerLigas(()=>{})
         this.setState({refreshing:false});
     }
 
@@ -670,9 +678,7 @@ export default class AdminGamesScreen extends Component{
         });
         this.hideDialog();
 
-        this.setState({matchTeam:[]})
-        this.setState({matchNext:[]})
-        this.setState({matchFinish:[]},()=>{this.handleRefresh()})
+        this.handleRefresh()
         
     }
 

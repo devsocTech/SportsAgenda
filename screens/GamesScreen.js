@@ -52,7 +52,10 @@ export default class GamesScreen extends Component{
 
     handleRefresh=()=>{
         this.setState({refreshing:true});
-        this.obtenerLigas(()=>{})
+        this.setState({matchFinish:[]})
+        this.setState({matchNext:[]})
+        this.setState({matchTeam:[]})
+
         if(this.state.equipo!=""){
             this.llenarpartidosEquipo();
         }
