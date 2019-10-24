@@ -12,7 +12,7 @@ export default (props)=>{
 
             <ScrollView       
             refreshControl={
-            <RefreshControl refreshing={props.refreshing} onRefresh={props.handleRefresh2}/>}>
+            <RefreshControl refreshing={props.refreshing} onRefresh={props.handleRefresh}/>}>
 
             
             <View style={{paddingTop:1}}>
