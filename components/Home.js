@@ -70,7 +70,7 @@ export default (props)=>{
              theme={theme}>
             <Dialog.Title>Unirte Equipo</Dialog.Title>
             <Dialog.Content>
-              <TextInput style={{alignSelf:'center', width:'100%'}} label="Codigo del Equipo" onChangeText={(text)=>props.setCodigoEquipo(text)}></TextInput>
+              <TextInput style={{alignSelf:'center', width:'100%'}} label="Código del Equipo" onChangeText={(text)=>props.setCodigoEquipo(text)}></TextInput>
               
             </Dialog.Content>
             <Dialog.Actions>

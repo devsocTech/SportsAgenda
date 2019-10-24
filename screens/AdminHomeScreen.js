@@ -205,45 +205,46 @@ export default class HomeScreen extends Component{
 
     aceptarDialogAgregarLiga = () => {
         if(this.state.nombreLiga != '' && this.state.cost != 0){
-        var db = firebase.firestore();
-        let user = firebase.auth().currentUser;
-        var cost = parseInt(this.state.costoliga)
-        var refNuevaLiga = db.collection("ligas").doc();
-        refNuevaLiga.set({
-            Nombre: this.state.nombreLiga,
-            Costo: cost,
-            CobranzaPendiente: 0
-        })
-        .then(function() {
-            var ligaID= (refNuevaLiga.id);
-            db.collection("usuarios").doc(user.uid).update({
-            ligas: firebase.firestore.FieldValue.arrayUnion(ligaID),
-            Equipos: firebase.firestore.FieldValue.arrayUnion('Equipo Admin')
+            var db = firebase.firestore();
+            let user = firebase.auth().currentUser;
+            var cost = parseInt(this.state.costoliga)
+            var refNuevaLiga = db.collection("ligas").doc();
+            refNuevaLiga.set({
+                Nombre: this.state.nombreLiga,
+                Costo: cost,
+                CobranzaPendiente: 0
             })
-        })
-        .then(function() {
-            var ligaID= (refNuevaLiga.id);
-            var inicialesLiga = ligaID.substr(0, 2);
-            var codigo = (inicialesLiga + (Math.floor(1000 + Math.random() * 9000)));
-            db.collection("ligas").doc(ligaID).update({
-            Codigo: codigo,
+            .then(function() {
+                var ligaID= (refNuevaLiga.id);
+                db.collection("usuarios").doc(user.uid).update({
+                ligas: firebase.firestore.FieldValue.arrayUnion(ligaID),
+                Equipos: firebase.firestore.FieldValue.arrayUnion('Equipo Admin')
+                })
             })
-        
-        }).then(()=> {
-            this.setState({mensajeSnackBar: "Se creo tu liga exitosamente"},()=>{this.obtenerLigas()})
+            .then(function() {
+                var ligaID= (refNuevaLiga.id);
+                var inicialesLiga = ligaID.substr(0, 2);
+                var codigo = (inicialesLiga + (Math.floor(1000 + Math.random() * 9000)));
+                db.collection("ligas").doc(ligaID).update({
+                Codigo: codigo,
+                })
+            
+            }).then(()=> {
+                this.setState({mensajeSnackBar: "Se creó tu liga exitosamente"},()=>{this.obtenerLigas()})
+                this.setState({visibleSnackBar: true});
+            }) 
+            .catch((error)=> {
+                this.setState({mensajeSnackBar: "Hubo un error al crear una liga"})
+                this.setState({visibleSnackBar: true});
+            });
+            this.setState({nombreLiga: ''});
+            this.setState({costoliga:0})
+            this.hideDialogAgregarLiga()
+            this.obtenerLigas();
+        }else{
             this.setState({visibleSnackBar: true});
-        }) 
-        .catch((error)=> {
-            this.setState({mensajeSnackBar: "Hubo un error al crear una liga"})
-            this.setState({visibleSnackBar: true});
-        });
-        this.setState({nombreLiga: ''});
-        this.hideDialogAgregarLiga()
-        this.obtenerLigas();
-    }else{
-        this.setState({mensajeSnackBar: "Porfavor llena todos los campos"})
-        this.setState({visibleSnackBar: true});
-    }
+            this.setState({mensajeSnackBar: "Porfavor llena todos los campos"})
+        }
     }
 
     setselecEquipo1=(codigoEquipo1)=>{
@@ -339,6 +340,8 @@ export default class HomeScreen extends Component{
             var success = "Se programó tu partido"
             this.setState({mensajeSnackBar: success})
             this.setState({visibleSnackBar: true});
+            this.setState({codigoEquipo1:''});
+            this.setState({codigoEquipo2:''});
         }).catch((error)=> {
             this.setState({mensajeSnackBar: "Hubo un error al programar tu partido"})
             this.setState({visibleSnackBar: true});
@@ -347,6 +350,8 @@ export default class HomeScreen extends Component{
     }else{
         this.setState({mensajeSnackBar: "Porfavor selecciona dos equipos sin repetirse"})
         this.setState({visibleSnackBar: true});
+        this.setState({codigoEquipo1:''});
+        this.setState({codigoEquipo2:''});
     }
     }
 
@@ -428,7 +433,7 @@ export default class HomeScreen extends Component{
         }
             
         else{
-            this.setState({mensajeSnackBar: "Porfavor llena todos los campos primero"})
+            this.setState({mensajeSnackBar: "Porfavor llena todos los campos"})
             this.setState({visibleSnackBar: true});
         }
     }
@@ -482,6 +487,7 @@ export default class HomeScreen extends Component{
                 jornada={this.state.jornadas}
                 codigoliga={this.state.codigoliga}
                 nombreUser = {this.state.nombreUser}
+                costoliga={this.state.costoliga}
 
                 handleRefresh={this.handleRefresh}
                 handleRefresh2={this.handleRefresh2}

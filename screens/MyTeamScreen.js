@@ -112,7 +112,7 @@ export default class Tablecreen extends Component{
         db.collection("ligas").doc(liga).collection("equipos").doc(equipo).get().then((doc)=>{
             var dataEquipo = doc.data();
             var Capitan = dataEquipo.Capitan;
-            if(Capitan == user.uid){
+            //if(Capitan == user.uid){
                 db.collection("ligas").doc(liga).collection("equipos").doc(equipo).collection("jugadores").add({
                     jugador : nombre
                 }).then(()=> {
@@ -124,11 +124,11 @@ export default class Tablecreen extends Component{
                     this.setState({visibleSnackBar: true});
                 })
     
-            }
+            /*}
             else{
                 this.setState({mensajeSnackBar: "No eres capitan del equipo"})
                 this.setState({visibleSnackBar: true},()=>{this.handleRefresh()});
-            }
+            }*/
         })
         
         this.setState({visibleAgregarJugador: false});

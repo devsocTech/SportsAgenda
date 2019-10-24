@@ -152,7 +152,7 @@ export default (props)=>{
             <Dialog.Title>Agregar Liga</Dialog.Title>
             <Dialog.Content>
               <TextInput style={{alignSelf:'center', width:'100%'}} label="Nombre de la liga" onChangeText={(text)=>props.setNombreLiga(text)} >{props.nombreLiga}</TextInput>
-              <TextInput style={{alignSelf:'center', width:'100%'}} label="Costo por equipo" onChangeText={(value)=>props.setcostoliga(value)}></TextInput>
+              <TextInput style={{alignSelf:'center', width:'100%'}} label="Costo por equipo" onChangeText={(value)=>props.setcostoliga(value)}>{props.costoLiga}</TextInput>
             
             </Dialog.Content>
     

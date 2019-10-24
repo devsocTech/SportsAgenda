@@ -144,38 +144,47 @@ export default class HomeScreen extends Header{
             var data = doc.data()
             var nombreUser = data.nombre
         db.collection("codigosEquipos").where("Codigo", "==", codigo).get().then((querySnapshot)=> {
-            querySnapshot.forEach((doc)=> {
-                var data = doc.data();
-                var codiEquipo = data.Equipo; 
-                var ligaEquipo = data.Liga; 
+            if(querySnapshot.exists){
+                querySnapshot.forEach((doc)=> {
 
-                db.collection("usuarios").doc(user.uid).update({
-                    Equipos: firebase.firestore.FieldValue.arrayUnion(codiEquipo)
-                }).then(()=> {   
+                    var data = doc.data();
+                    var codiEquipo = data.Equipo; 
+                    var ligaEquipo = data.Liga; 
+
                     db.collection("usuarios").doc(user.uid).update({
-                    ligas: firebase.firestore.FieldValue.arrayUnion(ligaEquipo)
-                    })
-                }).then(()=> {   
-                    db.collection("ligas").doc(ligaEquipo).collection("equipos").doc(codiEquipo).collection("jugadores").add({
-                        jugador: nombreUser,
-                        capitan: true,
-                        goles: 0,
-                        pago: 0
-                    })
-                }).then(()=> { 
-                    var succcess = "Te has unido a un equipo y su liga"
-                    this.setState({mensajeSnackBar: succcess})
-                    this.setState({visibleSnackBar: true},()=>{this.obtenerLigas()});
-                }).catch((error)=> {
-                    this.setState({mensajeSnackBar: "Hubo un error al unirte al equipo"})
-                    this.setState({visibleSnackBar: true});
-                });
-            })
+                        Equipos: firebase.firestore.FieldValue.arrayUnion(codiEquipo)
+                    }).then(()=> {   
+                        db.collection("usuarios").doc(user.uid).update({
+                        ligas: firebase.firestore.FieldValue.arrayUnion(ligaEquipo)
+                        })
+                    }).then(()=> {   
+                        db.collection("ligas").doc(ligaEquipo).collection("equipos").doc(codiEquipo).collection("jugadores").add({
+                            jugador: nombreUser,
+                            capitan: true,
+                            goles: 0,
+                            pago: 0
+                        })
+                    }).then(()=> { 
+                        var succcess = "Te has unido a un equipo y su liga"
+                        this.setState({mensajeSnackBar: succcess})
+                        this.setState({visibleSnackBar: true},()=>{this.obtenerLigas()});
+                        this.hideDialogUnirteEquipo();
+                    }).catch((error)=> {
+                        this.setState({mensajeSnackBar: "Hubo un error al unirte al equipo"})
+                        this.setState({visibleSnackBar: true});
+                        this.hideDialogUnirteEquipo();
+                    });
+                })
+            }
+            else{
+                this.hideDialogUnirteEquipo();
+                this.setState({mensajeSnackBar: "Este código no es válido"})
+                this.setState({visibleSnackBar: true});  
+            }
         })
         })
-        this.hideDialogUnirteEquipo();
     }else{
-        this.setState({mensajeSnackBar: "Porfavor llena todos los campos    "})
+        this.setState({mensajeSnackBar: "Porfavor llena todos los campos"})
         this.setState({visibleSnackBar: true});
     }
     }

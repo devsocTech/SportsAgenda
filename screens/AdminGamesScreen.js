@@ -202,20 +202,20 @@ export default class AdminGamesScreen extends Component{
                 db.collection("ligas").doc(liga).collection("equipos").doc(equipoV).get().then((doc)=>{
                     var dataEquipo = doc.data();
                     var nombreEquipoV = dataEquipo.Nombre;
-                let fecha=datapartido.fechaPartido
-                let golesF=datapartido.golesequipoF
-                let golesV=datapartido.golesequipoV
-                let completado=datapartido.completado
+                    let golesF=datapartido.golesequipoF
+                    let golesV=datapartido.golesequipoV
+                    let completado=datapartido.completado
+                    let fecha=datapartido.fechaPartido
 
                 var date=new Date(fecha.seconds*1000)
-                    var dia=date.getDate()
-                    var mes=date.getMonth()+1
-                    var año=date.getFullYear()
+                var dia=date.getDate()
+                var mes=date.getMonth()+1
+                var año=date.getFullYear()
 
-                    var hora=date.getHours()
-                    var minutos=date.getMinutes()
+                var hora=date.getHours()
+                var minutos=date.getMinutes()
 
-                    var stringDate= (dia+"/"+mes+"/"+año+" "+hora+":"+minutos)
+                var stringDate= (dia+"/"+mes+"/"+año+" "+hora+":"+minutos)
 
                 matchArray.push({keyId,nombreEquipoF,nombreEquipoV,stringDate,golesF,golesV,completado});
                 this.setState({matchNext:matchArray}, () => {
@@ -291,7 +291,7 @@ export default class AdminGamesScreen extends Component{
                         golesequipoV: golesequipoVN,  
                     }).then(()=> {
                         var success = "Se registró tu partido"
-                        this.setState({mensajeSnackBar: success})
+                        this.setState({mensajeSnackBar: success},()=>{this.handleRefresh()})
                         this.setState({visibleSnackBar: true});
                     })
                     .catch((error)=> {
@@ -303,7 +303,7 @@ export default class AdminGamesScreen extends Component{
                         GolesFavor: firebase.firestore.FieldValue.increment(difGF),
                     }).then(()=> {
                         var success = "Se registró tu partido"
-                        this.setState({mensajeSnackBar: success})
+                        this.setState({mensajeSnackBar: success},()=>{this.handleRefresh()})
                         this.setState({visibleSnackBar: true});
                     })
                     .catch((error)=> {
@@ -315,7 +315,7 @@ export default class AdminGamesScreen extends Component{
                         GolesFavor: firebase.firestore.FieldValue.increment(difGV),
                     }).then(()=> {
                         var success = "Se registró tu partido"
-                        this.setState({mensajeSnackBar: success})
+                        this.setState({mensajeSnackBar: success},()=>{this.handleRefresh()})
                         this.setState({visibleSnackBar: true});
                     })
                     .catch((error)=> {
@@ -329,7 +329,7 @@ export default class AdminGamesScreen extends Component{
                         golesequipoV: golesequipoVN,  
                     }).then(()=> {
                         var success = "Se registró tu partido"
-                        this.setState({mensajeSnackBar: success})
+                        this.setState({mensajeSnackBar: success},()=>{this.handleRefresh()})
                         this.setState({visibleSnackBar: true});
                     })
                     .catch((error)=> {
@@ -345,8 +345,8 @@ export default class AdminGamesScreen extends Component{
                             GolesFavor: firebase.firestore.FieldValue.increment(difGV),
                         }).then(()=> {
                             var success = "Se registró tu partido"
-                            this.setState({mensajeSnackBar: success})
-                            this.setState({visibleSnackBar: true});
+                        this.setState({mensajeSnackBar: success},()=>{this.handleRefresh()})
+                        this.setState({visibleSnackBar: true});
                         })
                         .catch((error)=> {
                             this.setState({mensajeSnackBar: "Hubo un error al registrar el marcador"})
@@ -360,8 +360,8 @@ export default class AdminGamesScreen extends Component{
                             GolesFavor: firebase.firestore.FieldValue.increment(difGF),
                         }).then(()=> {
                             var success = "Se registró tu partido"
-                            this.setState({mensajeSnackBar: success})
-                            this.setState({visibleSnackBar: true});
+                        this.setState({mensajeSnackBar: success},()=>{this.handleRefresh()})
+                        this.setState({visibleSnackBar: true});
                         })
                         .catch((error)=> {
                             this.setState({mensajeSnackBar: "Hubo un error al registrar el marcador"})
@@ -377,8 +377,8 @@ export default class AdminGamesScreen extends Component{
                             GolesFavor: firebase.firestore.FieldValue.increment(difGF),
                         }).then(()=> {
                             var success = "Se registró tu partido"
-                            this.setState({mensajeSnackBar: success})
-                            this.setState({visibleSnackBar: true});
+                        this.setState({mensajeSnackBar: success},()=>{this.handleRefresh()})
+                        this.setState({visibleSnackBar: true});
                         })
                         .catch((error)=> {
                             this.setState({mensajeSnackBar: "Hubo un error al registrar el marcador"})
@@ -392,8 +392,8 @@ export default class AdminGamesScreen extends Component{
                             GolesFavor: firebase.firestore.FieldValue.increment(difGV),
                         }).then(()=> {
                             var success = "Se registró tu partido"
-                            this.setState({mensajeSnackBar: success})
-                            this.setState({visibleSnackBar: true});
+                        this.setState({mensajeSnackBar: success},()=>{this.handleRefresh()})
+                        this.setState({visibleSnackBar: true});
                         })
                         .catch((error)=> {
                             this.setState({mensajeSnackBar: "Hubo un error al registrar el marcador"})
@@ -409,8 +409,8 @@ export default class AdminGamesScreen extends Component{
                             GolesFavor: firebase.firestore.FieldValue.increment(difGF),
                         }).then(()=> {
                             var success = "Se registró tu partido"
-                            this.setState({mensajeSnackBar: success})
-                            this.setState({visibleSnackBar: true});
+                        this.setState({mensajeSnackBar: success},()=>{this.handleRefresh()})
+                        this.setState({visibleSnackBar: true});
                         })
                         .catch((error)=> {
                             this.setState({mensajeSnackBar: "Hubo un error al registrar el marcador"})
@@ -424,8 +424,8 @@ export default class AdminGamesScreen extends Component{
                             GolesFavor: firebase.firestore.FieldValue.increment(difGV),
                         }).then(()=> {
                             var success = "Se registró tu partido"
-                            this.setState({mensajeSnackBar: success})
-                            this.setState({visibleSnackBar: true});
+                        this.setState({mensajeSnackBar: success},()=>{this.handleRefresh()})
+                        this.setState({visibleSnackBar: true});
                         })
                         .catch((error)=> {
                             this.setState({mensajeSnackBar: "Hubo un error al registrar el marcador"})
@@ -441,8 +441,8 @@ export default class AdminGamesScreen extends Component{
                             GolesFavor: firebase.firestore.FieldValue.increment(difGV),
                         }).then(()=> {
                             var success = "Se registró tu partido"
-                            this.setState({mensajeSnackBar: success})
-                            this.setState({visibleSnackBar: true});
+                        this.setState({mensajeSnackBar: success},()=>{this.handleRefresh()})
+                        this.setState({visibleSnackBar: true});
                         })
                         .catch((error)=> {
                             this.setState({mensajeSnackBar: "Hubo un error al registrar el marcador"})
@@ -456,8 +456,8 @@ export default class AdminGamesScreen extends Component{
                             GolesFavor: firebase.firestore.FieldValue.increment(difGF),
                         }).then(()=> {
                             var success = "Se registró tu partido"
-                            this.setState({mensajeSnackBar: success})
-                            this.setState({visibleSnackBar: true});
+                        this.setState({mensajeSnackBar: success},()=>{this.handleRefresh()})
+                        this.setState({visibleSnackBar: true});
                         })
                         .catch((error)=> {
                             this.setState({mensajeSnackBar: "Hubo un error al registrar el marcador"})
@@ -473,8 +473,8 @@ export default class AdminGamesScreen extends Component{
                             GolesFavor: firebase.firestore.FieldValue.increment(difGF),
                         }).then(()=> {
                             var success = "Se registró tu partido"
-                            this.setState({mensajeSnackBar: success})
-                            this.setState({visibleSnackBar: true});
+                        this.setState({mensajeSnackBar: success},()=>{this.handleRefresh()})
+                        this.setState({visibleSnackBar: true});
                         })
                         .catch((error)=> {
                             this.setState({mensajeSnackBar: "Hubo un error al registrar el marcador"})
@@ -488,8 +488,8 @@ export default class AdminGamesScreen extends Component{
                             GolesFavor: firebase.firestore.FieldValue.increment(difGV),
                         }).then(()=> {
                             var success = "Se registró tu partido"
-                            this.setState({mensajeSnackBar: success})
-                            this.setState({visibleSnackBar: true});
+                        this.setState({mensajeSnackBar: success},()=>{this.handleRefresh()})
+                        this.setState({visibleSnackBar: true});
                         })
                         .catch((error)=> {
                             this.setState({mensajeSnackBar: "Hubo un error al registrar el marcador"})
@@ -505,8 +505,8 @@ export default class AdminGamesScreen extends Component{
                             GolesFavor: firebase.firestore.FieldValue.increment(difGF),
                         }).then(()=> {
                             var success = "Se registró tu partido"
-                            this.setState({mensajeSnackBar: success})
-                            this.setState({visibleSnackBar: true});
+                        this.setState({mensajeSnackBar: success},()=>{this.handleRefresh()})
+                        this.setState({visibleSnackBar: true});
                         })
                         .catch((error)=> {
                             this.setState({mensajeSnackBar: "Hubo un error al registrar el marcador"})
@@ -520,8 +520,8 @@ export default class AdminGamesScreen extends Component{
                             GolesFavor: firebase.firestore.FieldValue.increment(difGV),
                         }).then(()=> {
                             var success = "Se registró tu partido"
-                            this.setState({mensajeSnackBar: success})
-                            this.setState({visibleSnackBar: true});
+                        this.setState({mensajeSnackBar: success},()=>{this.handleRefresh()})
+                        this.setState({visibleSnackBar: true});
                         })
                         .catch((error)=> {
                             this.setState({mensajeSnackBar: "Hubo un error al registrar el marcador"})
@@ -545,7 +545,7 @@ export default class AdminGamesScreen extends Component{
                     this.setState({mensajeSnackBar: "Hubo un error al registrar el marcador"})
                     this.setState({visibleSnackBar: true});
                 });
-                db.collection("ligas").doc(liga).collection("partidos").doc(selecciónPartido).get().then(function(doc) {
+                db.collection("ligas").doc(liga).collection("partidos").doc(selecciónPartido).get().then((doc)=> {
                     var data = doc.data();
                     var equipoF = data.equipoF;
                     var equipoV = data.equipoV;
@@ -559,7 +559,7 @@ export default class AdminGamesScreen extends Component{
                             GolesFavor: firebase.firestore.FieldValue.increment(golesequipoFN)
                         }).then(()=> {
                             var success = "Se registró tu partido"
-                            this.setState({mensajeSnackBar: success})
+                            this.setState({mensajeSnackBar: success},()=>{this.handleRefresh()})
                             this.setState({visibleSnackBar: true});
                         })
                         .catch((error)=> {
@@ -573,7 +573,7 @@ export default class AdminGamesScreen extends Component{
                             GolesFavor: firebase.firestore.FieldValue.increment(golesequipoVN)
                         }).then(()=> {
                             var success = "Se registró tu partido"
-                            this.setState({mensajeSnackBar: success})
+                            this.setState({mensajeSnackBar: success},()=>{this.handleRefresh()})
                             this.setState({visibleSnackBar: true});
                         })
                         .catch((error)=> {
@@ -590,7 +590,7 @@ export default class AdminGamesScreen extends Component{
                             GolesFavor: firebase.firestore.FieldValue.increment(golesequipoVN)
                         }).then(()=> {
                             var success = "Se registró tu partido"
-                            this.setState({mensajeSnackBar: success})
+                            this.setState({mensajeSnackBar: success},()=>{this.handleRefresh()})
                             this.setState({visibleSnackBar: true});
                         })
                         .catch((error)=> {
@@ -604,8 +604,8 @@ export default class AdminGamesScreen extends Component{
                             GolesFavor: firebase.firestore.FieldValue.increment(golesequipoFN)
                         }).then(()=> {
                             var success = "Se registró tu partido"
-                            this.setState({mensajeSnackBar: success})
-                            this.setState({visibleSnackBar: true});
+                        this.setState({mensajeSnackBar: success},()=>{this.handleRefresh()})
+                        this.setState({visibleSnackBar: true});
                         })
                         .catch((error)=> {
                             this.setState({mensajeSnackBar: "Hubo un error al registrar el marcador"})
@@ -621,8 +621,8 @@ export default class AdminGamesScreen extends Component{
                             GolesFavor: firebase.firestore.FieldValue.increment(golesequipoVN)
                         }).then(()=> {
                             var success = "Se registró tu partido"
-                            this.setState({mensajeSnackBar: success})
-                            this.setState({visibleSnackBar: true});
+                        this.setState({mensajeSnackBar: success},()=>{this.handleRefresh()})
+                        this.setState({visibleSnackBar: true});
                         })
                         .catch((error)=> {
                             this.setState({mensajeSnackBar: "Hubo un error al registrar el marcador"})
@@ -636,8 +636,8 @@ export default class AdminGamesScreen extends Component{
                             GolesFavor: firebase.firestore.FieldValue.increment(golesequipoFN)
                         }).then(()=> {
                             var success = "Se registró tu partido"
-                            this.setState({mensajeSnackBar: success})
-                            this.setState({visibleSnackBar: true});
+                        this.setState({mensajeSnackBar: success},()=>{this.handleRefresh()})
+                        this.setState({visibleSnackBar: true});
                         })
                         .catch((error)=> {
                             this.setState({mensajeSnackBar: "Hubo un error al registrar el marcador"})
@@ -652,7 +652,7 @@ export default class AdminGamesScreen extends Component{
             this.setState({visibleSnackBar: true});
         })
         .catch((error)=> {
-            this.setState({mensajeSnackBar: "Hubo un error al registrar el marcador"})
+            this.setState({mensajeSnackBar: "Hubo un error al registrar el marcador24"})
             this.setState({visibleSnackBar: true});
         });
 
@@ -660,7 +660,7 @@ export default class AdminGamesScreen extends Component{
 
         this.setState({matchTeam:[]})
         this.setState({matchNext:[]})
-        this.setState({matchFinish:[]},()=>{this.handleRefresh()})
+        this.setState({matchFinish:[]})
     }
 
     cancelarPartido=(keyId)=>{
@@ -677,7 +677,6 @@ export default class AdminGamesScreen extends Component{
             this.setState({visibleSnackBar: true});
         });
         this.hideDialog();
-
         this.handleRefresh()
         
     }
